@@ -108,7 +108,7 @@ function showHub() {
   el.querySelectorAll('.locklist button').forEach(b => b.onclick = () => open(b.dataset.id));
   el.querySelector('#letter').onclick = () => showLetter(false);
   wireTreasure(el); wireTeacher(el);
-  SHELF_CTX = null; wireShelfButtons(el);
+  SHELF_CTX = null; SHELF_CUR = null; wireShelfButtons(el);
   const fin = el.querySelector('#finale'); if (fin) fin.onclick = showChestOpen;
   mount(el);
 }
@@ -149,7 +149,13 @@ function showStation(id) {
     SHELF_CTX = step.ref || st.ref;
     hintBtn.hidden = !(step.hints && step.hints.length);
     slot.innerHTML = '';
-    slot.appendChild(STEP[step.type](step, next, st));
+    const node = STEP[step.type](step, next, st);
+    if (step.type !== 'info') {
+      const bar = lookupBar(step.links || [step.ref || st.ref]);
+      const h2 = node.querySelector('h2');
+      if (bar && h2) h2.insertAdjacentElement('afterend', bar);
+    }
+    slot.appendChild(node);
   }
   function next() {
     idx++;
@@ -175,7 +181,7 @@ function showStation(id) {
   }
   renderStep();
   mount(el);
-  if (!solved) shelfUnlock('st:' + id, shelfRefsOf(st));
+  if (!solved) shelfUnlock('st:' + id, shelfRefsOf(st)); else SHELF_CUR = 'st:' + id;
 }
 
 function showUnlocked(st) {
@@ -376,6 +382,7 @@ const STEP = {
     let sel = null, left = items.length;
     const el = h(`<div class="paper">
       <h2>${step.q}</h2>
+      ${step.intro ? `<p class="task-intro">${step.intro}</p>` : ''}
       <div class="pool">${items.map(it => `<button class="pill" data-i="${it.i}">${it.t}</button>`).join('')}</div>
       <div class="buckets" style="grid-template-columns:repeat(${step.buckets.length},minmax(0,1fr))">${step.buckets.map(b => `<button class="bucket" data-b="${b.id}"><h3>${icon(b.icon)} ${b.title}</h3><div class="in"></div></button>`).join('')}</div>
       <div class="fb"></div><div class="step-actions"></div>

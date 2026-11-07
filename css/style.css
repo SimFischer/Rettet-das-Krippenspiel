@@ -584,3 +584,28 @@ body.shelf-open { overflow: hidden; }
 .scard.locked svg { color: var(--ink-soft); }
 .teacherbtn { opacity: .55; }
 .teacherbtn:hover, .teacherbtn:focus-visible { opacity: 1; }
+/* Zum Nachlesen unter der Aufgabe */
+.lookup-bar { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; background: rgba(108,75,148,.08); border: 1px solid rgba(108,75,148,.22); border-radius: 12px; padding: 8px 12px; font-size: .92rem; color: var(--ink-soft); }
+.lookup-bar > svg { width: 20px; height: 20px; color: var(--advent); }
+.lookup-bar > span { font-weight: 700; }
+.screen > .lookup-bar { max-width: 1240px; width: 100%; background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.15); color: var(--fg-dim); }
+.screen > .lookup-bar .reflink { background: rgba(242,189,98,.18); color: var(--candle-soft); }
+.task-intro { background: #fbf4e2; border-radius: 12px; padding: 12px 16px; line-height: 1.5; }
+/* Regal: Gruppen und Rätsel-Symbole */
+.shelf-group { display: grid; gap: 8px; }
+.shelf-group h3 { font-size: 1rem; color: var(--candle-soft); display: flex; gap: 8px; align-items: center; margin: 6px 2px 0; }
+.shelf-group h3 svg { width: 20px; height: 20px; color: var(--candle); }
+.shelf-group > p { margin: -4px 2px 2px; color: var(--parchment); font-size: .85rem; opacity: .8; }
+.shelf-group.now { background: rgba(242,189,98,.12); border: 2px solid rgba(242,189,98,.55); border-radius: 14px; padding: 10px; }
+.shelf-group.now h3 { font-size: 1.1rem; color: var(--candle); }
+.spine .kind { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--candle-soft); opacity: .85; }
+.spine.bib { background: linear-gradient(90deg, #c9a14c 0 8px, #3b2a5c 8px); }
+.spine.txt { background: linear-gradient(90deg, #6c4b94 0 8px, #2f4a3d 8px); }
+.ctxchips { display: inline-flex; gap: 4px; margin-top: 4px; }
+.ctxchips i { width: 26px; height: 26px; border-radius: 7px; background: linear-gradient(160deg, var(--brass), var(--brass-dark)); display: grid; place-items: center; color: #2a1b06; }
+.ctxchips i svg { width: 17px; height: 17px; color: #2a1b06; }
+.forline { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: .88rem; color: var(--ink-soft); margin: -4px 0 4px; }
+.forline span { display: inline-flex; gap: 6px; align-items: center; background: rgba(201,161,76,.2); border-radius: 999px; padding: 3px 10px 3px 4px; font-weight: 700; color: var(--ink); }
+.forline svg { width: 20px; height: 20px; padding: 2px; border-radius: 6px; background: linear-gradient(160deg, var(--brass), var(--brass-dark)); color: #2a1b06; }
+.shelf-list { background: none; }
+@media (max-width: 760px) { .shelf-list { grid-auto-flow: row; grid-auto-columns: auto; overflow-x: hidden; overflow-y: auto; max-height: 42vh; } }

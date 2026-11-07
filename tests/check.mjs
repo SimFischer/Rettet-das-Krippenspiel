@@ -32,7 +32,7 @@ ok(RINGS.rings.every(r => r.answer < r.options.length), 'Walzen lösbar');
 const BIBLE = get('BIBLE'), TEXTS = get('TEXTS');
 const resolves = r => { const [k, id] = r.split(':'); return k === 'bibel' ? BIBLE.some(b => b.id === id) : k === 'text' ? TEXTS.some(t => t.id === id) : false; };
 const allSrc = ['content', 'content-acts', 'acts', 'engine'].map(f => readFileSync(new URL(`../js/${f}.js`, import.meta.url), 'utf8')).join('\n');
-const refs = [...allSrc.matchAll(/\{\{((?:bibel|text):[a-z0-9]+)\}\}/g)].map(m => m[1]).concat([...allSrc.matchAll(/ref: '((?:bibel|text):[a-z0-9]+)'/g)].map(m => m[1]), [...allSrc.matchAll(/wireHeader\(el, '([^']+)'\)/g)].map(m => m[1]));
+const refs = [...allSrc.matchAll(/'((?:bibel|text):[a-z0-9]+)'/g)].map(m => m[1]).concat([...allSrc.matchAll(/\{\{((?:bibel|text):[a-z0-9]+)\}\}/g)].map(m => m[1])).concat([...allSrc.matchAll(/ref: '((?:bibel|text):[a-z0-9]+)'/g)].map(m => m[1]), [...allSrc.matchAll(/wireHeader\(el, '([^']+)'\)/g)].map(m => m[1]));
 ok(refs.length > 30, 'genug Verweise gefunden: ' + refs.length);
 refs.forEach(r => ok(resolves(r), 'Verweis löst auf: ' + r));
 STATIONS.forEach(st => ok(st.ref && resolves(st.ref), st.id + ': Bücherregal-Verweis'));

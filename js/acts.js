@@ -162,6 +162,7 @@ function act3Message() {
     </div>
   </section>`);
   wireHeader(el, 'text:farben');
+  { const lb = lookupBar(['text:farben']); const sub = el.querySelector('.act-sub'); if (lb && sub) sub.insertAdjacentElement('afterend', lb); }
   el.querySelector('#go').onclick = nextAct3;
   mount(el);
 }
@@ -193,6 +194,7 @@ function act3Dark() {
     <div class="st-foot"><span></span><button class="btn ghost small lantern" id="hint">${icon('lantern')} Laterne: Hinweis</button></div>
   </section>`);
   wireHeader(el, 'text:farben');
+  { const lb = lookupBar(['text:farben']); const sub = el.querySelector('.act-sub'); if (lb && sub) sub.insertAdjacentElement('afterend', lb); }
   const room = el.querySelector('.dark-room'), cv = room.querySelector('canvas'), ctx = cv.getContext('2d'), layer = room.querySelector('.dark-spots');
   const hand = el.querySelector('.hand'), fb = el.querySelector('.fb');
   let lx = .5, ly = .45, holding = null, W = 0, H = 0;
@@ -270,6 +272,7 @@ function act3Songs() {
     <div class="st-foot"><span></span><button class="btn ghost small lantern" id="hint">${icon('lantern')} Laterne: Hinweis</button></div>
   </section>`);
   wireHeader(el, 'text:lieder');
+  { const lb = lookupBar(['text:lieder']); const sub = el.querySelector('.act-sub'); if (lb && sub) sub.insertAdjacentElement('afterend', lb); }
   const fb = el.querySelector('.fb');
   function render() {
     el.querySelectorAll('.clue').forEach((c, i) => { c.classList.toggle('sel', i === sel); c.classList.toggle('done', placed[i] != null); });
@@ -313,6 +316,7 @@ function act3Rings() {
     </div>
   </section>`);
   wireHeader(el, 'text:menschwerdung');
+  { const lb = lookupBar(['text:menschwerdung']); const sub = el.querySelector('.act-sub'); if (lb && sub) sub.insertAdjacentElement('afterend', lb); }
   const fb = el.querySelector('.fb');
   const render = () => el.querySelectorAll('.ring').forEach((rg, i) => rg.querySelector('.ring-val').textContent = RINGS.rings[i].options[pos[i]]);
   el.querySelectorAll('.ring').forEach((rg, i) => {

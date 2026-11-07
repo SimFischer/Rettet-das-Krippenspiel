@@ -59,7 +59,7 @@ const STATIONS = [
         hints: ['Suche zuerst den 4. Advent: den letzten Sonntag vor dem 25.12. So steht es auch im Sachtext {{text:advent}}', 'Der 4. Advent ist am 20.12. Gehe von dort immer eine Woche zurück: 3. Advent, 2. Advent, 1. Advent.'],
       },
       {
-        type: 'dial', kind: 'digits', format: ['TT', 'MM'], answer: '2012', lockIcon: 'cal', calendar: [[2026, 11]],
+        type: 'dial', kind: 'digits', format: ['TT', 'MM'], answer: '2012', lockIcon: 'cal', calendar: [[2026, 11]], links: ['text:advent'],
         q: 'Frau Petersens Notiz am Schloss: „Das Kalenderschloss öffnet sich mit dem Datum des <b>4. Advents</b> 2026 – erst der Tag, dann der Monat.“',
         hints: ['Der 4. Advent ist der letzte Sonntag vor dem 25. Dezember. Sonntage sind im Kalender rot.', 'Der letzte Sonntag vor dem 25.12.2026 ist der 20. Dezember: 20 12.'],
       },
@@ -141,7 +141,7 @@ const STATIONS = [
         hints: ['Schlag den Vers in der Bibel nach: {{bibel:lk2}} – Vers 11.'],
       },
       {
-        type: 'mc', q: 'Warum hören bei Lukas zuerst die Hirten die gute Nachricht?',
+        type: 'mc', links: ['text:hirten', 'bibel:lk2'], q: 'Warum hören bei Lukas zuerst die Hirten die gute Nachricht?',
         options: [
           'Hirten waren arm und hatten wenig Ansehen. Lukas zeigt: Gott kommt zuerst zu den Kleinen und Ausgegrenzten.',
           'Hirten waren damals die wichtigsten Leute im Land.',
@@ -181,11 +181,12 @@ const STATIONS = [
         <p class="note">Das Siegel bricht nur, wenn alles richtig sortiert ist. – H. P.</p>`,
       },
       {
-        type: 'sort', lockIcon: 'seal',
-        q: 'Tippe eine Karte an und dann den passenden Korb.',
+        type: 'sort', lockIcon: 'seal', links: ['bibel:lk2', 'bibel:mt2', 'text:nichtbibel'],
+        q: 'Wo steht das in der Bibel?',
+        intro: 'Lies die Weihnachtsgeschichte bei <b>Lukas</b> (Lukas 2) und bei <b>Matthäus</b> (Matthäus 2). Prüfe dann bei jeder Karte: Kommt das bei Lukas vor, bei Matthäus – oder in keiner der beiden Geschichten?<br><b>So geht’s:</b> Tippe zuerst eine Karte an und dann den Korb, in den sie gehört.',
         buckets: [
-          { id: 'lk', title: 'Lukas', icon: 'sheep' },
-          { id: 'mt', title: 'Matthäus', icon: 'star' },
+          { id: 'lk', title: 'Steht bei Lukas', icon: 'sheep' },
+          { id: 'mt', title: 'Steht bei Matthäus', icon: 'star' },
           { id: 'no', title: 'Steht nicht in der Bibel', icon: 'cross' },
         ],
         items: [
@@ -205,7 +206,7 @@ const STATIONS = [
         hints: ['Im Sachtext {{text:zwei}} steht, was bei Lukas und was bei Matthäus vorkommt.', 'Für die dritte Spalte: {{text:nichtbibel}}'],
       },
       {
-        type: 'order', success: 'Die Matthäus-Geschichte stimmt!',
+        type: 'order', success: 'Die Matthäus-Geschichte stimmt!', links: ['bibel:mt2'],
         q: 'Jetzt die Geschichte nach Matthäus (Kapitel 2): Tippe die Szenen in der richtigen Reihenfolge an.',
         items: [
           { icon: 'star', text: 'Weise im Morgenland sehen einen besonderen Stern aufgehen.' },
@@ -218,7 +219,7 @@ const STATIONS = [
         hints: ['Lies die Geschichte in der Bibel: {{bibel:mt2}}', 'Verse 1–2: Stern · 3–8: Herodes · 9–10: Stern führt nach Bethlehem · 11: Haus und Gaben · 12: anderer Weg.'],
       },
       {
-        type: 'mc', q: 'Warum erzählen Lukas und Matthäus so unterschiedlich?',
+        type: 'mc', links: ['text:zwei'], q: 'Warum erzählen Lukas und Matthäus so unterschiedlich?',
         options: [
           'Sie wollen zeigen, wer Jesus ist – jeder auf seine Weise. Es sind Glaubensgeschichten, keine Zeitungsberichte.',
           'Einer von beiden hat sich einfach geirrt.',
@@ -243,8 +244,9 @@ const STATIONS = [
         <p>{{text:konfessionen}} {{text:lieder}}</p>`,
       },
       {
-        type: 'sort', lockIcon: 'note',
-        q: 'Woher kommt der Brauch? Tippe eine Karte an und dann den passenden Korb.',
+        type: 'sort', lockIcon: 'note', links: ['text:konfessionen'],
+        q: 'Woher kommt der Brauch?',
+        intro: 'Lies im Sachtext nach, in welcher Kirche ein Brauch entstanden ist: in der <b>evangelischen</b> oder in der <b>katholischen</b>.<br><b>So geht’s:</b> Tippe zuerst eine Karte an und dann den Korb, in den sie gehört.',
         buckets: [
           { id: 'ev', title: 'Evangelische Wurzeln', icon: 'wreath' },
           { id: 'ka', title: 'Katholische Wurzeln', icon: 'manger' },
@@ -275,7 +277,7 @@ const STATIONS = [
         hints: ['Die ganze Strophe steht im Sachtext {{text:lieder}}'],
       },
       {
-        type: 'dial', kind: 'letters', answer: 'ENGEL', alphabet: 'AEGHILNRST', lockIcon: 'note',
+        type: 'dial', links: ['text:lieder', 'text:engel'], kind: 'letters', answer: 'ENGEL', alphabet: 'AEGHILNRST', lockIcon: 'note',
         q: 'Notiz am Notenschloss: „Wer singt die erste Strophe? Er kommt vom Himmel hoch und bringt eine gute Nachricht. Sein Name öffnet das Schloss.“',
         hints: ['Lies nach, was ein Bote Gottes ist: {{text:engel}}', 'Gesucht ist der Engel: E-N-G-E-L.'],
       },
@@ -311,7 +313,7 @@ const STATIONS = [
         hints: ['Der dritte Absatz im Sachtext erklärt die Gaben: {{text:epiphanias}}'],
       },
       {
-        type: 'mc', q: 'Warum ist es wichtig, dass die Weisen aus einem fremden Land kommen?',
+        type: 'mc', links: ['text:epiphanias', 'bibel:mt2'], q: 'Warum ist es wichtig, dass die Weisen aus einem fremden Land kommen?',
         options: [
           'Es zeigt: Jesus ist für alle Menschen auf der Welt gekommen.',
           'Weil es in Bethlehem keine Geschenke zu kaufen gab.',

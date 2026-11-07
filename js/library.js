@@ -51,7 +51,17 @@ function updateShelfBadges() {
     bd.textContent = n;
   });
 }
-let SHELF_CUR = 'extra';
+let SHELF_CUR = null;
+/* Zu welchem Rätsel gehört ein Kontext? Symbol und Name wie auf der Kiste */
+function ctxInfo(ctx) {
+  if (!ctx) return null;
+  if (ctx.startsWith('st:')) { const st = STATIONS.find(x => x.id === ctx.slice(3)); return st ? { icon: st.icon, name: st.name } : null; }
+  return { 'act2': { icon: 'people', name: 'Die Kostüme' }, 'act3-dark': { icon: 'lantern', name: 'Die Turmkammer' }, 'act3-songs': { icon: 'bell', name: 'Die Liedtafel' }, 'act3-rings': { icon: 'key', name: 'Die Kirchentür' } }[ctx] || null;
+}
+function ctxChips(ref) {
+  const c = (shelfState().ctx[ref] || []).map(ctxInfo).filter(Boolean);
+  return c.length ? `<span class="ctxchips">${c.map(i => `<i title="${i.name}">${icon(i.icon)}</i>`).join('')}</span>` : '';
+}
 function shelfButton(extraClass = '') { return `<button class="iconbtn shelfbtn ${extraClass}" type="button">${icon('book')} Bücherregal</button>`; }
 function wireShelfButtons(root) { root.querySelectorAll('.shelfbtn').forEach(b => b.onclick = () => openShelf(SHELF_CTX)); setTimeout(updateShelfBadges, 0); }
 
@@ -60,15 +70,10 @@ function openShelf(ref) {
   if (ref && shelfEntry(ref) && shelfStatus(ref) === 'zu') shelfUnlock(SHELF_CUR, [ref]);
   const open = r => shelfStatus(r) !== 'zu';
   let cur = shelfEntry(ref) && open(ref) ? ref : (shelfEntry(SHELF_LAST) && open(SHELF_LAST) ? SHELF_LAST : allShelfRefs().find(open));
-  let tab = cur ? cur.split(':')[0] : 'text';
   const ov = h(`<div class="shelf" role="dialog" aria-modal="true" aria-label="Frau Petersens Bücherregal">
     <div class="shelf-card">
       <header class="shelf-head">
         <div class="shelf-title">${icon('book')}<div><b>Frau Petersens Bücherregal</b><small>Hier findest du alles, was du für die Rätsel brauchst.</small></div></div>
-        <div class="shelf-tabs" role="tablist">
-          <button role="tab" data-tab="text">${icon('book')} Sachtexte</button>
-          <button role="tab" data-tab="bibel">${icon('scroll')} Bibel</button>
-        </div>
         <button class="iconbtn shelf-close" aria-label="Bücherregal schließen">${icon('cross')}</button>
       </header>
       <div class="shelf-body">
@@ -81,12 +86,24 @@ function openShelf(ref) {
   document.body.classList.add('shelf-open');
   const list = ov.querySelector('.shelf-list'), read = ov.querySelector('.shelf-read');
   function renderList() {
-    ov.querySelectorAll('.shelf-tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === tab));
-    const all = tab === 'bibel' ? BIBLE.map(b => ({ ref: 'bibel:' + b.id, t: b.title, s: b.ref, ic: 'scroll' })) : TEXTS.map(t => ({ ref: 'text:' + t.id, t: t.title, s: '', ic: 'book' }));
-    const items = all.filter(i => open(i.ref)), locked = all.length - items.length;
+    const st = shelfState(), ci = ctxInfo(SHELF_CUR);
+    const mine = ci ? allShelfRefs().filter(r => (st.ctx[r] || []).includes(SHELF_CUR)) : [];
+    if (SHELF_CTX && mine.includes(SHELF_CTX)) { mine.splice(mine.indexOf(SHELF_CTX), 1); mine.unshift(SHELF_CTX); }
     const lbl = { neu: '<em class="st neu">neu</em>', offen: '<em class="st offen">zu lesen</em>', erledigt: `<em class="st done">${icon('check')} erledigt</em>` };
-    list.innerHTML = (items.length ? items.map(i => { const stt = shelfStatus(i.ref); return `<button class="spine${i.ref === cur ? ' on' : ''} ${stt}" data-ref="${i.ref}">${icon(i.ic)}<span><b>${i.t}</b>${i.s ? `<small>${i.s}</small>` : ''}${lbl[stt] || ''}</span></button>`; }).join('') : '<p class="shelf-empty">Hier ist noch nichts. Öffne ein Rätsel – dann kommen die passenden Einträge dazu.</p>')
-      + (locked ? `<p class="shelf-locked">${icon('key')} Noch ${locked} ${locked === 1 ? 'Eintrag' : 'Einträge'} verschlossen. Sie erscheinen, sobald ein Rätsel sie braucht.</p>` : '');
+    const spine = r => {
+      const e = shelfEntry(r), stt = shelfStatus(r), bib = e.kind === 'bibel';
+      return `<button class="spine${r === cur ? ' on' : ''} ${stt} ${bib ? 'bib' : 'txt'}" data-ref="${r}">${icon(bib ? 'scroll' : 'book')}<span><small class="kind">${bib ? 'Bibel · ' + e.b.ref : 'Sachtext'}</small><b>${bib ? e.b.title : e.t.title}</b>${ctxChips(r)}${lbl[stt] || ''}</span></button>`;
+    };
+    const rest = allShelfRefs().filter(r => open(r) && !mine.includes(r));
+    const locked = allShelfRefs().filter(r => !open(r)).length;
+    let html = '';
+    if (ci && mine.length) html += `<div class="shelf-group now"><h3>${icon(ci.icon)} Für ${ci.name.replace(/^Das /, "das ").replace(/^Die /, "die ")}</h3><p>Diese Texte brauchst du jetzt:</p>${mine.map(spine).join('')}</div>`;
+    const bib = rest.filter(r => r.startsWith('bibel')), txt = rest.filter(r => r.startsWith('text'));
+    if (bib.length) html += `<div class="shelf-group"><h3>${icon('scroll')} ${mine.length ? 'Weitere Bibelstellen' : 'Bibel'}</h3>${bib.map(spine).join('')}</div>`;
+    if (txt.length) html += `<div class="shelf-group"><h3>${icon('book')} ${mine.length ? 'Weitere Sachtexte' : 'Sachtexte'}</h3>${txt.map(spine).join('')}</div>`;
+    if (!html) html = '<p class="shelf-empty">Hier ist noch nichts. Öffne ein Rätsel – dann kommen die passenden Einträge dazu.</p>';
+    if (locked) html += `<p class="shelf-locked">${icon('key')} Noch ${locked} ${locked === 1 ? 'Eintrag' : 'Einträge'} verschlossen. Sie erscheinen, sobald ein Rätsel sie braucht.</p>`;
+    list.innerHTML = html;
     list.querySelectorAll('.spine').forEach(b => b.onclick = () => { cur = b.dataset.ref; renderRead(); renderList(); });
   }
   function renderRead() {
@@ -96,26 +113,31 @@ function openShelf(ref) {
     if (e.kind === 'bibel') {
       const b = e.b;
       const words = Object.entries(b.words || {});
-      read.innerHTML = `<div class="kicker">Lutherbibel 1912 · ${b.ref}</div><h2>${b.title}</h2>
+      read.innerHTML = `<div class="kicker">Lutherbibel 1912 · ${b.ref}</div><h2>${b.title}</h2>${forLine(cur)}
         <div class="bible">${b.verses.map(([n, t]) => t ? `<p><sup>${n}</sup> ${t}</p>` : `<p class="gap-v">${n}</p>`).join('')}</div>
         ${words.length ? `<div class="words"><b>Schwierige Wörter</b><dl>${words.map(([w, d]) => `<dt>${w}</dt><dd>${d}</dd>`).join('')}</dl></div>` : ''}`;
     } else {
-      read.innerHTML = `<div class="kicker">Sachtext</div><h2>${e.t.title}</h2><div class="text">${e.t.html}</div>`;
+      read.innerHTML = `<div class="kicker">Sachtext</div><h2>${e.t.title}</h2>${forLine(cur)}<div class="text">${e.t.html}</div>`;
     }
     read.scrollTop = 0;
     if (window.innerWidth < 760) read.scrollIntoView({ block: 'start' });
   }
-  ov.querySelectorAll('.shelf-tabs button').forEach(b => b.onclick = () => {
-    tab = b.dataset.tab;
-    if (!cur || !cur.startsWith(tab)) cur = allShelfRefs().find(r => r.startsWith(tab) && open(r)) || null;
-    renderRead(); renderList();
-  });
   ov.querySelector('.shelf-close').onclick = closeShelf;
   ov.addEventListener('click', e => { if (e.target === ov) closeShelf(); });
   ov._key = e => { if (e.key === 'Escape') closeShelf(); };
   document.addEventListener('keydown', ov._key);
   renderRead(); renderList();
   ov.querySelector('.shelf-close').focus();
+}
+function forLine(ref) {
+  const c = (shelfState().ctx[ref] || []).map(ctxInfo).filter(Boolean);
+  return c.length ? `<p class="forline">Gehört zu: ${c.map(i => `<span>${icon(i.icon)} ${i.name}</span>`).join('')}</p>` : '';
+}
+/* Leiste „Zum Nachlesen“ unter einer Aufgabe */
+function lookupBar(refs) {
+  refs = (refs || []).filter(r => shelfEntry(r));
+  if (!refs.length) return null;
+  return h(`<div class="lookup-bar">${icon('book')}<span>Zum Nachlesen:</span>${refs.map(r => linkify('{{' + r + '}}')).join('')}</div>`);
 }
 function closeShelf() {
   const ov = document.querySelector('.shelf');
