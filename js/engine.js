@@ -3,7 +3,7 @@ const KEY = 'rettet-das-krippenspiel-v1';
 const TEACHER_PIN = '2412';
 const TEAM_ICONS = ['sheep', 'star', 'angel', 'candle', 'bell', 'lantern'];
 
-const fresh = () => ({ team: '', teamIcon: 'sheep', started: null, finished: null, phase: 'kiste', solved: [], progress: {}, hints: 0, seenInterlude: [], bonusOpen: false, reflection: '', finaleDone: false, best: {}, act2: { delivered: [], shelf: false }, act3: { stage: 0, dark: [] }, times: {} });
+const fresh = () => ({ team: '', teamIcon: 'sheep', started: null, finished: null, phase: 'kiste', solved: [], progress: {}, hints: 0, seenInterlude: [], bonusOpen: false, reflection: '', finaleDone: false, best: {}, shelf: { ctx: {}, done: [], seen: [], all: false }, act2: { delivered: [], shelf: false }, act3: { stage: 0, dark: [] }, times: {} });
 let S = load();
 function load() {
   try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(fresh(), JSON.parse(raw)); } catch (e) { /* ohne Speicher weiterspielen */ }
@@ -13,7 +13,8 @@ function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e
 
 /* ===== Helfer ===== */
 const app = () => document.getElementById('app');
-function h(html) { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; }
+function nb(t) { return String(t).replace(/(^|[\s>(„])(\d{1,2}\.) (?=[A-ZÄÖÜ])/g, '$1$2\u00a0').replace(/z\. B\./g, 'z.\u00a0B.'); }
+function h(html) { const t = document.createElement('template'); t.innerHTML = nb(html.trim()); return t.content.firstElementChild; }
 function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function shake(el) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
@@ -42,11 +43,11 @@ function showStart() {
     <h1>Rettet das Krippenspiel!</h1>
     <div class="chestmini">${chestSVG({ interactive: false, stations: STATIONS, solved: [] })}</div>
     <form class="teamform" id="teamform">
-      <label for="teamname">Wie heißt euer Team?</label>
-      <input id="teamname" maxlength="28" autocomplete="off" placeholder="z. B. Die Sternsucher" required>
-      <div class="teamicons" role="group" aria-label="Team-Zeichen">${TEAM_ICONS.map(i => `<button type="button" data-i="${i}" aria-pressed="${i === S.teamIcon}" aria-label="${i}">${icon(i)}</button>`).join('')}</div>
+      <label for="teamname">Wie heißt du?</label>
+      <input id="teamname" maxlength="28" autocomplete="off" placeholder="Dein Vorname" required>
+      <p class="small-note" style="margin:0">Wähle dein Zeichen:</p>
+      <div class="teamicons" role="group" aria-label="Dein Zeichen">${TEAM_ICONS.map(i => `<button type="button" data-i="${i}" aria-pressed="${i === S.teamIcon}" aria-label="${i}">${icon(i)}</button>`).join('')}</div>
       <button class="btn" type="submit">Los geht's ${icon('next')}</button>
-      <p class="small-note">Bitte nur einen Fantasienamen, keine echten Namen.</p>
     </form>
     <button class="linkbtn" id="teacherlink">Für Lehrkräfte</button>
   </section>`);
@@ -66,7 +67,7 @@ function showStart() {
 function showLetter(first) {
   const el = h(`<section class="screen">
     <div class="topbar"><span class="chip">${icon(S.teamIcon)} ${esc(S.team)}</span><span class="spacer"></span></div>
-    <div class="letter"><div class="hand">${LETTER}</div></div>
+    <div class="letter"><div class="hand">${LETTER(esc(S.team))}</div></div>
     <div class="center-actions"><button class="btn" id="go">${first ? 'Zur Kiste in der Sakristei' : 'Zurück'} ${icon('next')}</button></div>
   </section>`);
   el.querySelector('#go').onclick = () => { if (!S.started) { S.started = Date.now(); save(); } route(); };
@@ -89,8 +90,8 @@ function showHub() {
       <div class="chest-wrap">${chestSVG({ stations: STATIONS, solved: S.solved })}</div>
       <aside class="side">
         <div class="card">
-          <h2>${all ? 'Alle Schlösser sind offen!' : 'Welches Schloss knackt ihr?'}</h2>
-          <p class="small-note" style="margin:.4em 0 .8em">${all ? 'Hebt den Deckel an!' : 'Ihr könnt in jeder Reihenfolge spielen. Tippt auf ein Schloss.'}</p>
+          <h2>${all ? 'Alle Schlösser sind offen!' : 'Welches Schloss knackst du?'}</h2>
+          <p class="small-note" style="margin:.4em 0 .8em">${all ? 'Hebt den Deckel an!' : 'Du kannst in jeder Reihenfolge spielen. Tippe auf ein Schloss.'}</p>
           <ul class="locklist">${STATIONS.map(s => `<li><button data-id="${s.id}" class="${S.solved.includes(s.id) ? 'done' : ''}">${icon(s.icon)}<span class="t">${s.name}<small>${s.sub}</small></span></button></li>`).join('')}</ul>
         </div>
         ${all ? `<button class="btn" id="finale">${icon('chest')} Kiste öffnen</button>` : ''}
@@ -120,7 +121,7 @@ function showStation(id) {
   const el = h(`<section class="screen">
     <div class="st-head">
       <div class="ic">${icon(st.icon)}</div>
-      <div class="tt"><h1>${st.name}</h1><div class="sub">${st.sub}${solved ? ' · schon geöffnet – ihr könnt alles noch einmal ansehen' : ''}</div></div>
+      <div class="tt"><h1>${st.name}</h1><div class="sub">${st.sub}${solved ? ' · schon geöffnet – du kannst alles noch einmal ansehen' : ''}</div></div>
       <div class="dots" aria-hidden="true"></div>
     </div>
     <div class="hintbox" hidden></div>
@@ -166,13 +167,14 @@ function showStation(id) {
   };
   function complete() {
     if (solved) return showHub();
-    S.solved.push(id); delete S.progress[id];
+    S.solved.push(id); delete S.progress[id]; shelfDone('st:' + id);
     if (S.solved.length === STATIONS.length) S.times.kiste = Date.now();
     save();
     showUnlocked(st);
   }
   renderStep();
   mount(el);
+  if (!solved) shelfUnlock('st:' + id, shelfRefsOf(st));
 }
 
 function showUnlocked(st) {
@@ -184,7 +186,7 @@ function showUnlocked(st) {
       <div class="kicker">Klick!</div>
       <h2>${st.name} ist offen!</h2>
       <div style="width:min(420px,80vw)">${chestSVG({ interactive: false, stations: STATIONS, solved: S.solved })}</div>
-      <p>${n < STATIONS.length ? `Noch ${STATIONS.length - n} ${STATIONS.length - n === 1 ? 'Schloss' : 'Schlösser'}.` : 'Das war das letzte Schloss!'}${game ? ' Aber zuerst braucht jemand eure Hilfe …' : ''}</p>
+      <p>${n < STATIONS.length ? `Noch ${STATIONS.length - n} ${STATIONS.length - n === 1 ? 'Schloss' : 'Schlösser'}.` : 'Das war das letzte Schloss!'}${game ? ' Aber zuerst braucht jemand deine Hilfe …' : ''}</p>
       <div class="center-actions">${game ? `<button class="btn" id="game">${icon(game === 'sheep' ? 'sheep' : 'star')} Zwischenspiel</button><button class="btn ghost small" id="skip">Überspringen</button>` : `<button class="btn" id="hub">${icon('chest')} Zur Kiste</button>`}</div>
     </div>
   </section>`);
@@ -230,8 +232,17 @@ const STEP = {
         const n = h(`<button class="btn ink">Weiter ${icon('next')}</button>`); n.onclick = next;
         el.querySelector('.step-actions').appendChild(n); n.focus();
       } else {
-        b.classList.add('wrong'); b.disabled = true; shake(b);
-        fb.appendChild(feedback('no', 'Noch nicht.', ' Versucht es noch einmal – die Laterne hilft.'));
+        b.classList.add('wrong'); shake(b);
+        const all = el.querySelectorAll('.opt'); all.forEach(x => x.disabled = true);
+        const tip = step.hints && step.hints[0] ? ' Tipp: ' + step.hints[0] : ' Lies noch einmal nach und versuch es dann erneut.';
+        fb.appendChild(feedback('no', 'Das stimmt nicht.', tip));
+        setTimeout(() => {
+          if (!el.isConnected) return;
+          b.classList.remove('wrong');
+          const box = el.querySelector('.options');
+          shuffle([...box.children]).forEach(c => box.appendChild(c));
+          all.forEach(x => x.disabled = false);
+        }, 1800);
       }
     });
     return el;
@@ -239,20 +250,7 @@ const STEP = {
 
   calendar(step, next) {
     const months = [[2026, 10], [2026, 11]];
-    const wd = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-    const name = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
-    const grid = ([y, m]) => {
-      const first = new Date(y, m, 1), days = new Date(y, m + 1, 0).getDate();
-      const off = (first.getDay() + 6) % 7;
-      let cells = wd.map((d, i) => `<div class="wd ${i === 6 ? 'sun' : ''}">${d}</div>`).join('');
-      for (let i = 0; i < off; i++) cells += '<div></div>';
-      for (let d = 1; d <= days; d++) {
-        const dt = new Date(y, m, d), sun = dt.getDay() === 0;
-        const iso = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-        cells += `<button data-d="${iso}" class="${sun ? 'sun' : ''} ${m === 11 && (d === 24 || d === 25) ? 'xmas' : ''}" aria-label="${d}. ${name[m]}">${d}</button>`;
-      }
-      return `<div class="cal"><h3>${name[m]} ${y}</h3><div class="cal-grid">${cells}</div></div>`;
-    };
+    const grid = ym => calGridHTML(ym, true);
     const el = h(`<div class="paper">
       <h2>${step.q}</h2>
       <div class="cal-wrap">${months.map(grid).join('')}</div>
@@ -260,7 +258,7 @@ const STEP = {
     </div>`);
     const fb = el.querySelector('.fb');
     const special = {
-      '2026-12-20': 'Das ist der 4. Advent. Geht drei Wochen zurück.',
+      '2026-12-20': 'Das ist der 4. Advent. Geh drei Wochen zurück.',
       '2026-12-13': 'Das ist der 3. Advent. Noch zwei Wochen zurück.',
       '2026-12-06': 'Das ist der 2. Advent – und Nikolaustag! Noch eine Woche zurück.',
       '2026-11-22': 'Zu früh. Das ist der Ewigkeitssonntag, der letzte Sonntag des alten Kirchenjahres.',
@@ -297,6 +295,7 @@ const STEP = {
     }).join('');
     const el = h(`<div class="paper">
       <h2 style="font-size:clamp(1.15rem,2.2vw,1.45rem)">${step.q}</h2>
+      ${step.calendar ? `<div class="cal-wrap small">${step.calendar.map(ym => calGridHTML(ym, false)).join('')}</div>` : ''}
       ${step.showDays ? `<div class="dayline">${adventDays().map(d => `<span style="${d.sun ? 'background:#f7f1e3;box-shadow:inset 0 0 0 2px #c9a14c' : ''}"><b>${d.d}.${d.m}.</b>${d.wd}</span>`).join('')}</div>` : ''}
       <div class="dial">
         <div class="lockpic" style="color:var(--brass-dark)">${icon(step.lockIcon || 'key', 'width="120" height="120" stroke-width="1.2"')}</div>
@@ -332,7 +331,7 @@ const STEP = {
         const n = h(`<button class="btn">${icon('key')} Weiter</button>`); n.onclick = next; el.querySelector('.step-actions').appendChild(n);
       } else {
         shake(el.querySelector('.dial-row'));
-        fb.appendChild(feedback('no', 'Das Schloss klemmt.', ' Der Code stimmt noch nicht. Prüft eure Lösung oder nehmt die Laterne.'));
+        fb.appendChild(feedback('no', 'Das Schloss klemmt.', ' Der Code stimmt noch nicht. Prüfe deine Lösung oder nimm die Laterne.'));
       }
     };
     return el;
@@ -360,7 +359,11 @@ const STEP = {
         }
       } else {
         shake(b);
-        fb.appendChild(feedback('no', 'Noch nicht.', i > pos ? ' Diese Szene kommt später. Was passiert davor?' : ''));
+        const back = pos > 0;
+        pos = 0;
+        el.querySelectorAll('.scard').forEach(x => { x.classList.remove('placed'); const n = x.querySelector('.num'); if (n) n.remove(); });
+        const box = el.querySelector('.cards'); shuffle([...box.children]).forEach(c => box.appendChild(c));
+        fb.appendChild(feedback('no', back ? 'Falsche Reihenfolge – die Schriftrolle rollt sich wieder zu.' : 'Damit geht die Geschichte nicht los.', ' Fang noch einmal von vorne an. ' + (step.hints ? 'Tipp: ' + step.hints[0] : '')));
       }
     });
     return el;
@@ -384,7 +387,7 @@ const STEP = {
       el.querySelectorAll('.bucket').forEach(b => b.classList.add('ready'));
     });
     el.querySelectorAll('.bucket').forEach(bk => bk.onclick = () => {
-      if (!sel) { fb.innerHTML = ''; fb.appendChild(feedback('tip', '', 'Tippt zuerst eine Karte oben an.')); return; }
+      if (!sel) { fb.innerHTML = ''; fb.appendChild(feedback('tip', '', 'Tippe zuerst eine Karte oben an.')); return; }
       const it = step.items[+sel.dataset.i];
       fb.innerHTML = '';
       if (it.b === bk.dataset.b) {
@@ -423,7 +426,7 @@ const STEP = {
       selA = a; a.classList.add('sel');
     });
     el.querySelectorAll('.scard.b').forEach(b => b.onclick = () => {
-      if (!selA) { fb.innerHTML = ''; fb.appendChild(feedback('tip', '', 'Tippt zuerst links ein Geschenk an.')); return; }
+      if (!selA) { fb.innerHTML = ''; fb.appendChild(feedback('tip', '', 'Tippe zuerst links ein Geschenk an.')); return; }
       fb.innerHTML = '';
       if (selA.dataset.i === b.dataset.i) {
         const c = 'p' + done;
@@ -439,28 +442,42 @@ const STEP = {
   },
 
   tf(step, next) {
-    let i = 0, errors = 0;
+    const ans = step.items.map(() => null);
+    let tries = 0;
     const el = h(`<div class="paper">
       <h2>${step.q}</h2>
-      <div class="tf-card"><div class="tf-count"></div><p class="tf-text"></p>
-        <div class="tf-btns"><button class="btn ink" data-v="1">${icon('check')} Stimmt</button><button class="btn ink" data-v="0">${icon('cross')} Stimmt nicht</button></div></div>
-      <div class="fb"></div><div class="step-actions"></div>
+      <p class="small-note" style="color:var(--ink-soft)">Entscheide bei jeder Aussage. Erst danach wird geprüft.</p>
+      <div class="tf-list">${step.items.map((it, i) => `<div class="tf-row" data-i="${i}"><p>${it.t}</p><div class="tf-toggle"><button data-v="1">${icon('check')} Stimmt</button><button data-v="0">${icon('cross')} Stimmt nicht</button></div><div class="tf-why" hidden></div></div>`).join('')}</div>
+      <div class="fb"></div>
+      <div class="step-actions"><button class="btn ink" id="check" disabled>${icon('check')} Prüfen</button></div>
     </div>`);
-    const fb = el.querySelector('.fb'), card = el.querySelector('.tf-card');
-    const show = () => { el.querySelector('.tf-count').textContent = `Aussage ${i + 1} von ${step.items.length}`; el.querySelector('.tf-text').textContent = step.items[i].t; };
-    el.querySelectorAll('.tf-btns button').forEach(b => b.onclick = () => {
-      const it = step.items[i], v = b.dataset.v === '1';
+    const fb = el.querySelector('.fb'), chk = el.querySelector('#check');
+    el.querySelectorAll('.tf-row').forEach(r => r.querySelectorAll('button').forEach(b => b.onclick = () => {
+      const i = +r.dataset.i; ans[i] = b.dataset.v === '1';
+      r.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+      r.classList.remove('bad');
+      chk.disabled = ans.some(v => v === null);
+    }));
+    chk.onclick = () => {
       fb.innerHTML = '';
-      if (v === it.ok) {
-        fb.appendChild(feedback('ok', 'Richtig.', ' ' + it.why));
-        i++;
-        if (i >= step.items.length) {
-          el.querySelector('.tf-btns').remove(); el.querySelector('.tf-text').textContent = 'Alle Aussagen geprüft!'; el.querySelector('.tf-count').textContent = '';
-          const n = h(`<button class="btn ink">Weiter ${icon('next')}</button>`); n.onclick = next; el.querySelector('.step-actions').appendChild(n);
-        } else show();
-      } else { errors++; shake(card); fb.appendChild(feedback('no', 'Noch einmal überlegen.', '')); }
-    });
-    show();
+      const wrong = step.items.map((it, i) => ans[i] !== it.ok);
+      const n = wrong.filter(Boolean).length;
+      if (!n) {
+        el.querySelectorAll('.tf-row').forEach((r, i) => { r.classList.add('good'); const w = r.querySelector('.tf-why'); w.textContent = step.items[i].why; w.hidden = false; r.querySelectorAll('button').forEach(x => x.disabled = true); });
+        fb.appendChild(feedback('ok', 'Alle Aussagen richtig beurteilt!', ''));
+        chk.remove();
+        const nx = h(`<button class="btn ink">Weiter ${icon('next')}</button>`); nx.onclick = next; el.querySelector('.step-actions').appendChild(nx);
+        return;
+      }
+      tries++;
+      shake(el.querySelector('.tf-list'));
+      if (tries >= 3) {
+        el.querySelectorAll('.tf-row').forEach((r, i) => r.classList.toggle('bad', wrong[i]));
+        fb.appendChild(feedback('no', `${n === 1 ? 'Eine Aussage ist' : n + ' Aussagen sind'} noch falsch beurteilt – sie sind jetzt markiert.`, step.hints ? ' ' + step.hints[0] : ''));
+      } else {
+        fb.appendChild(feedback('no', `${n === 1 ? 'Eine Aussage ist' : n + ' Aussagen sind'} noch falsch beurteilt.`, ' Welche? Prüfe noch einmal mit dem Text im Bücherregal. ' + (step.hints ? step.hints[0] : '')));
+      }
+    };
     return el;
   },
 
@@ -489,7 +506,11 @@ const STEP = {
           if (c === step.gaps[cur].answer) {
             const g = el.querySelector(`.gap[data-g="${cur}"]`); g.textContent = c; g.classList.add('done'); g.classList.remove('cur');
             cur++; render();
-          } else { shake(b); b.disabled = true; b.style.opacity = .4; fb.appendChild(feedback('no', 'Noch nicht.', '')); }
+          } else {
+            shake(b); b.classList.add('wrong'); chips.querySelectorAll('button').forEach(x => x.disabled = true);
+            fb.appendChild(feedback('no', 'Das passt nicht.', step.hints ? ' Tipp: ' + step.hints[0] : ''));
+            setTimeout(() => { if (el.isConnected) render(); }, 1500);
+          }
         };
         chips.appendChild(b);
       });
@@ -498,6 +519,22 @@ const STEP = {
     return el;
   },
 };
+
+const MONTHS = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+function calGridHTML([y, m], interactive) {
+  const wd = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+  const first = new Date(y, m, 1), days = new Date(y, m + 1, 0).getDate();
+  const off = (first.getDay() + 6) % 7;
+  let cells = wd.map((d, i) => `<div class="wd ${i === 6 ? 'sun' : ''}">${d}</div>`).join('');
+  for (let i = 0; i < off; i++) cells += '<div></div>';
+  for (let d = 1; d <= days; d++) {
+    const sun = new Date(y, m, d).getDay() === 0;
+    const iso = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    const cls = `${sun ? 'sun' : ''} ${m === 11 && (d === 24 || d === 25) ? 'xmas' : ''}`;
+    cells += interactive ? `<button data-d="${iso}" class="${cls}" aria-label="${d}. ${MONTHS[m]}">${d}</button>` : `<span class="${cls}">${d}</span>`;
+  }
+  return `<div class="cal"><h3>${MONTHS[m]} ${y}</h3><div class="cal-grid">${cells}</div></div>`;
+}
 
 function adventDays() {
   const out = [], wd = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
@@ -513,8 +550,8 @@ function showScript() {
       <h2 style="color:var(--ink);margin:.3em 0 .6em">Der Engel spricht zu den Hirten</h2>
       <blockquote style="margin:0;padding:10px 16px;border-left:4px solid var(--brass);font-family:var(--f-display);font-size:1.3rem">„Fürchtet euch nicht! Siehe, ich verkündige euch große Freude, die allem Volk widerfahren wird; denn euch ist heute der Heiland geboren, welcher ist Christus, der Herr, in der Stadt Davids.“</blockquote>
       <p class="small-note" style="color:var(--ink-soft)">Lukas 2,10–11</p>
-      <label for="reflect" style="display:block;font-weight:700;margin:1em 0 .4em">Die Pastorin fragt euch: Was ist für euch die wichtigste Botschaft von Weihnachten? Schreibt einen Satz.</label>
-      <textarea id="reflect" class="reflect" maxlength="240" placeholder="Für uns ist an Weihnachten wichtig, dass …">${esc(S.reflection || '')}</textarea>
+      <label for="reflect" style="display:block;font-weight:700;margin:1em 0 .4em">Die Pastorin fragt dich: Was ist für dich die wichtigste Botschaft von Weihnachten? Schreib einen Satz.</label>
+      <textarea id="reflect" class="reflect" maxlength="240" placeholder="Für mich ist an Weihnachten wichtig, dass …">${esc(S.reflection || '')}</textarea>
       <div class="step-actions" style="margin-top:12px"><button class="btn" id="done">${icon('bell')} Die Glocken läuten!</button></div>
     </div>
   </section>`);
@@ -533,10 +570,10 @@ function showCertificate() {
       <div class="kicker">Urkunde</div>
       <h1>Das Krippenspiel ist gerettet!</h1>
       <div class="team">${esc(S.team)}</div>
-      <p>hat die Krippenspiel-Kiste geknackt, alle Kostüme richtig verteilt und die Kirchentür geöffnet. Das Team kennt sich aus mit Advent, Weihnachten und Epiphanias.</p>
+      <p>hat die Krippenspiel-Kiste geknackt, alle Kostüme richtig verteilt und die Kirchentür geöffnet. Und kennt sich jetzt richtig gut aus mit Advent, Weihnachten und Epiphanias.</p>
       <div class="stats"><div><b>6 / 6</b>Schlösser</div><div><b>6 / 6</b>Kostüme</div><div><b>1</b>Kirchentür</div><div><b>${t}</b>Minuten</div><div><b>${S.hints}</b>Hinweise</div></div>
       ${S.reflection ? `<p class="quote">„${esc(S.reflection)}“</p>` : ''}
-      <p class="small-note" style="color:var(--ink-soft)">Zeigt diese Urkunde eurer Lehrkraft. Danke! – Hanne Petersen, Küsterin</p>
+      <p class="small-note" style="color:var(--ink-soft)">Zeig diese Urkunde deiner Lehrkraft. Danke! – Hanne Petersen, Diakonin</p>
       <div class="center-actions"><button class="btn" id="treasure">${icon('treasure')} Zur Schatzkammer</button><button class="btn ghost small" id="hub" style="color:var(--ink);box-shadow:inset 0 0 0 2px rgba(42,32,23,.3)">Zur Kiste</button></div>
     </div>
   </section>`);
@@ -552,12 +589,12 @@ function showTreasury() {
     <div class="topbar"><button class="btn ghost small" id="back">${icon('back')} Zurück</button><span class="spacer"></span></div>
     <div class="paper">
       <div class="kicker">Schatzkammer</div>
-      <h2>Bonusspiele für schnelle Teams</h2>
+      <h2>Bonusspiele für Schnelle</h2>
       <div class="cards">
         <button class="scard" data-g="heimweg">${icon('star')}<span><b>Der andere Heimweg</b><br>Die Weisen schleichen an den Wachen von König Herodes vorbei (Matthäus 2,12).${best.heimweg != null ? `<br><small>Bester Wert: ${best.heimweg} × entdeckt</small>` : ''}</span></button>
-        <button class="scard" data-g="candles">${icon('wreath')}<span><b>Kerzenwächter</b><br>Der Wind pustet durch die Kirche. Haltet die Adventskerzen am Brennen!${best.candles != null ? `<br><small>Bester Wert: ${best.candles}</small>` : ''}</span></button>
-        <button class="scard" data-g="sheep">${icon('sheep')}<span><b>Die Hirten suchen ihre Schafe</b><br>Findet alle Schafe auf dem nächtlichen Feld.${best.sheep != null ? `<br><small>Bester Wert: ${best.sheep} Schafe</small>` : ''}</span></button>
-        <button class="scard" data-g="memory">${icon('star')}<span><b>Sternen-Memory</b><br>Findet die Paare der Weihnachtszeichen.${best.memory != null ? `<br><small>Bester Wert: ${best.memory} Züge</small>` : ''}</span></button>
+        <button class="scard" data-g="candles">${icon('wreath')}<span><b>Kerzenwächter</b><br>Der Wind pustet durch die Kirche. Halte die Adventskerzen am Brennen!${best.candles != null ? `<br><small>Bester Wert: ${best.candles}</small>` : ''}</span></button>
+        <button class="scard" data-g="sheep">${icon('sheep')}<span><b>Die Hirten suchen ihre Schafe</b><br>Finde alle Schafe auf dem nächtlichen Feld.${best.sheep != null ? `<br><small>Bester Wert: ${best.sheep} Schafe</small>` : ''}</span></button>
+        <button class="scard" data-g="memory">${icon('star')}<span><b>Sternen-Memory</b><br>Finde die Paare der Weihnachtszeichen.${best.memory != null ? `<br><small>Bester Wert: ${best.memory} Züge</small>` : ''}</span></button>
       </div>
     </div>
   </section>`);
@@ -609,11 +646,11 @@ function showTeacher() {
       <h2>Rettet das Krippenspiel – Ablauf für 45 Minuten</h2>
       <div class="tablewrap"><table>
         <tr><th>Zeit</th><th>Phase</th><th>Was passiert</th></tr>
-        <tr><td>0–4</td><td>Einstieg</td><td>Kistenbild an die Tafel, Brief von Küsterin Petersen vorlesen. Ziel: Krippenspiel retten. Partnerarbeit an einem iPad, Laterne (Hinweise) erlaubt, keine Zeitstrafe.</td></tr>
+        <tr><td>0–4</td><td>Einstieg</td><td>Kistenbild an die Tafel, Brief von Diakonin Petersen vorlesen. Ziel: Krippenspiel retten. Einzelarbeit, jedes Kind an seinem iPad, Laterne (Hinweise) erlaubt, keine Zeitstrafe.</td></tr>
         <tr><td>4–22</td><td>Akt 1 · Die Kiste</td><td>Sechs Schlösser in freier Reihenfolge (Advent, Wichern, Lukas 2, Lukas/Matthäus, evangelische Wurzeln, Epiphanias). Nach dem 2. und 4. Schloss je ein kurzes Zwischenspiel (überspringbar).</td></tr>
-        <tr><td>22–31</td><td>Akt 2 · Die Kostüme</td><td>Mit der Spielfigur durch die Kirche laufen. Sechs Kinder beschreiben ihre Rolle; das Team wählt das passende Kostüm und beantwortet eine Frage zur Rolle. Die übrige Krone kommt ins Regal für Epiphanias.</td></tr>
+        <tr><td>22–31</td><td>Akt 2 · Die Kostüme</td><td>Mit der Spielfigur durch die Kirche laufen. Sechs Kinder beschreiben ihre Rolle; das Kind wählt das passende Kostüm und beantwortet eine Frage zur Rolle. Die übrige Krone kommt ins Regal für Epiphanias.</td></tr>
         <tr><td>31–38</td><td>Akt 3 · Der Schlüssel</td><td>Turmkammer mit Taschenlampe absuchen und Dinge dem Kirchenjahr zuordnen, Liedtafel mit EG-Nummern als Code, Walzenschloss an der Kirchentür (Kernsatz Menschwerdung). Reflexionssatz und Urkunde.</td></tr>
-        <tr><td>38–45</td><td>Sicherung</td><td>Tafelbild Lukas | Matthäus | nicht in der Bibel (Wirt, Ochs und Esel, drei Könige). Kernsatz von der Kirchentür vorlesen. Einige Reflexionssätze. Ausblick Epiphanias. Schnelle Teams: Schatzkammer.</td></tr>
+        <tr><td>38–45</td><td>Sicherung</td><td>Tafelbild Lukas | Matthäus | nicht in der Bibel (Wirt, Ochs und Esel, drei Könige). Kernsatz von der Kirchentür vorlesen. Einige Reflexionssätze. Ausblick Epiphanias. Wer schnell ist: Schatzkammer.</td></tr>
       </table></div>
       <h2 style="font-size:1.3rem">Lösungen</h2>
       <div class="tablewrap"><table>
@@ -624,7 +661,7 @@ function showTeacher() {
       </table></div>
       <h2 style="font-size:1.3rem">Fachliche Hinweise</h2>
       <ul style="margin:0;padding-left:1.2em;display:grid;gap:6px;max-width:80ch">
-        <li>Evangelisches Profil: Christvesper mit Krippenspiel, Wichern (Rauhes Haus, Innere Mission/Diakonie), Luther („Heiliger Christ“, „Vom Himmel hoch“), Herrnhuter Stern, Epiphanias als evangelische Bezeichnung des 6. Januar. Barbarazweige und Heiligenbräuche sind bewusst nicht als eigene Station enthalten.</li>
+        <li>Evangelisches Profil: Gottesdienst am Heiligen Abend (Christvesper) mit Krippenspiel, Wichern (Rauhes Haus, Innere Mission/Diakonie), Luther („Heiliger Christ“, „Vom Himmel hoch“), Herrnhuter Stern, Epiphanias als evangelische Bezeichnung des 6. Januar. Barbarazweige und Heiligenbräuche sind bewusst nicht als eigene Station enthalten.</li>
         <li>Katholische Wurzeln werden nur zur Unterscheidung genannt (Krippe nach Franz von Assisi, Sternsinger, Nikolausbescherung, Christmette). Vieles wird heute ökumenisch gefeiert; die Sortierung fragt deshalb nach der Herkunft, nicht danach, wer etwas „darf“.</li>
         <li>Wicherns Lichterrad hatte eine kleine rote Kerze pro Werktag und eine weiße pro Sonntag. Die Zahl schwankt je nach Jahr; die Aufgabe rechnet für 2026 (29.11.–24.12.: 4 weiße, 22 rote).</li>
         <li>Die Kindheitsgeschichten sind Glaubenserzählungen: Lukas betont Gottes Hinwendung zu Armen (Hirten, Krippe), Matthäus Jesu Königtum und seine Bedeutung für die Völker (Weise). Ochs und Esel stammen aus Jes 1,3, die Zahl drei und die Königsnamen aus späterer Tradition.</li>
@@ -634,6 +671,7 @@ function showTeacher() {
       <h2 style="font-size:1.3rem">Steuerung</h2>
       <div class="toggles">
         <button class="btn small ink" id="openall">Alle Schlösser öffnen (Vorführung)</button>
+        <button class="btn small ink" id="shelfall">${S.shelf && S.shelf.all ? 'Bücherregal ist ganz offen' : 'Bücherregal ganz freischalten'}</button>
         <button class="btn small ink" id="toact2">Direkt zu Akt 2</button>
         <button class="btn small ink" id="toact3">Direkt zu Akt 3</button>
         <button class="btn small ink" id="bonus">${S.bonusOpen ? 'Schatzkammer ist frei' : 'Schatzkammer sofort freigeben'}</button>
@@ -645,6 +683,7 @@ function showTeacher() {
   el.querySelector('#back').onclick = () => (S.started ? route() : showStart());
   el.querySelector('#openall').onclick = () => { S.solved = STATIONS.map(s => s.id); S.seenInterlude = [2, 4]; if (!S.started) { S.started = Date.now(); S.team = S.team || 'Lehrkraft'; } save(); toast('Alle Schlösser offen'); showHub(); };
   const demo = () => { S.solved = STATIONS.map(s => s.id); S.seenInterlude = [2, 4]; if (!S.started) { S.started = Date.now(); S.team = S.team || 'Lehrkraft'; } };
+  el.querySelector('#shelfall').onclick = e => { shelfState().all = true; save(); e.currentTarget.textContent = 'Bücherregal ist ganz offen'; toast('Alle Einträge im Bücherregal sind sichtbar'); };
   el.querySelector('#toact2').onclick = () => { demo(); S.phase = 'kostueme'; save(); showAct2(); };
   el.querySelector('#toact3').onclick = () => { demo(); S.act2 = { delivered: ACTORS.map(a => a.id), shelf: true }; S.phase = 'schluessel'; S.act3 = { stage: 0, dark: [] }; save(); showAct3(); };
   el.querySelector('#bonus').onclick = e => { S.bonusOpen = true; save(); e.currentTarget.textContent = 'Schatzkammer ist frei'; toast('Schatzkammer freigegeben'); };

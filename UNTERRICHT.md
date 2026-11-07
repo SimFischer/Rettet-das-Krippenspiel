@@ -1,6 +1,6 @@
 # Unterricht mit „Rettet das Krippenspiel!“
 
-Evangelische Religion, Klasse 6, Gymnasium Schleswig-Holstein · letzte Stunde vor den Weihnachtsferien · 45 Minuten · Partnerarbeit an einem iPad.
+Evangelische Religion, Klasse 6, Gymnasium Schleswig-Holstein · letzte Stunde vor den Weihnachtsferien · 45 Minuten · Einzelarbeit, jedes Kind an seinem iPad.
 
 ## Ziele
 
@@ -14,19 +14,19 @@ Die Schülerinnen und Schüler …
 
 ## Arbeiten mit dem Bücherregal
 
-Die Aufgaben setzen kein Vorwissen voraus. In „Frau Petersens Bücherregal“ stehen die Bibeltexte (Lutherbibel 1912 mit Worterklärungen) und ausführliche Sachtexte. Die Antworten müssen dort herausgelesen werden; die Laterne verweist auf die passende Stelle. Mit Vorwissen aus der Einheit geht es schneller. Tipp für den Einstieg: Einmal gemeinsam zeigen, wie man das Regal öffnet und einen Vers findet.
+Die Aufgaben setzen kein Vorwissen voraus. In „Frau Petersens Bücherregal“ stehen die Bibeltexte (Lutherbibel 1912 mit Worterklärungen) und ausführliche Sachtexte. Die Antworten müssen dort herausgelesen werden; die Laterne verweist auf die passende Stelle. Mit Vorwissen aus der Einheit geht es schneller. Das Regal füllt sich nach und nach: Ein Eintrag erscheint, sobald ein Rätsel ihn braucht, und wird als „erledigt“ markiert, wenn das Rätsel gelöst ist. Im Lehrkraftbereich lässt sich das ganze Regal auf einmal freischalten. Tipp für den Einstieg: Einmal gemeinsam zeigen, wie man das Regal öffnet und einen Vers findet.
 
 ## Stundenverlauf
 
 | Minute | Phase | Was passiert |
 |---|---|---|
-| 0–4 | Einstieg | Kistenbild am Board, Brief der Küsterin vorlesen. Partner bilden, Link öffnen, Teamnamen wählen. |
+| 0–4 | Einstieg | Kistenbild am Board, Brief der Diakonin vorlesen. Link öffnen, Vornamen eingeben. |
 | 4–22 | Akt 1 · Die Kiste | Sechs Schlösser in freier Reihenfolge, zwei kurze Zwischenspiele. |
 | 22–31 | Akt 2 · Die Kostüme | Durch die Kirche laufen, Rollen erkennen, Fragen zu den Rollen beantworten. |
 | 31–38 | Akt 3 · Der Schlüssel | Turmkammer, Liedtafel, Walzenschloss; Reflexionssatz, Urkunde. |
 | 38–45 | Sicherung | Tafelbild Lukas · Matthäus · steht nicht in der Bibel; Kernsatz von der Kirchentür; einige Reflexionssätze vorlesen; Ausblick Epiphanias. |
 
-Die Zeiten sind Schätzwerte. Langsame Teams: Zwischenspiele überspringen lassen; im Lehrkraftbereich kann man direkt zu Akt 2 oder 3 springen. Schnelle Teams: Schatzkammer (Bonusspiele).
+Die Zeiten sind Schätzwerte. Wer langsamer ist: Zwischenspiele überspringen lassen; im Lehrkraftbereich kann man direkt zu Akt 2 oder 3 springen. Wer schnell ist: Schatzkammer (Bonusspiele).
 
 ## Tafelbild (Vorschlag)
 
@@ -39,7 +39,7 @@ Die Zeiten sind Schätzwerte. Langsame Teams: Zwischenspiele überspringen lasse
 
 ## Fachliche Hinweise
 
-- Evangelisches Profil: Christvesper mit Krippenspiel, Wichern (Rauhes Haus 1839, Innere Mission/Diakonie), Luther („Heiliger Christ“, „Vom Himmel hoch“, EG 24), Paul Gerhardt (EG 37), Herrnhuter Stern, Liedtafel und Evangelisches Gesangbuch, Epiphanias als evangelische Bezeichnung des 6. Januar. Barbarazweige kommen nicht vor.
+- Evangelisches Profil: Gottesdienst am Heiligen Abend (Christvesper) mit Krippenspiel, Wichern (Rauhes Haus 1839, Innere Mission/Diakonie), Luther („Heiliger Christ“, „Vom Himmel hoch“, EG 24), Paul Gerhardt (EG 37), Herrnhuter Stern, Liedtafel und Evangelisches Gesangbuch, Epiphanias als evangelische Bezeichnung des 6. Januar. Barbarazweige kommen nicht vor.
 - Katholische Wurzeln werden nur zur Unterscheidung genannt (Krippe nach Franz von Assisi, Sternsinger, Nikolausbescherung, Christmette); „Stille Nacht“ stammt von einem katholischen Hilfspriester. Vieles wird heute ökumenisch gefeiert.
 - Wicherns Lichterrad: eine rote Kerze pro Werktag, eine weiße pro Sonntag – die Zahl schwankt je nach Jahr. Die Aufgabe rechnet mit 2026 (4 weiße, 22 rote). Die Angabe „19 rote Kerzen“ in manchen Materialien passt nicht zu dieser Regel für 1839 (dort wären es 20).
 - Die Deutung der Gaben (König – Gott – Mensch) und die Zahl drei der Weisen sind spätere christliche Auslegung.

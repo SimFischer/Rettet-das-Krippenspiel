@@ -193,6 +193,7 @@ const SHEEP_SVG = `<svg viewBox="0 0 130 100" aria-hidden="true"><g>
   <ellipse cx="104" cy="28" rx="9" ry="4" fill="#2a2420" transform="rotate(-30 104 28)"/>
   <circle cx="116" cy="37" r="2.6" fill="#fff"/>
 </g></svg>`;
+const STONE_SVG = `<svg viewBox="0 0 130 100" aria-hidden="true"><path d="M18 80c-8-18 6-40 30-44 12-14 40-14 52 2 18 2 26 22 18 40-4 10-20 14-50 14s-44-2-50-12z" fill="#d9d4c8"/><path d="M40 52c10-6 24-6 34 0M70 70c8-4 18-4 26 2" stroke="#b5ae9f" stroke-width="4" fill="none"/></svg>`;
 const BUSH_SVG = `<svg viewBox="0 0 200 110" aria-hidden="true"><path d="M10 110c-10-30 10-50 35-45 5-30 45-40 60-15 20-20 60-10 60 20 25 0 35 25 25 40z" fill="#173229"/><path d="M40 110c0-20 20-30 35-25M120 110c5-25 30-30 45-15" stroke="#22463a" stroke-width="6" fill="none"/></svg>`;
 
 /* ===== Adventskranz für das Bonusspiel ===== */

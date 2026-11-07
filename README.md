@@ -8,16 +8,18 @@ Escape-Abenteuer für den evangelischen Religionsunterricht, Klasse 6 (45 Minute
 
 | Teil | Inhalt | Spielform |
 |---|---|---|
-| Prolog | Brief der Küsterin Hanne Petersen: Heiligabend, die Krippenspiel-Kiste ist verschlossen | – |
+| Prolog | Brief der Diakonin Hanne Petersen: Heiligabend, die Krippenspiel-Kiste ist verschlossen | – |
 | **Akt 1 · Die Kiste** | Sechs Schlösser: Advent und Kirchenjahr · Wichern und der Adventskranz · Lukas 2 · Lukas oder Matthäus? · evangelische und katholische Wurzeln · Epiphanias | Multiple Choice, Schnellrunde, Kalender, Zahlen- und Buchstabenschloss, Reihenfolge, Sortieren, Zuordnen, Lückentext; Zwischenspiele nach dem 2. und 4. Schloss |
 | **Akt 2 · Die Kostüme** | Sechs Kinder beschreiben ihre Rolle (Maria, Josef, Engel, Hirte, Wirt, Kaiser Augustus); passendes Kostüm wählen und eine Frage zur Rolle beantworten; die Krone der Weisen kommt ins Regal für den 6. Januar | Spielfigur von oben durch die Kirche steuern (Tippen zum Laufen, Pfeiltasten) |
 | **Akt 3 · Der Kirchenschlüssel** | Turmkammer mit Taschenlampe absuchen und Gegenstände dem Kirchenjahr zuordnen · Liedtafel mit EG-Nummern als Code · Walzenschloss an der Kirchentür mit dem Kernsatz zur Menschwerdung | Lampensuche, Code-Rätsel, Walzenschloss |
 | Finale | Reflexionssatz, Urkunde | – |
 | Schatzkammer | Der andere Heimweg (Schleichspiel zu Mt 2,12), Kerzenwächter, Hirten suchen Schafe, Sternen-Memory | Bonus |
 
-**Frau Petersens Bücherregal** (in jedem Teil oben bzw. unten erreichbar): eine Bibel mit den wichtigen Stellen (Lk 1; Lk 2,1–20; Mt 1; Mt 2,1–14; Jes 1,3; Mi 5,1; Ps 24,7; Joh 8,12, Lutherbibel 1912 mit Worterklärungen) und 13 kindgerechte Sachtexte. Jede Aufgabe lässt sich aus diesen Texten lösen; die Infokarten am Anfang der Schlösser verraten die Lösungen nicht, sondern verweisen ins Regal. Die Laterne zeigt auf die passende Stelle.
+**Frau Petersens Bücherregal** (in jedem Teil oben bzw. unten erreichbar): eine Bibel mit den wichtigen Stellen (Lk 1; Lk 2,1–20; Mt 1; Mt 2,1–14; Jes 1,3; Mi 5,1; Ps 24,7; Joh 8,12, Lutherbibel 1912 mit Worterklärungen) und 13 kindgerechte Sachtexte. Einträge erscheinen erst, wenn ein Rätsel sie braucht, und zeigen „neu“, „zu lesen“ oder „erledigt“. Jede Aufgabe lässt sich aus diesen Texten lösen; die Infokarten am Anfang der Schlösser verraten die Lösungen nicht, sondern verweisen ins Regal. Die Laterne zeigt auf die passende Stelle.
 
 Lehrkraftbereich: unten auf dem Startbildschirm, PIN **2412**. Dort stehen Stundenverlauf, alle Lösungen und fachliche Hinweise; außerdem Sprünge zu Akt 2 und 3, Freigabe der Schatzkammer und Zurücksetzen.
+
+**Gegen Durchklicken:** Falsche Antworten werden kurz rot, mit Tipp, danach ist alles wieder neutral und neu gemischt. Schnellrunden werden erst gesammelt geprüft („2 Aussagen sind noch falsch“, markiert erst nach dem dritten Versuch). Bei Reihenfolgen rollt sich die Schriftrolle bei einem Fehler wieder zu.
 
 ## Dateien
 
@@ -43,7 +45,7 @@ Die gemalten Bilder liegen als WebP in `assets/` (zusammen ca. 3 MB). Sie wurden
 
 ## Datenschutz
 
-Der Spielstand liegt nur im Browser des jeweiligen iPads (localStorage). Es werden keine Daten verschickt. Teamnamen bitte als Fantasienamen wählen.
+Der Spielstand liegt nur im Browser des jeweiligen iPads (localStorage). Es werden keine Daten verschickt. Gespeichert wird nur der eingegebene Vorname, und auch der nur auf dem Gerät.
 
 ## Quellen für die Inhalte
 

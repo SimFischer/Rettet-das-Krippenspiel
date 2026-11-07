@@ -28,7 +28,7 @@ function showAct2() {
   const A = S.act2;
   const done = () => A.delivered.length === ACTORS.length && A.shelf;
   const el = h(`<section class="screen">
-    ${actHeader(2, 'Die Kostüme', 'Tippt auf den Boden, um zu laufen, oder auf ein Kind, um hinzugehen. Am Computer gehen auch die Pfeiltasten.')}
+    ${actHeader(2, 'Die Kostüme', 'Tippe auf den Boden, um zu laufen, oder auf ein Kind, um hinzugehen. Am Computer gehen auch die Pfeiltasten.')}
     <div class="walk-wrap">
       <div class="walk-slot"></div>
       <aside class="basket" aria-label="Kostümkorb"><h3>${icon('treasure')} Kostümkorb</h3><ul></ul><p class="small-note prog"></p></aside>
@@ -73,11 +73,12 @@ function showAct2() {
     },
   });
   el.querySelector('.walk-slot').appendChild(walk.el);
+  setTimeout(() => shelfUnlock('act2', ['bibel:lk2', 'text:zwei', ...ACTORS.map(a => a.ref), ACT2_SHELF.ref]), 400);
 
   function closeDlg() { dlg.hidden = true; dlg.innerHTML = ''; SHELF_CTX = 'text:zwei'; walk.resume(); }
   function dlgShell(name, sub, body, ref) {
     SHELF_CTX = ref || SHELF_CTX;
-    dlg.innerHTML = `<div class="dlg-card paper"><div class="dlg-head"><div class="avatar">${icon('people')}</div><div><b>${name}</b><small>${sub}</small></div><button class="iconbtn close" aria-label="Später">${icon('cross')}</button></div>${body}${ref ? `<p class="lookup">Unsicher? Schlagt nach: ${linkify('{{' + ref + '}}')}</p>` : ''}<div class="fb"></div><div class="step-actions"></div></div>`;
+    dlg.innerHTML = `<div class="dlg-card paper"><div class="dlg-head"><div class="avatar">${icon('people')}</div><div><b>${name}</b><small>${sub}</small></div><button class="iconbtn close" aria-label="Später">${icon('cross')}</button></div>${body}${ref ? `<p class="lookup">Unsicher? Schlag nach: ${linkify('{{' + ref + '}}')}</p>` : ''}<div class="fb"></div><div class="step-actions"></div></div>`;
     dlg.hidden = false;
     dlg.querySelector('.close').onclick = closeDlg;
     return dlg.querySelector('.dlg-card');
@@ -95,9 +96,11 @@ function showAct2() {
         const n = h(`<button class="btn ink">Zur Frage ${icon('next')}</button>`); n.onclick = () => askQuestion(a); card.querySelector('.step-actions').appendChild(n);
         card.querySelectorAll('.costumes .opt').forEach(x => x.disabled = true);
       } else {
-        b.classList.add('wrong'); b.disabled = true; shake(b);
+        b.classList.add('wrong'); shake(b);
         const why = b.dataset.c === 'weise' ? ' Die Krone gehört zu den Weisen aus dem Morgenland – die kommen in der Lukas-Geschichte gar nicht vor.' : ' Lies noch einmal genau, was das Kind erlebt hat.';
         fb.appendChild(feedback('no', 'Das passt nicht.', why));
+        const all = card.querySelectorAll('.costumes .opt'); all.forEach(x => x.disabled = true);
+        setTimeout(() => { if (!card.isConnected) return; b.classList.remove('wrong'); const box = card.querySelector('.costumes'); shuffle([...box.children]).forEach(c => box.appendChild(c)); all.forEach(x => x.disabled = false); }, 1800);
       }
     });
   }
@@ -109,7 +112,7 @@ function showAct2() {
       if (A.delivered.length === ACTORS.length) toast('Alle Kinder sind eingekleidet! Ein Kostüm ist noch übrig …');
       else toast(`${a.name} ist eingekleidet!`);
       closeDlg();
-      if (A.delivered.length === ACTORS.length && !A.shelf) setTimeout(() => toast('Bringt die Krone in die Sakristei zum Regal.'), 2300);
+      if (A.delivered.length === ACTORS.length && !A.shelf) setTimeout(() => toast('Bring die Krone in die Sakristei zum Regal.'), 2300);
     });
     node.classList.remove('paper'); node.classList.add('inner');
     card.querySelector('.qslot').appendChild(node);
@@ -117,7 +120,7 @@ function showAct2() {
   function shelfDialog() {
     const card = dlgShell('Regal in der Sakristei', 'Schild: „Für den 6. Januar“', `<p class="say">${ACT2_SHELF.text}</p><div class="qslot"></div>`, ACT2_SHELF.ref);
     const node = STEP.mc({ ...ACT2_SHELF.q }, () => {
-      A.shelf = true; S.times.kostueme = Date.now(); S.phase = 'schluessel'; save(); renderBasket(); closeDlg();
+      A.shelf = true; S.times.kostueme = Date.now(); S.phase = 'schluessel'; shelfDone('act2'); save(); renderBasket(); closeDlg();
       walk.destroy(); showAct3();
     });
     node.classList.remove('paper'); node.classList.add('inner');
@@ -136,12 +139,15 @@ function bubble(ctx, x, y, t, col = '#f2bd62') {
 function showAct3() {
   const st = S.act3.stage;
   if (st === 0) return act3Message();
+  act3Unlock();
   if (st === 1) return act3Dark();
   if (st === 2) return act3Songs();
   if (st === 3) return act3Rings();
   return act3Door();
 }
-function nextAct3() { S.act3.stage++; save(); showAct3(); }
+const ACT3_CTX = { 1: ['act3-dark', () => ['text:farben', ...shelfRefsOf(DARK)]], 2: ['act3-songs', () => ['text:lieder']], 3: ['act3-rings', () => ['text:menschwerdung']] };
+function nextAct3() { const c = ACT3_CTX[S.act3.stage]; if (c) shelfDone(c[0]); S.act3.stage++; save(); showAct3(); }
+function act3Unlock() { const c = ACT3_CTX[S.act3.stage]; if (c) setTimeout(() => shelfUnlock(c[0], c[1]()), 300); }
 
 function act3Message() {
   const el = h(`<section class="screen">
@@ -176,7 +182,7 @@ function darkRoomArt() {
 function act3Dark() {
   const found = new Set(S.act3.dark || []);
   const el = h(`<section class="screen">
-    ${actHeader(3, 'Die dunkle Turmkammer', 'Bewegt die Taschenlampe mit dem Finger. Leuchtet etwas auf? Tippt darauf und legt es in den richtigen Kasten.')}
+    ${actHeader(3, 'Die dunkle Turmkammer', 'Bewege die Taschenlampe mit dem Finger. Leuchtet etwas auf? Tippe darauf und lege es in den richtigen Kasten.')}
     <div class="dark-wrap">
       <div class="dark-room">${darkRoomArt()}<img class="dark-img" src="assets/act3/turmkammer.webp" alt="" onerror="this.remove()"><canvas></canvas><div class="dark-spots"></div></div>
       <aside class="drawers"><h3>Kästen im Kirchenschrank</h3>${DARK.drawers.map((d, k) => `<button class="drawer" data-k="${k}" disabled><span>${d}</span><small></small></button>`).join('')}<div class="hand small-note">Noch nichts gefunden.</div></aside>
@@ -222,7 +228,7 @@ function act3Dark() {
     if (found.has(sp.id)) { fb.appendChild(feedback('tip', '', `Das liegt schon im Kasten: ${sp.name}.`)); return; }
     lx = sp.x / 100; ly = sp.y / 100; paint();
     holding = sp;
-    hand.innerHTML = `<b>${sp.name}</b><br>Zu welcher Zeit im Kirchenjahr gehört das? Tippt den passenden Kasten an.`;
+    hand.innerHTML = `<b>${sp.name}</b><br>Zu welcher Zeit im Kirchenjahr gehört das? Tippe den passenden Kasten an.`;
     el.querySelectorAll('.drawer').forEach(d => d.disabled = false);
   }
   el.querySelectorAll('.drawer').forEach(d => d.onclick = () => {
@@ -233,7 +239,7 @@ function act3Dark() {
       d.classList.add('filled'); d.querySelector('small').textContent = [...found].map(id => DARK.spots.find(s => s.id === id)).filter(s => s.answer === k).map(s => s.name).join(', ');
       fb.appendChild(feedback('ok', 'Passt!', ' ' + holding.why));
       holding = null; el.querySelectorAll('.drawer').forEach(x => x.disabled = true);
-      hand.innerHTML = found.size === DARK.spots.length ? '<b>Alles einsortiert!</b> Da unten glänzt etwas: der Schlüsselkasten. Tippt ihn an.' : `${found.size} von ${DARK.spots.length} gefunden. Leuchtet weiter herum.`;
+      hand.innerHTML = found.size === DARK.spots.length ? '<b>Alles einsortiert!</b> Da unten glänzt etwas: der Schlüsselkasten. Tippe ihn an.' : `${found.size} von ${DARK.spots.length} gefunden. Leuchte weiter herum.`;
       paint();
     } else { shake(d); fb.appendChild(feedback('no', 'Der Kasten klemmt.', ' ' + holding.hint)); }
   });
@@ -242,7 +248,7 @@ function act3Dark() {
   let hl = 0;
   el.querySelector('#hint').onclick = () => {
     fb.innerHTML = '';
-    const t = holding ? holding.hint : found.size === DARK.spots.length ? 'Der Schlüsselkasten leuchtet unten in der Mitte.' : ['Leuchtet die Ecken ab: links unten, oben in der Mitte, rechts oben und rechts unten.', 'Vier Dinge sind versteckt. Welche Zeit im Kirchenjahr zu welchem Ding gehört, steht in {{text:farben}}'][hl++ % 2];
+    const t = holding ? holding.hint : found.size === DARK.spots.length ? 'Der Schlüsselkasten leuchtet unten in der Mitte.' : ['Leuchte die Ecken ab: links unten, oben in der Mitte, rechts oben und rechts unten.', 'Vier Dinge sind versteckt. Welche Zeit im Kirchenjahr zu welchem Ding gehört, steht in {{text:farben}}'][hl++ % 2];
     fb.appendChild(feedback('tip', '', t)); S.hints++; save();
   };
   mount(el); requestAnimationFrame(paint);
@@ -271,7 +277,7 @@ function act3Songs() {
   el.querySelectorAll('.clue, .lt-row').forEach(c => c.onclick = () => { sel = +c.dataset.i; render(); });
   el.querySelectorAll('.song').forEach(b => b.onclick = () => {
     fb.innerHTML = '';
-    if (sel == null || placed[sel] != null) { fb.appendChild(feedback('tip', '', 'Tippt zuerst einen Zettel an, der noch keine Nummer hat.')); return; }
+    if (sel == null || placed[sel] != null) { fb.appendChild(feedback('tip', '', 'Tippe zuerst einen Zettel an, der noch keine Nummer hat.')); return; }
     const eg = +b.dataset.eg;
     if (eg === SONGS.clues[sel].eg) {
       placed[sel] = eg; fb.appendChild(feedback('ok', `EG ${eg}!`, ' ' + SONGS.why[eg]));
@@ -281,7 +287,7 @@ function act3Songs() {
         const n = h(`<div class="step-actions wide"><button class="btn">${icon('key')} Der Kasten springt auf – Ersatzschlüssel nehmen!</button></div>`);
         n.querySelector('button').onclick = nextAct3; fb.after(n);
       }
-    } else { shake(b); fb.appendChild(feedback('no', 'Das ist ein anderes Lied.', ' Lest den Zettel noch einmal genau.')); }
+    } else { shake(b); fb.appendChild(feedback('no', 'Das ist ein anderes Lied.', ' Lies den Zettel noch einmal genau.')); }
   });
   el.querySelector('#hint').onclick = () => { fb.innerHTML = ''; fb.appendChild(feedback('tip', '', SONGS.hints[hl++ % SONGS.hints.length])); S.hints++; save(); };
   render();
@@ -341,7 +347,7 @@ function act3Door() {
     <div class="door-wrap">
       <div class="door-art">${doorSVG(true)}<img src="assets/act3/kirchentuer-offen.webp" alt="" onerror="this.remove()"></div>
       <div class="paper"><div class="kicker">Geschafft</div><h2>Die Gemeinde kommt herein</h2><p>${RINGS.win}</p>
-        <p class="note">„Ihr habt das Krippenspiel gerettet!“ – Pastorin Ahrens</p>
+        <p class="note">„Du hast das Krippenspiel gerettet!“ – Pastorin Ahrens</p>
         <div class="step-actions"><button class="btn" id="go">${icon('scroll')} Zum Drehbuch</button></div></div>
     </div>
   </section>`);

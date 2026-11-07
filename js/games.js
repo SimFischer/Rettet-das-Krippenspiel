@@ -17,43 +17,89 @@ function saveBest(key, val, lowerIsBetter) {
   return false;
 }
 
-/* --- Die Hirten suchen ihre Schafe --- */
+/* --- Die Hirten suchen ihre Schafe ---
+   Dunkles Feld, nur der Lichtkegel der Laterne zeigt etwas. Ein Schaf zählt erst,
+   wenn es kurz im Licht war. Weiße Steine sehen im Dunkeln aus wie Schafe. */
 GAMES.sheep = function (done) {
-  const el = gameShell('Die Hirten suchen ihre Schafe', 'Bevor die Hirten zum Stall laufen, müssen alle Schafe beisammen sein. Tippt jedes Schaf an!', done);
-  const area = h(`<div class="game-area">${fieldSVG()}<div class="hud"><span class="cnt">0 / 10 Schafe</span><span class="tm">45 s</span></div>
-    <div class="overlay"><div><h2>Bereit?</h2><p>Zehn Schafe haben sich auf dem Feld verteilt. Manche verstecken sich hinter Büschen. Ihr habt 45 Sekunden.</p><button class="btn" id="go">${icon('sheep')} Los!</button></div></div></div>`);
+  const el = gameShell('Die Hirten suchen ihre Schafe', 'Es ist stockdunkel auf dem Feld. Leuchte mit der Laterne und tippe die Schafe an. Aber Vorsicht: Manche weißen Flecken sind nur Steine!', done);
+  const area = h(`<div class="game-area sheep-game">
+    <img class="field-img" src="assets/games/hirtenfeld.webp" alt="" onerror="this.remove()">
+    <div class="field-fallback">${fieldSVG()}</div>
+    <div class="things"></div>
+    <canvas class="night"></canvas>
+    <div class="hud"><span class="cnt">0 / 10 Schafe</span><span class="tm">60 s</span></div>
+    <div class="overlay"><div><h2>Bereit?</h2><p>Zehn Schafe haben sich im Dunkeln verlaufen – manche hinter Büschen. Halte die Laterne über ein Schaf und tippe es dann an. Wer einen Stein antippt, verliert 3 Sekunden.</p><button class="btn" id="go">${icon('lantern')} Laterne an!</button></div></div></div>`);
   el.querySelector('.gslot').appendChild(area);
-  const N = 10, bushes = [[18, 70, 15], [44, 76, 13], [70, 66, 16], [86, 82, 12], [30, 88, 14], [58, 90, 15]];
-  bushes.forEach(([x, y, w]) => { const b = h(`<div class="bush" style="left:${x - w / 2}%;top:${y - w * .3}%;width:${w}%">${BUSH_SVG}</div>`); area.appendChild(b); });
-  let sheep = [], found = 0, t = 45, timer, raf, running = false;
-  function spawn() {
-    for (let i = 0; i < N; i++) {
-      const s = { x: 8 + Math.random() * 84, y: 58 + Math.random() * 34, vx: (Math.random() - .5) * .05, vy: (Math.random() - .5) * .02, el: null };
-      if (i < 4) { const b = bushes[i]; s.x = b[0] + (Math.random() - .5) * 4; s.y = b[1] + 2; s.vx *= .3; }
-      const btn = h(`<button class="sheep" aria-label="Schaf">${SHEEP_SVG}</button>`);
-      if (s.vx < 0) btn.querySelector('svg').style.transform = 'scaleX(-1)';
-      btn.onclick = () => {
-        if (!running || btn.classList.contains('gone')) return;
-        btn.classList.add('gone'); found++;
-        area.querySelector('.cnt').textContent = `${found} / ${N} Schafe`;
-        if (found === N) end();
-      };
-      s.el = btn; area.appendChild(btn); sheep.push(s);
+  const things = area.querySelector('.things'), cv = area.querySelector('.night'), ctx = cv.getContext('2d');
+  const N = 10, STONES = 7, NEED = 0.35;
+  const bushes = [[14, 66, 15], [33, 82, 13], [52, 63, 16], [71, 78, 15], [88, 64, 13], [24, 93, 14], [62, 94, 15]];
+  bushes.forEach(([x, y, w]) => things.insertAdjacentHTML('beforeend', `<div class="bush" style="left:${x - w / 2}%;top:${y - w * .32}%;width:${w}%"><img src="assets/games/bush.webp" alt="" onerror="this.replaceWith(document.createRange().createContextualFragment(BUSH_SVG))"></div>`));
+  const objs = [];
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  function mk(kind, x, y) {
+    const v = Math.floor(Math.random() * 4);
+    const node = h(`<div class="thing ${kind}" style="left:${x}%;top:${y}%"><div class="spr v${v}"></div></div>`);
+    const spr = node.querySelector('.spr');
+    const src = kind === 'sheep' ? 'assets/games/sheep.webp' : 'assets/games/stone.webp';
+    const probe = new Image(); probe.onload = () => spr.classList.add('art'); probe.onerror = () => { spr.innerHTML = kind === 'sheep' ? SHEEP_SVG : STONE_SVG; }; probe.src = src;
+    spr.style.backgroundImage = `url(${src})`;
+    things.appendChild(node);
+    const o = { kind, x, y, vx: kind === 'sheep' ? rnd(-.6, .6) : 0, node, lit: 0, gone: false, flip: false };
+    objs.push(o); return o;
+  }
+  for (let i = 0; i < N; i++) {
+    if (i < 5) { const b = bushes[i]; mk('sheep', b[0] + rnd(-3, 3), b[1] + 1.5); } else mk('sheep', rnd(8, 92), rnd(58, 94));
+  }
+  for (let i = 0; i < STONES; i++) mk('stone', rnd(6, 94), rnd(56, 95));
+  let L = { x: .5, y: .7 }, T = { x: .5, y: .7 }, found = 0, t = 60, running = false, raf = 0, last = 0, timer;
+  const R = () => area.clientWidth * .11;
+  function pos(e) { const r = area.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height }; }
+  area.addEventListener('pointermove', e => { if (running) T = pos(e); });
+  area.addEventListener('pointerdown', e => {
+    if (!running) return;
+    T = pos(e);
+    const r = area.getBoundingClientRect();
+    const hit = objs.filter(o => !o.gone).map(o => ({ o, d: Math.hypot((o.x / 100 - T.x) * r.width, (o.y / 100 - T.y) * r.height) })).filter(z => z.d < r.width * .05).sort((a, b) => a.d - b.d)[0];
+    if (!hit || hit.o.lit < NEED) return;
+    const o = hit.o;
+    if (o.kind === 'sheep') {
+      o.gone = true; o.node.classList.add('gone'); found++;
+      area.querySelector('.cnt').textContent = `${found} / ${N} Schafe`;
+      if (found === N) end();
+    } else {
+      t = Math.max(0, t - 3); o.node.classList.add('oops'); setTimeout(() => o.node.classList.remove('oops'), 700);
+      toast('Das ist nur ein Stein! –3 Sekunden');
     }
-  }
-  function loop() {
-    sheep.forEach(s => {
-      if (s.el.classList.contains('gone')) return;
-      s.x += s.vx; s.y += s.vy;
-      if (s.x < 5 || s.x > 95) { s.vx *= -1; s.el.querySelector('svg').style.transform = s.vx < 0 ? 'scaleX(-1)' : ''; }
-      if (s.y < 56 || s.y > 93) s.vy *= -1;
-      if (Math.random() < .004) s.vx = (Math.random() - .5) * .06;
-      s.el.style.left = s.x + '%'; s.el.style.top = s.y + '%';
+  });
+  function frame(ts) {
+    if (!area.isConnected) return stop();
+    const dt = last ? Math.min(.05, (ts - last) / 1000) : 0; last = ts;
+    L.x += (T.x - L.x) * Math.min(1, dt * 5); L.y += (T.y - L.y) * Math.min(1, dt * 5);
+    const W = area.clientWidth, H = area.clientHeight, d = Math.min(2, devicePixelRatio || 1);
+    if (cv.width !== Math.round(W * d)) { cv.width = Math.round(W * d); cv.height = Math.round(H * d); }
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.globalCompositeOperation = 'source-over'; ctx.clearRect(0, 0, W, H); ctx.fillStyle = 'rgba(4,6,14,.96)'; ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'destination-out';
+    const rr = R(), lx = L.x * W, ly = L.y * H;
+    const g = ctx.createRadialGradient(lx, ly, rr * .15, lx, ly, rr); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(.75, 'rgba(0,0,0,.8)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(lx, ly, rr, 0, 7); ctx.fill();
+    ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = 'rgba(255,200,110,.10)'; ctx.beginPath(); ctx.arc(lx, ly, rr, 0, 7); ctx.fill();
+    objs.forEach(o => {
+      if (o.gone) return;
+      if (o.kind === 'sheep' && running) {
+        o.x += o.vx * dt; if (o.x < 5 || o.x > 95) o.vx *= -1;
+        if (Math.random() < dt * .3) o.vx = rnd(-.8, .8);
+        o.node.style.left = o.x + '%'; o.node.classList.toggle('flip', o.vx < 0);
+      }
+      const inLight = Math.hypot((o.x / 100 - L.x) * W, (o.y / 100 - L.y) * H) < rr * .7;
+      o.lit = inLight ? o.lit + dt : 0;
+      o.node.classList.toggle('ready', o.lit >= NEED);
     });
-    raf = requestAnimationFrame(loop);
+    raf = requestAnimationFrame(frame);
   }
+  function stop() { running = false; cancelAnimationFrame(raf); clearInterval(timer); }
   function end() {
-    running = false; clearInterval(timer); cancelAnimationFrame(raf);
+    stop();
     const rec = saveBest('sheep', found, false);
     const ov = h(`<div class="overlay"><div><h2>${found === N ? 'Alle Schafe gefunden!' : `${found} von ${N} Schafen`}</h2>
       <p>${found === N ? 'Jetzt können die Hirten beruhigt nach Bethlehem laufen – so wie in Lukas 2,15–16.' : 'Den Rest finden die Hirten morgen früh. Weiter geht’s!'}${rec && found ? ' Neuer Bestwert!' : ''}</p>
@@ -63,17 +109,18 @@ GAMES.sheep = function (done) {
     ov.querySelector('#again').onclick = () => GAMES.sheep(done);
   }
   area.querySelector('#go').onclick = e => {
-    e.currentTarget.closest('.overlay').remove();
-    spawn(); running = true; loop();
-    timer = setInterval(() => { t--; area.querySelector('.tm').textContent = t + ' s'; if (t <= 0) end(); }, 1000);
+    e.stopPropagation(); e.currentTarget.closest('.overlay').remove();
+    running = true; raf = requestAnimationFrame(frame);
+    timer = setInterval(() => { t--; area.querySelector('.tm').textContent = Math.max(0, t) + ' s'; if (t <= 0) end(); }, 1000);
   };
-  el._stop = () => { running = false; clearInterval(timer); cancelAnimationFrame(raf); };
+  raf = requestAnimationFrame(frame);
+  el._stop = stop;
   mount(el);
 };
 
 /* --- Sternen-Memory --- */
 GAMES.memory = function (done) {
-  const el = gameShell('Sternen-Memory', 'Die Engel haben die Zeichen der Weihnachtszeit gemischt. Findet alle sechs Paare.', done);
+  const el = gameShell('Sternen-Memory', 'Die Engel haben die Zeichen der Weihnachtszeit gemischt. Finde alle sechs Paare.', done);
   const deck = shuffle(MEMORY_PAIRS.flatMap((p, i) => [{ ...p, k: i }, { ...p, k: i }]));
   let open = [], lock = false, moves = 0, pairs = 0;
   const wrap = h(`<div style="display:grid;gap:12px"><div class="memory">${deck.map((c, i) => `<button class="mcard" data-i="${i}" aria-label="Karte ${i + 1}"><span class="face back">${icon('star')}</span><span class="face front">${icon(c.icon)}<small>${c.t}</small></span></button>`).join('')}</div>
@@ -89,7 +136,7 @@ GAMES.memory = function (done) {
         a.classList.add('found'); c.classList.add('found'); open = []; pairs++;
         if (pairs === MEMORY_PAIRS.length) {
           const rec = saveBest('memory', moves, true);
-          const e = h(`<div class="paper" style="text-align:center;align-items:center;max-width:620px"><h2>Alle Paare gefunden – in ${moves} Zügen!</h2><p>${rec ? 'Neuer Bestwert! ' : ''}Adventskranz, Engel, Krippe, Stern, Schaf und Geschenk: Was hat jedes Zeichen mit der Weihnachtszeit zu tun? Erzählt es euch gegenseitig.</p><div class="center-actions"><button class="btn" id="cont">Weiter ${icon('next')}</button><button class="btn ghost small" id="again" style="color:var(--ink);box-shadow:inset 0 0 0 2px rgba(42,32,23,.3)">Nochmal</button></div></div>`);
+          const e = h(`<div class="paper" style="text-align:center;align-items:center;max-width:620px"><h2>Alle Paare gefunden – in ${moves} Zügen!</h2><p>${rec ? 'Neuer Bestwert! ' : ''}Adventskranz, Engel, Krippe, Stern, Schaf und Geschenk: Was hat jedes Zeichen mit der Weihnachtszeit zu tun? Überleg es dir kurz.</p><div class="center-actions"><button class="btn" id="cont">Weiter ${icon('next')}</button><button class="btn ghost small" id="again" style="color:var(--ink);box-shadow:inset 0 0 0 2px rgba(42,32,23,.3)">Nochmal</button></div></div>`);
           wrap.querySelector('.end').appendChild(e);
           e.querySelector('#cont').onclick = done;
           e.querySelector('#again').onclick = () => GAMES.memory(done);
@@ -155,7 +202,7 @@ GAMES.candles = function (done) {
 
 /* --- Der andere Heimweg (Bonus, Matthäus 2,12) --- */
 GAMES.heimweg = function (done) {
-  const el = gameShell('Der andere Heimweg', '„Und Gott befahl ihnen im Traum, dass sie sich nicht sollten wieder zu Herodes lenken; und zogen durch einen andern Weg wieder in ihr Land.“ (Matthäus 2,12) – Schleicht an den Wachen vorbei nach Osten.', done);
+  const el = gameShell('Der andere Heimweg', '„Und Gott befahl ihnen im Traum, dass sie sich nicht sollten wieder zu Herodes lenken; und zogen durch einen andern Weg wieder in ihr Land.“ (Matthäus 2,12) – Schleich an den Wachen vorbei nach Osten.', done);
   const m = BETHLEHEM_MAP;
   let cp = 0, caught = 0, flash = 0, finished = false, t0 = performance.now();
   const hud = h(`<div class="walk-hud"><span class="chip">${icon('star')} Ziel: rechts der Weg ins Morgenland</span><span class="chip cnt">0 × entdeckt</span></div>`);

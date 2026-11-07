@@ -130,6 +130,24 @@ Für **Draufsicht-Bilder** (Block C und E) zusätzlich:
 
 ---
 
+## Block F – Zwischenspiel „Die Hirten suchen ihre Schafe“ (neu)
+
+Das Spiel ist dunkel; nur der Lichtkegel der Laterne zeigt das Feld. Die Bilder dürfen deshalb ruhig hell und gut erkennbar sein. Schafe und Steine müssen sich **im Dunkeln ähnlich sehen** (beide hell, rundlich), im Licht aber klar unterscheidbar sein.
+
+**`assets/games/hirtenfeld.png`** – 1600 × 900
+> Night landscape near Bethlehem, seen from a low side angle (like a stage): rolling hills with dry grass and a few olive trees, a starry sky with one brighter star, far away on a hill the small lights of Bethlehem. The lower 55% of the picture is open, slightly hilly meadow with no objects (sheep, stones and bushes are added by the game). Gentle moonlight, painterly, same style as the reference. No animals, no people, no text.
+
+**`assets/games/sheep-sheet.png`** – 2048 × 512, **transparent**, 4 Zellen nebeneinander (je 512 × 512)
+> Sprite sheet of one fluffy white sheep with a dark face, four poses in a row, each centred in its cell with the hooves on the same baseline, side view facing right: 1 standing, 2 grazing with head down, 3 lying down, 4 looking up with ears raised. Soft painterly style, transparent background, no shadow outside the cell.
+
+**`assets/games/stone-sheet.png`** – 2048 × 512, **transparent**, 4 Zellen nebeneinander
+> Sprite sheet of four pale, rounded, whitish-grey field stones, about the size of a sheep, each centred in its cell on the same baseline. They should look a bit like resting sheep from far away (rounded, light, lumpy) but clearly be stones up close: no legs, no face, rough texture, a little moss. Transparent background.
+
+**`assets/games/bush.png`** – 800 × 440, **transparent**
+> One low, wide, dark green thorny bush typical for the hills of Judea, side view, dense enough to hide half a sheep behind it. Painterly, transparent background.
+
+→ Ich schneide `sheep-sheet` und `stone-sheet` zu `sheep.webp` und `stone.webp` zu.
+
 ## Übersicht: Datei → Verwendung im Spiel
 
 | Datei im Repo | Wo im Spiel | Ersetzt |
