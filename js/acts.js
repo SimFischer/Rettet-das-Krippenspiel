@@ -41,7 +41,7 @@ function showAct2() {
   const dlg = el.querySelector('.dlg');
   function renderBasket() {
     const left = COSTUMES.filter(c => !(A.delivered.includes(c.id) || (c.id === 'weise' && A.shelf)));
-    el.querySelector('.basket ul').innerHTML = left.map(c => `<li><span class="cdot" style="background:${c.color}">${icon(c.icon)}</span>${c.t}</li>`).join('') || '<li>Der Korb ist leer!</li>';
+    el.querySelector('.basket ul').innerHTML = left.map(c => `<li><span class="cdot" style="background:${c.color}">${icon(c.icon)}</span><span><b>${c.role}:</b> ${c.t}</span></li>`).join('') || '<li>Der Korb ist leer!</li>';
     el.querySelector('.prog').textContent = `${A.delivered.length} von ${ACTORS.length} Kindern eingekleidet`;
   }
   renderBasket();
@@ -88,7 +88,7 @@ function showAct2() {
   function actorDialog(a) {
     const left = COSTUMES.filter(c => c.id !== 'weise' || true).filter(c => !A.delivered.includes(c.id));
     const card = dlgShell(a.name, 'wartet auf ein Kostüm', `<p class="say">„${a.riddle}“</p><p><b>Welches Kostüm braucht ${a.name}?</b></p>
-      <div class="costumes">${shuffle(left).map(c => `<button class="opt" data-c="${c.id}"><span class="cdot" style="background:${c.color}">${icon(c.icon)}</span><span>${c.t}</span></button>`).join('')}</div>`, 'bibel:lk2');
+      <div class="costumes">${shuffle(left).map(c => `<button class="opt" data-c="${c.id}"><span class="cdot" style="background:${c.color}">${icon(c.icon)}</span><span><b>${c.role}:</b> ${c.t}</span></button>`).join('')}</div>`, 'bibel:lk2');
     const fb = card.querySelector('.fb');
     card.querySelectorAll('.costumes .opt').forEach(b => b.onclick = () => {
       fb.innerHTML = '';
@@ -265,8 +265,8 @@ function act3Songs() {
     ${actHeader(3, 'Die Liedtafel', SONGS.intro)}
     <div class="songs">
       <div class="liedtafel" aria-label="Liedtafel">${SONGS.clues.map((_, i) => `<button class="lt-row" data-i="${i}"><span class="lt-num">–</span></button>`).join('')}<div class="lt-safe">${icon('key')} Schlüsselkasten: <b class="code">_ _ _ _</b></div></div>
-      <div class="clues">${SONGS.clues.map((c, i) => `<button class="clue" data-i="${i}"><b>Zettel ${i + 1}</b><span>${c.t}</span></button>`).join('')}</div>
-      <div class="hymnal paper"><div class="kicker">Evangelisches Gesangbuch · Advent und Weihnachten</div><ul>${SONGS.book.map(b => `<li><button class="song" data-eg="${b.eg}"><span class="eg">${b.eg}</span>${b.t}</button></li>`).join('')}</ul></div>
+      <div class="clues"><ol class="howto">${SONGS.steps.map(t => `<li>${t}</li>`).join('')}</ol>${SONGS.clues.map((c, i) => `<button class="clue" data-i="${i}"><b>Zettel ${i + 1}</b><span>${c.t}</span></button>`).join('')}</div>
+      <div class="hymnal paper"><div class="kicker">Evangelisches Gesangbuch · Advent und Weihnachten</div><ul>${SONGS.book.map(b => `<li><button class="song" data-eg="${b.eg}"><span class="eg">${b.eg}</span><span class="song-t"><b>${b.t}</b><small class="who">${b.who} · ${b.kind}</small><small class="start">${b.start}</small></span></button></li>`).join('')}</ul></div>
     </div>
     <div class="fb wide"></div>
     <div class="st-foot"><span></span><button class="btn ghost small lantern" id="hint">${icon('lantern')} Laterne: Hinweis</button></div>

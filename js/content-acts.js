@@ -7,13 +7,13 @@ const ACT2_INTRO = `
 <p>Tippe in der Kirche dorthin, wo du hinlaufen willst. Wenn du ein Kind erreichst, beginnt das Gespräch.</p>`;
 
 const COSTUMES = [
-  { id: 'maria', t: 'Blaues Tuch und helles Kleid', icon: 'veil', color: '#3d6fb5' },
-  { id: 'josef', t: 'Brauner Umhang und Wanderstab', icon: 'staff', color: '#7a5230' },
-  { id: 'engel', t: 'Weißes Gewand mit Flügeln', icon: 'angel', color: '#f4f1ea' },
-  { id: 'hirte', t: 'Schaffell und Hirtenstab', icon: 'sheep', color: '#cbb89a' },
-  { id: 'wirt', t: 'Schürze und Laterne', icon: 'lantern', color: '#a8452f' },
-  { id: 'kaiser', t: 'Lorbeerkranz und purpurroter Mantel', icon: 'laurel', color: '#7b2d5b' },
-  { id: 'weise', t: 'Krone mit Stern und Geschenkkästchen', icon: 'crown', color: '#c9a14c' },
+  { id: 'maria', role: 'Maria', t: 'Blaues Tuch und helles Kleid', icon: 'veil', color: '#3d6fb5' },
+  { id: 'josef', role: 'Josef', t: 'Brauner Umhang und Wanderstab', icon: 'staff', color: '#7a5230' },
+  { id: 'engel', role: 'Engel', t: 'Weißes Gewand mit Flügeln', icon: 'angel', color: '#f4f1ea' },
+  { id: 'hirte', role: 'Hirte', t: 'Schaffell und Hirtenstab', icon: 'sheep', color: '#cbb89a' },
+  { id: 'wirt', role: 'Wirt', t: 'Schürze und Laterne', icon: 'lantern', color: '#a8452f' },
+  { id: 'kaiser', role: 'Kaiser Augustus', t: 'Lorbeerkranz und purpurroter Mantel', icon: 'laurel', color: '#7b2d5b' },
+  { id: 'weise', role: 'Weiser aus dem Morgenland', t: 'Krone mit Stern und Geschenkkästchen', icon: 'crown', color: '#c9a14c' },
 ];
 
 const ACTORS = [
@@ -116,7 +116,8 @@ const DARK = {
 };
 
 const SONGS = {
-  intro: 'Neben dem Schlüsselkasten hängt die Liedtafel für den Gottesdienst am Heiligen Abend. Frau Petersen hat die Nummern noch nicht eingesteckt, nur vier Zettel daneben geklebt. Such die Lieder im Gesangbuch. Die vier Nummern sind der Code.',
+  intro: 'Neben dem Schlüsselkasten hängt die Liedtafel für den Gottesdienst am Heiligen Abend. Frau Petersen hat die Nummern noch nicht eingesteckt, nur vier Zettel daneben geklebt. Die vier Liednummern sind der Code für den Schlüsselkasten.',
+  steps: ['Tippe einen Zettel an.', 'Lies im Gesangbuch rechts, wer jedes Lied geschrieben hat, wann – und wie es anfängt.', 'Tippe das Lied an, das zum Zettel passt. Die Nummer erscheint auf der Liedtafel.'],
   clues: [
     { t: 'Eingangslied – ein Adventslied: „Die Tore sollen weit aufgehen, denn der König der Herrlichkeit kommt.“', eg: 1 },
     { t: 'Martin Luther hat es für seine Familie geschrieben. In der ersten Strophe singt der Engel.', eg: 24 },
@@ -124,16 +125,16 @@ const SONGS = {
     { t: 'Zum ersten Mal 1818 in Oberndorf bei Salzburg gesungen – heute auf der ganzen Welt bekannt.', eg: 46 },
   ],
   book: [
-    { eg: 1, t: 'Macht hoch die Tür, die Tor macht weit' },
-    { eg: 8, t: 'Es kommt ein Schiff, geladen' },
-    { eg: 13, t: 'Tochter Zion, freue dich' },
-    { eg: 24, t: 'Vom Himmel hoch, da komm ich her' },
-    { eg: 27, t: 'Lobt Gott, ihr Christen alle gleich' },
-    { eg: 30, t: 'Es ist ein Ros entsprungen' },
-    { eg: 37, t: 'Ich steh an deiner Krippen hier' },
-    { eg: 43, t: 'Ihr Kinderlein, kommet' },
-    { eg: 44, t: 'O du fröhliche' },
-    { eg: 46, t: 'Stille Nacht, heilige Nacht' },
+    { eg: 1, t: 'Macht hoch die Tür, die Tor macht weit', who: 'Georg Weissel, 1623', kind: 'Advent', start: '„Macht hoch die Tür, die Tor macht weit; es kommt der Herr der Herrlichkeit …“' },
+    { eg: 8, t: 'Es kommt ein Schiff, geladen', who: 'nach einem alten Lied, um 1600', kind: 'Advent', start: '„Es kommt ein Schiff, geladen bis an sein’ höchsten Bord …“' },
+    { eg: 13, t: 'Tochter Zion, freue dich', who: 'Melodie von Georg Friedrich Händel', kind: 'Advent', start: '„Tochter Zion, freue dich, jauchze laut, Jerusalem!“' },
+    { eg: 24, t: 'Vom Himmel hoch, da komm ich her', who: 'Martin Luther, um 1535 – für seine Kinder', kind: 'Weihnachten', start: '„Vom Himmel hoch, da komm ich her, ich bring euch gute neue Mär …“ (das singt der Engel)' },
+    { eg: 27, t: 'Lobt Gott, ihr Christen alle gleich', who: 'Nikolaus Herman, 1560', kind: 'Weihnachten', start: '„Lobt Gott, ihr Christen alle gleich, in seinem höchsten Thron …“' },
+    { eg: 30, t: 'Es ist ein Ros entsprungen', who: 'Dichter unbekannt, 16. Jahrhundert', kind: 'Weihnachten', start: '„Es ist ein Ros entsprungen aus einer Wurzel zart …“' },
+    { eg: 37, t: 'Ich steh an deiner Krippen hier', who: 'Paul Gerhardt, evangelischer Pfarrer, 1653', kind: 'Weihnachten', start: '„Ich steh an deiner Krippen hier, o Jesu, du mein Leben …“' },
+    { eg: 43, t: 'Ihr Kinderlein, kommet', who: 'Christoph von Schmid, um 1800', kind: 'Weihnachten', start: '„Ihr Kinderlein, kommet, o kommet doch all …“' },
+    { eg: 44, t: 'O du fröhliche', who: 'Johannes Daniel Falk, 1816', kind: 'Weihnachten', start: '„O du fröhliche, o du selige, gnadenbringende Weihnachtszeit …“' },
+    { eg: 46, t: 'Stille Nacht, heilige Nacht', who: 'Joseph Mohr und Franz Xaver Gruber – zuerst gesungen 1818 in Oberndorf bei Salzburg', kind: 'Weihnachten', start: '„Stille Nacht, heilige Nacht! Alles schläft, einsam wacht …“' },
   ],
   why: {
     1: '„Macht hoch die Tür“ (EG 1) eröffnet das Gesangbuch – es beginnt wie das Kirchenjahr mit dem Advent.',
@@ -141,7 +142,7 @@ const SONGS = {
     37: 'Richtig: Paul Gerhardt gehört zu den wichtigsten evangelischen Liederdichtern.',
     46: '„Stille Nacht“ stammt von einem katholischen Hilfspriester und einem Lehrer – heute singen es alle Kirchen.',
   },
-  hints: ['Alle vier Lieder und ihre Dichter stehen im Sachtext {{text:lieder}}', 'Das Gesangbuch beginnt mit dem Advent: Das erste Lied hat die Nummer 1.'],
+  hints: ['Vergleiche die Namen und Jahreszahlen auf dem Zettel mit den kleinen Angaben unter jedem Lied im Gesangbuch.', 'Zettel 1: Tore und Türen stehen im Liedanfang. Zettel 2: Martin Luther. Zettel 3: Paul Gerhardt, 1653. Zettel 4: 1818, Oberndorf.'],
 };
 
 const RINGS = {
