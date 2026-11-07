@@ -84,7 +84,7 @@ function showHub() {
       <span class="spacer"></span>
       ${shelfButton()}
       <button class="iconbtn" id="letter">${icon('scroll')} Brief</button>
-      <button class="iconbtn" id="bonus" ${S.bonusOpen || S.finaleDone ? '' : 'disabled style="opacity:.4"'}>${icon('treasure')} Schatzkammer</button>
+      ${treasureButton()}
     </div>
     <div class="hub-main">
       <div class="chest-wrap">${chestSVG({ stations: STATIONS, solved: S.solved })}</div>
@@ -106,7 +106,7 @@ function showHub() {
   });
   el.querySelectorAll('.locklist button').forEach(b => b.onclick = () => open(b.dataset.id));
   el.querySelector('#letter').onclick = () => showLetter(false);
-  el.querySelector('#bonus').onclick = showTreasury;
+  wireTreasure(el);
   SHELF_CTX = null; wireShelfButtons(el);
   const fin = el.querySelector('#finale'); if (fin) fin.onclick = showChestOpen;
   mount(el);
@@ -191,8 +191,9 @@ function showUnlocked(st) {
     </div>
   </section>`);
   const mark = () => { S.seenInterlude.push(n); save(); };
-  const g = el.querySelector('#game'); if (g) g.onclick = () => { mark(); GAMES[game](showHub); };
-  const sk = el.querySelector('#skip'); if (sk) sk.onclick = () => { mark(); showHub(); };
+  const back = () => { showHub(); toast(`${icon('treasure')} Das Spiel liegt jetzt in der Schatzkammer – du kannst es jederzeit nochmal spielen.`); };
+  const g = el.querySelector('#game'); if (g) g.onclick = () => { mark(); GAMES[game](back); };
+  const sk = el.querySelector('#skip'); if (sk) sk.onclick = () => { mark(); back(); };
   const hb = el.querySelector('#hub'); if (hb) hb.onclick = showHub;
   mount(el);
 }
@@ -583,23 +584,34 @@ function showCertificate() {
 }
 
 /* ===== Schatzkammer ===== */
+const TREASURE = [
+  { g: 'sheep', icon: 'sheep', t: 'Die Hirten suchen ihre Schafe', d: 'Finde alle Schafe auf dem nächtlichen Feld – mit der Laterne.', best: v => `${v} Schafe`, open: () => S.seenInterlude.includes(2), lock: 'Wird frei, sobald du zwei Schlösser geknackt hast.' },
+  { g: 'memory', icon: 'star', t: 'Sternen-Memory', d: 'Finde die Paare der Weihnachtszeichen.', best: v => `${v} Züge`, open: () => S.seenInterlude.includes(4), lock: 'Wird frei, sobald du vier Schlösser geknackt hast.' },
+  { g: 'heimweg', icon: 'star', t: 'Der andere Heimweg', d: 'Die Weisen schleichen an den Wachen von König Herodes vorbei (Matthäus 2,12).', best: v => `${v} × entdeckt`, open: () => false, lock: 'Wird frei, wenn du das Krippenspiel gerettet hast.' },
+  { g: 'candles', icon: 'wreath', t: 'Kerzenwächter', d: 'Der Wind pustet durch die Kirche. Halte die Adventskerzen am Brennen!', best: v => `${v} Kerzen`, open: () => false, lock: 'Wird frei, wenn du das Krippenspiel gerettet hast.' },
+];
+const gameOpen = x => S.bonusOpen || S.finaleDone || x.open();
+function treasureButton() {
+  const n = TREASURE.filter(gameOpen).length;
+  return `<button class="iconbtn" id="bonus" ${n ? '' : 'disabled style="opacity:.4"'} title="${n ? n + ' Spiele' : 'Noch keine Spiele frei'}">${icon('treasure')} Schatzkammer${n ? ` <span class="tcount">${n}</span>` : ''}</button>`;
+}
+function wireTreasure(el) { const b = el.querySelector('#bonus'); if (b) b.onclick = showTreasury; }
+
 function showTreasury() {
   const best = S.best || {};
   const el = h(`<section class="screen">
     <div class="topbar"><button class="btn ghost small" id="back">${icon('back')} Zurück</button><span class="spacer"></span></div>
     <div class="paper">
       <div class="kicker">Schatzkammer</div>
-      <h2>Bonusspiele für Schnelle</h2>
-      <div class="cards">
-        <button class="scard" data-g="heimweg">${icon('star')}<span><b>Der andere Heimweg</b><br>Die Weisen schleichen an den Wachen von König Herodes vorbei (Matthäus 2,12).${best.heimweg != null ? `<br><small>Bester Wert: ${best.heimweg} × entdeckt</small>` : ''}</span></button>
-        <button class="scard" data-g="candles">${icon('wreath')}<span><b>Kerzenwächter</b><br>Der Wind pustet durch die Kirche. Halte die Adventskerzen am Brennen!${best.candles != null ? `<br><small>Bester Wert: ${best.candles}</small>` : ''}</span></button>
-        <button class="scard" data-g="sheep">${icon('sheep')}<span><b>Die Hirten suchen ihre Schafe</b><br>Finde alle Schafe auf dem nächtlichen Feld.${best.sheep != null ? `<br><small>Bester Wert: ${best.sheep} Schafe</small>` : ''}</span></button>
-        <button class="scard" data-g="memory">${icon('star')}<span><b>Sternen-Memory</b><br>Finde die Paare der Weihnachtszeichen.${best.memory != null ? `<br><small>Bester Wert: ${best.memory} Züge</small>` : ''}</span></button>
-      </div>
+      <h2>Spiele zum Nochmal-Spielen</h2>
+      <p>Jedes Spiel, das du schon kennengelernt hast, liegt hier. Versuch doch, deinen Bestwert zu schlagen!</p>
+      <div class="cards">${TREASURE.map(x => gameOpen(x)
+        ? `<button class="scard" data-g="${x.g}">${icon(x.icon)}<span><b>${x.t}</b><br>${x.d}${best[x.g] != null ? `<br><small>Bester Wert: ${x.best(best[x.g])}</small>` : ''}</span></button>`
+        : `<div class="scard locked">${icon('key')}<span><b>${x.t}</b><br><small>${x.lock}</small></span></div>`).join('')}</div>
     </div>
   </section>`);
   el.querySelector('#back').onclick = route;
-  el.querySelectorAll('.scard').forEach(b => b.onclick = () => GAMES[b.dataset.g](showTreasury));
+  el.querySelectorAll('button.scard').forEach(b => b.onclick = () => GAMES[b.dataset.g](showTreasury));
   mount(el);
 }
 

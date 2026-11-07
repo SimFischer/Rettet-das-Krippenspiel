@@ -579,3 +579,6 @@ body.shelf-open { overflow: hidden; }
 .sheep-game .bush { z-index: 3; }
 .sheep-game .bush img { width: 100%; display: block; }
 .sheep-game .overlay { z-index: 6; }
+.tcount { background: var(--candle); color: #2a1b06; border-radius: 999px; font-size: .75rem; font-weight: 800; padding: 1px 7px; }
+.scard.locked { opacity: .55; border-style: dashed; }
+.scard.locked svg { color: var(--ink-soft); }
