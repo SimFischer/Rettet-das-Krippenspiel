@@ -7,10 +7,11 @@ function actHeader(nr, title, sub) {
     <span class="spacer"></span>
     ${shelfButton()}
     ${treasureButton()}
+    ${teacherButton()}
     <button class="iconbtn" id="letter">${icon('scroll')} Brief</button>
   </div>${sub ? `<p class="act-sub">${sub}</p>` : ''}`;
 }
-function wireHeader(el, ref) { const l = el.querySelector('#letter'); if (l) l.onclick = () => showLetter(false); wireTreasure(el); SHELF_CTX = ref || null; wireShelfButtons(el); }
+function wireHeader(el, ref) { const l = el.querySelector('#letter'); if (l) l.onclick = () => showLetter(false); wireTreasure(el); wireTeacher(el); SHELF_CTX = ref || null; wireShelfButtons(el); }
 
 /* ---------- Kiste öffnet sich ---------- */
 function showChestOpen() {

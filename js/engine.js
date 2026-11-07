@@ -85,6 +85,7 @@ function showHub() {
       ${shelfButton()}
       <button class="iconbtn" id="letter">${icon('scroll')} Brief</button>
       ${treasureButton()}
+      ${teacherButton()}
     </div>
     <div class="hub-main">
       <div class="chest-wrap">${chestSVG({ stations: STATIONS, solved: S.solved })}</div>
@@ -106,7 +107,7 @@ function showHub() {
   });
   el.querySelectorAll('.locklist button').forEach(b => b.onclick = () => open(b.dataset.id));
   el.querySelector('#letter').onclick = () => showLetter(false);
-  wireTreasure(el);
+  wireTreasure(el); wireTeacher(el);
   SHELF_CTX = null; wireShelfButtons(el);
   const fin = el.querySelector('#finale'); if (fin) fin.onclick = showChestOpen;
   mount(el);
@@ -616,6 +617,10 @@ function showTreasury() {
 }
 
 /* ===== Lehrkraft ===== */
+function teacherButton() { return `<button class="iconbtn teacherbtn" aria-label="Lehrkraft-Bereich" title="Lehrkraft-Bereich">${icon('teacher')}</button>`; }
+function wireTeacher(el) { el.querySelectorAll('.teacherbtn').forEach(b => b.onclick = showPin); }
+window.addEventListener('hashchange', () => { if (location.hash === '#lehrkraft') showPin(); });
+
 function showPin() {
   let pin = '';
   const el = h(`<section class="screen" style="align-items:center;justify-content:center;gap:18px">
@@ -633,7 +638,7 @@ function showPin() {
       if (pin === TEACHER_PIN) showTeacher(); else { shake(el.querySelector('.pindots')); pin = ''; setTimeout(() => dots.forEach(d => d.classList.remove('on')), 300); }
     }
   });
-  el.querySelector('#back').onclick = () => (S.started ? route() : showStart());
+  el.querySelector('#back').onclick = () => { if (location.hash === '#lehrkraft') history.replaceState(null, '', location.pathname); S.started ? route() : showStart(); };
   mount(el);
 }
 
@@ -692,7 +697,7 @@ function showTeacher() {
       <p class="small-note" style="color:var(--ink-soft)">Der Spielstand wird nur auf diesem Gerät gespeichert. Es werden keine Daten verschickt.</p>
     </div>
   </section>`);
-  el.querySelector('#back').onclick = () => (S.started ? route() : showStart());
+  el.querySelector('#back').onclick = () => { if (location.hash === '#lehrkraft') history.replaceState(null, '', location.pathname); S.started ? route() : showStart(); };
   el.querySelector('#openall').onclick = () => { S.solved = STATIONS.map(s => s.id); S.seenInterlude = [2, 4]; if (!S.started) { S.started = Date.now(); S.team = S.team || 'Lehrkraft'; } save(); toast('Alle Schlösser offen'); showHub(); };
   const demo = () => { S.solved = STATIONS.map(s => s.id); S.seenInterlude = [2, 4]; if (!S.started) { S.started = Date.now(); S.team = S.team || 'Lehrkraft'; } };
   el.querySelector('#shelfall').onclick = e => { shelfState().all = true; save(); e.currentTarget.textContent = 'Bücherregal ist ganz offen'; toast('Alle Einträge im Bücherregal sind sichtbar'); };
@@ -707,4 +712,5 @@ function showTeacher() {
   mount(el);
 }
 
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showStart); else showStart();
+const boot = () => (location.hash === '#lehrkraft' ? showPin() : showStart());
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
