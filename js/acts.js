@@ -5,10 +5,11 @@ function actHeader(nr, title, sub) {
     <span class="chip">${icon(S.teamIcon)} ${esc(S.team)}</span>
     <span class="chip act-chip"><b>Akt ${nr}</b> · ${title}</span>
     <span class="spacer"></span>
+    ${shelfButton()}
     <button class="iconbtn" id="letter">${icon('scroll')} Brief</button>
   </div>${sub ? `<p class="act-sub">${sub}</p>` : ''}`;
 }
-function wireHeader(el) { const l = el.querySelector('#letter'); if (l) l.onclick = () => showLetter(false); }
+function wireHeader(el, ref) { const l = el.querySelector('#letter'); if (l) l.onclick = () => showLetter(false); SHELF_CTX = ref || null; wireShelfButtons(el); }
 
 /* ---------- Kiste öffnet sich ---------- */
 function showChestOpen() {
@@ -34,7 +35,7 @@ function showAct2() {
     </div>
     <div class="dlg" hidden></div>
   </section>`);
-  wireHeader(el);
+  wireHeader(el, 'text:zwei');
   const dlg = el.querySelector('.dlg');
   function renderBasket() {
     const left = COSTUMES.filter(c => !(A.delivered.includes(c.id) || (c.id === 'weise' && A.shelf)));
@@ -73,9 +74,10 @@ function showAct2() {
   });
   el.querySelector('.walk-slot').appendChild(walk.el);
 
-  function closeDlg() { dlg.hidden = true; dlg.innerHTML = ''; walk.resume(); }
-  function dlgShell(name, sub, body) {
-    dlg.innerHTML = `<div class="dlg-card paper"><div class="dlg-head"><div class="avatar">${icon('people')}</div><div><b>${name}</b><small>${sub}</small></div><button class="iconbtn close" aria-label="Später">${icon('cross')}</button></div>${body}<div class="fb"></div><div class="step-actions"></div></div>`;
+  function closeDlg() { dlg.hidden = true; dlg.innerHTML = ''; SHELF_CTX = 'text:zwei'; walk.resume(); }
+  function dlgShell(name, sub, body, ref) {
+    SHELF_CTX = ref || SHELF_CTX;
+    dlg.innerHTML = `<div class="dlg-card paper"><div class="dlg-head"><div class="avatar">${icon('people')}</div><div><b>${name}</b><small>${sub}</small></div><button class="iconbtn close" aria-label="Später">${icon('cross')}</button></div>${body}${ref ? `<p class="lookup">Unsicher? Schlagt nach: ${linkify('{{' + ref + '}}')}</p>` : ''}<div class="fb"></div><div class="step-actions"></div></div>`;
     dlg.hidden = false;
     dlg.querySelector('.close').onclick = closeDlg;
     return dlg.querySelector('.dlg-card');
@@ -83,7 +85,7 @@ function showAct2() {
   function actorDialog(a) {
     const left = COSTUMES.filter(c => c.id !== 'weise' || true).filter(c => !A.delivered.includes(c.id));
     const card = dlgShell(a.name, 'wartet auf ein Kostüm', `<p class="say">„${a.riddle}“</p><p><b>Welches Kostüm braucht ${a.name}?</b></p>
-      <div class="costumes">${shuffle(left).map(c => `<button class="opt" data-c="${c.id}"><span class="cdot" style="background:${c.color}">${icon(c.icon)}</span><span>${c.t}</span></button>`).join('')}</div>`);
+      <div class="costumes">${shuffle(left).map(c => `<button class="opt" data-c="${c.id}"><span class="cdot" style="background:${c.color}">${icon(c.icon)}</span><span>${c.t}</span></button>`).join('')}</div>`, 'bibel:lk2');
     const fb = card.querySelector('.fb');
     card.querySelectorAll('.costumes .opt').forEach(b => b.onclick = () => {
       fb.innerHTML = '';
@@ -100,7 +102,7 @@ function showAct2() {
     });
   }
   function askQuestion(a) {
-    const card = dlgShell(a.name, roleName(a.id), '<div class="qslot"></div>');
+    const card = dlgShell(a.name, roleName(a.id), '<div class="qslot"></div>', a.ref);
     const step = { ...a.q };
     const node = STEP.mc(step, () => {
       A.delivered.push(a.id); save(); renderBasket();
@@ -113,7 +115,7 @@ function showAct2() {
     card.querySelector('.qslot').appendChild(node);
   }
   function shelfDialog() {
-    const card = dlgShell('Regal in der Sakristei', 'Schild: „Für den 6. Januar“', `<p class="say">${ACT2_SHELF.text}</p><div class="qslot"></div>`);
+    const card = dlgShell('Regal in der Sakristei', 'Schild: „Für den 6. Januar“', `<p class="say">${ACT2_SHELF.text}</p><div class="qslot"></div>`, ACT2_SHELF.ref);
     const node = STEP.mc({ ...ACT2_SHELF.q }, () => {
       A.shelf = true; S.times.kostueme = Date.now(); S.phase = 'schluessel'; save(); renderBasket(); closeDlg();
       walk.destroy(); showAct3();
@@ -151,7 +153,7 @@ function act3Message() {
       <div class="step-actions"><button class="btn" id="go">${icon('lantern')} Taschenlampe an, ab in die Turmkammer</button></div>
     </div>
   </section>`);
-  wireHeader(el);
+  wireHeader(el, 'text:farben');
   el.querySelector('#go').onclick = nextAct3;
   mount(el);
 }
@@ -182,7 +184,7 @@ function act3Dark() {
     <div class="fb wide"></div>
     <div class="st-foot"><span></span><button class="btn ghost small lantern" id="hint">${icon('lantern')} Laterne: Hinweis</button></div>
   </section>`);
-  wireHeader(el);
+  wireHeader(el, 'text:farben');
   const room = el.querySelector('.dark-room'), cv = room.querySelector('canvas'), ctx = cv.getContext('2d'), layer = room.querySelector('.dark-spots');
   const hand = el.querySelector('.hand'), fb = el.querySelector('.fb');
   let lx = .5, ly = .45, holding = null, W = 0, H = 0;
@@ -240,7 +242,7 @@ function act3Dark() {
   let hl = 0;
   el.querySelector('#hint').onclick = () => {
     fb.innerHTML = '';
-    const t = holding ? holding.hint : found.size === DARK.spots.length ? 'Der Schlüsselkasten leuchtet unten in der Mitte.' : ['Leuchtet die Ecken ab: links unten, oben in der Mitte, rechts oben und rechts unten.', 'Vier Dinge sind versteckt. Jedes gehört zu einer anderen Zeit im Kirchenjahr.'][hl++ % 2];
+    const t = holding ? holding.hint : found.size === DARK.spots.length ? 'Der Schlüsselkasten leuchtet unten in der Mitte.' : ['Leuchtet die Ecken ab: links unten, oben in der Mitte, rechts oben und rechts unten.', 'Vier Dinge sind versteckt. Welche Zeit im Kirchenjahr zu welchem Ding gehört, steht in {{text:farben}}'][hl++ % 2];
     fb.appendChild(feedback('tip', '', t)); S.hints++; save();
   };
   mount(el); requestAnimationFrame(paint);
@@ -259,7 +261,7 @@ function act3Songs() {
     <div class="fb wide"></div>
     <div class="st-foot"><span></span><button class="btn ghost small lantern" id="hint">${icon('lantern')} Laterne: Hinweis</button></div>
   </section>`);
-  wireHeader(el);
+  wireHeader(el, 'text:lieder');
   const fb = el.querySelector('.fb');
   function render() {
     el.querySelectorAll('.clue').forEach((c, i) => { c.classList.toggle('sel', i === sel); c.classList.toggle('done', placed[i] != null); });
@@ -302,7 +304,7 @@ function act3Rings() {
       </div>
     </div>
   </section>`);
-  wireHeader(el);
+  wireHeader(el, 'text:menschwerdung');
   const fb = el.querySelector('.fb');
   const render = () => el.querySelectorAll('.ring').forEach((rg, i) => rg.querySelector('.ring-val').textContent = RINGS.rings[i].options[pos[i]]);
   el.querySelectorAll('.ring').forEach((rg, i) => {

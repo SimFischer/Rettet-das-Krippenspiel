@@ -155,7 +155,7 @@ GAMES.candles = function (done) {
 
 /* --- Der andere Heimweg (Bonus, Matthäus 2,12) --- */
 GAMES.heimweg = function (done) {
-  const el = gameShell('Der andere Heimweg', '„Gott befahl ihnen im Traum, nicht wieder zu Herodes zu gehen. Und sie zogen auf einem andern Weg wieder in ihr Land.“ (Matthäus 2,12) – Schleicht an den Wachen vorbei nach Osten.', done);
+  const el = gameShell('Der andere Heimweg', '„Und Gott befahl ihnen im Traum, dass sie sich nicht sollten wieder zu Herodes lenken; und zogen durch einen andern Weg wieder in ihr Land.“ (Matthäus 2,12) – Schleicht an den Wachen vorbei nach Osten.', done);
   const m = BETHLEHEM_MAP;
   let cp = 0, caught = 0, flash = 0, finished = false, t0 = performance.now();
   const hud = h(`<div class="walk-hud"><span class="chip">${icon('star')} Ziel: rechts der Weg ins Morgenland</span><span class="chip cnt">0 × entdeckt</span></div>`);

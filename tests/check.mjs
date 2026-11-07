@@ -4,7 +4,7 @@ import vm from 'node:vm';
 
 const ctx = { console, window: {}, document: { readyState: 'loading', addEventListener() {} }, localStorage: { getItem() { return null; }, setItem() {} } };
 vm.createContext(ctx);
-for (const f of ['art', 'content', 'content-acts', 'walk']) vm.runInContext(readFileSync(new URL(`../js/${f}.js`, import.meta.url), 'utf8') + `\n;globalThis.__${f.replace('-', '_')} = true;`, ctx);
+for (const f of ['art', 'content', 'content-acts', 'walk', 'library-content']) vm.runInContext(readFileSync(new URL(`../js/${f}.js`, import.meta.url), 'utf8') + `\n;globalThis.__${f.replace('-', '_')} = true;`, ctx);
 const get = n => vm.runInContext(n, ctx);
 let fails = 0;
 const ok = (c, msg) => { if (!c) { fails++; console.error('✗', msg); } };
@@ -27,6 +27,17 @@ ok(COSTUMES.every(c => ICONS[c.icon]), 'Kostüm-Icons vorhanden');
 ok(DARK.spots.every(s => s.answer < DARK.drawers.length), 'Turmkammer: Kästen passen');
 ok(SONGS.clues.every(c => SONGS.book.some(b => b.eg === c.eg)), 'Liedtafel: Lieder im Gesangbuch');
 ok(RINGS.rings.every(r => r.answer < r.options.length), 'Walzen lösbar');
+
+// Bücherregal: alle Verweise lösen auf
+const BIBLE = get('BIBLE'), TEXTS = get('TEXTS');
+const resolves = r => { const [k, id] = r.split(':'); return k === 'bibel' ? BIBLE.some(b => b.id === id) : k === 'text' ? TEXTS.some(t => t.id === id) : false; };
+const allSrc = ['content', 'content-acts', 'acts', 'engine'].map(f => readFileSync(new URL(`../js/${f}.js`, import.meta.url), 'utf8')).join('\n');
+const refs = [...allSrc.matchAll(/\{\{((?:bibel|text):[a-z0-9]+)\}\}/g)].map(m => m[1]).concat([...allSrc.matchAll(/ref: '((?:bibel|text):[a-z0-9]+)'/g)].map(m => m[1]), [...allSrc.matchAll(/wireHeader\(el, '([^']+)'\)/g)].map(m => m[1]));
+ok(refs.length > 30, 'genug Verweise gefunden: ' + refs.length);
+refs.forEach(r => ok(resolves(r), 'Verweis löst auf: ' + r));
+STATIONS.forEach(st => ok(st.ref && resolves(st.ref), st.id + ': Bücherregal-Verweis'));
+STATIONS.forEach(st => st.steps.forEach((s, i) => { if (s.hints) ok(s.hints.some(h => /\{\{/.test(h)) || s.type === 'calendar' || s.type === 'dial', `${st.id} Schritt ${i + 1}: Hinweis verweist ins Regal`); }));
+ACTORS.forEach(a => ok(a.ref && resolves(a.ref), a.id + ': Verweis'));
 
 // Karten: alle Ziele erreichbar (Breitensuche auf dem gleichen Raster wie die Engine)
 function reachable(m, from, targets, R = 16, CELL = 20) {

@@ -12,6 +12,10 @@ Die Schülerinnen und Schüler …
 - erläutern Epiphanias als Fest der Erscheinung Gottes für alle Menschen,
 - formulieren den Kern von Weihnachten: Gott wird Mensch – als kleines Kind – für alle Menschen.
 
+## Arbeiten mit dem Bücherregal
+
+Die Aufgaben setzen kein Vorwissen voraus. In „Frau Petersens Bücherregal“ stehen die Bibeltexte (Lutherbibel 1912 mit Worterklärungen) und ausführliche Sachtexte. Die Antworten müssen dort herausgelesen werden; die Laterne verweist auf die passende Stelle. Mit Vorwissen aus der Einheit geht es schneller. Tipp für den Einstieg: Einmal gemeinsam zeigen, wie man das Regal öffnet und einen Vers findet.
+
 ## Stundenverlauf
 
 | Minute | Phase | Was passiert |

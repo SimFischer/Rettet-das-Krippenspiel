@@ -18,7 +18,7 @@ const COSTUMES = [
 
 const ACTORS = [
   {
-    id: 'maria', name: 'Lena', x: 745, y: 300, shirt: '#d98b5f', hair: '#5a3a22',
+    id: 'maria', ref: 'text:mariajosef', name: 'Lena', x: 745, y: 300, shirt: '#d98b5f', hair: '#5a3a22',
     riddle: 'Ein Engel hat mich in Nazareth besucht. Er hat gesagt, dass ich ein Kind bekommen werde. Und jetzt liegt es in einer Futterkrippe!',
     q: {
       q: 'Lena fragt: „Nach dem Besuch der Hirten steht etwas über mich in der Bibel. Was mache ich?“',
@@ -27,7 +27,7 @@ const ACTORS = [
     },
   },
   {
-    id: 'josef', name: 'Ole', x: 865, y: 300, shirt: '#5e8a6b', hair: '#2a2420',
+    id: 'josef', ref: 'text:mariajosef', name: 'Ole', x: 865, y: 300, shirt: '#5e8a6b', hair: '#2a2420',
     riddle: 'Ich stamme aus dem Haus und Geschlecht Davids. Darum musste ich mit meiner Verlobten zur Zählung nach Bethlehem.',
     q: {
       q: 'Ole fragt: „Bei Matthäus erfahre ich auf besondere Weise, was Gott von mir will. Wie?“',
@@ -36,7 +36,7 @@ const ACTORS = [
     },
   },
   {
-    id: 'engel', name: 'Mia', x: 600, y: 395, shirt: '#8a6ab5', hair: '#c99a5b',
+    id: 'engel', ref: 'text:engel', name: 'Mia', x: 600, y: 395, shirt: '#8a6ab5', hair: '#c99a5b',
     riddle: 'Ich bin ein Bote Gottes. Mitten in der Nacht bringe ich Menschen auf dem Feld eine wunderbare Nachricht.',
     q: {
       q: 'Mia fragt: „Das griechische Wort angelos, von dem Engel kommt, bedeutet …?“',
@@ -45,7 +45,7 @@ const ACTORS = [
     },
   },
   {
-    id: 'hirte', name: 'Jannik', x: 270, y: 620, shirt: '#3f6fa0', hair: '#7a4a26',
+    id: 'hirte', ref: 'text:hirten', name: 'Jannik', x: 270, y: 620, shirt: '#3f6fa0', hair: '#7a4a26',
     riddle: 'Ich war nachts mit meiner Herde draußen. Viele Leute in der Stadt haben auf Leute wie mich herabgesehen. Dann wurde es plötzlich hell!',
     q: {
       q: 'Jannik fragt: „Was tun wir, nachdem wir das Kind gefunden haben?“',
@@ -54,7 +54,7 @@ const ACTORS = [
     },
   },
   {
-    id: 'wirt', name: 'Finn', x: 1110, y: 420, shirt: '#b5803a', hair: '#1f1a17',
+    id: 'wirt', ref: 'text:nichtbibel', name: 'Finn', x: 1110, y: 420, shirt: '#b5803a', hair: '#1f1a17',
     riddle: 'In fast jedem Krippenspiel schicke ich Maria und Josef weg, weil bei mir alles voll ist.',
     q: {
       q: 'Finn fragt: „Was sagt eigentlich die Bibel über mich?“',
@@ -68,7 +68,7 @@ const ACTORS = [
     },
   },
   {
-    id: 'kaiser', name: 'Emma', x: 770, y: 865, shirt: '#a8452f', hair: '#e0b56b',
+    id: 'kaiser', ref: 'text:augustus', name: 'Emma', x: 770, y: 865, shirt: '#a8452f', hair: '#e0b56b',
     riddle: 'Ich bin der mächtigste Mann der Welt und sitze in Rom. Mit meinem Befehl beginnt die ganze Geschichte.',
     q: {
       q: 'Emma fragt: „Mich haben die Menschen damals als Retter und Friedensbringer gefeiert. Was will Lukas wohl zeigen, wenn er mich neben das Kind in der Krippe stellt?“',
@@ -84,7 +84,7 @@ const ACTORS = [
 ];
 
 const ACT2_SHELF = {
-  id: 'regal', name: 'Regal „6. Januar“', x: 1300, y: 150,
+  id: 'regal', ref: 'text:epiphanias', name: 'Regal „6. Januar“', x: 1300, y: 150,
   text: 'Ein Kostüm ist übrig geblieben: die Krone mit Stern. Auf dem Regal steht ein Schild: „Für den Gottesdienst am 6. Januar“.',
   q: {
     q: 'Warum hat im Krippenspiel nach Lukas niemand dieses Kostüm bekommen?',
@@ -107,10 +107,10 @@ const ACT3_INTRO = {
 const DARK = {
   drawers: ['Advent', 'Weihnachten', 'Epiphanias', 'Gehört nicht zur Weihnachtszeit'],
   spots: [
-    { id: 'violett', name: 'Violettes Tuch für Altar und Kanzel', x: 20, y: 67, w: 20, h: 38, icon: 'cloth', answer: 0, why: 'Violett ist die Farbe des Advents: Vorbereitung und Besinnung.', hint: 'Welche Farbe hatten die Altartücher im Advent?' },
-    { id: 'weiss', name: 'Weißes Tuch mit goldenem Stern', x: 47, y: 35, w: 24, h: 30, icon: 'cloth', answer: 1, why: 'Weiß ist die Farbe der Freude. Ab Heiligabend hängt es an Altar und Kanzel.', hint: 'Welche Farbe ersetzt am Heiligabend das Violett?' },
-    { id: 'kreide', name: 'Kreide und ein Zettel: 20*C+M+B+27', x: 74, y: 70, w: 16, h: 20, icon: 'star', answer: 2, why: 'Um den 6. Januar schreiben Sternsinger den Segen an die Türen: C+M+B heißt „Christus mansionem benedicat“ – Christus segne dieses Haus.', hint: 'Wann ziehen die Sternsinger los?' },
-    { id: 'osterkerze', name: 'Große Kerze mit Kreuz, Alpha und Omega', x: 84, y: 27, w: 8, h: 36, icon: 'candle', answer: 3, why: 'Das ist die Osterkerze. Sie wird in der Osternacht angezündet und gehört zum Osterfestkreis.', hint: 'Bei welchem Fest wird diese große Kerze zum ersten Mal angezündet?' },
+    { id: 'violett', name: 'Violettes Tuch für Altar und Kanzel', x: 20, y: 67, w: 20, h: 38, icon: 'cloth', answer: 0, why: 'Violett ist die Farbe des Advents: Vorbereitung und Besinnung.', hint: 'Welche Farbe hatten die Altartücher im Advent? {{text:farben}}' },
+    { id: 'weiss', name: 'Weißes Tuch mit goldenem Stern', x: 47, y: 35, w: 24, h: 30, icon: 'cloth', answer: 1, why: 'Weiß ist die Farbe der Freude. Ab Heiligabend hängt es an Altar und Kanzel.', hint: 'Welche Farbe ersetzt am Heiligabend das Violett? {{text:farben}}' },
+    { id: 'kreide', name: 'Kreide und ein Zettel: 20*C+M+B+27', x: 74, y: 70, w: 16, h: 20, icon: 'star', answer: 2, why: 'Um den 6. Januar schreiben Sternsinger den Segen an die Türen: C+M+B heißt „Christus mansionem benedicat“ – Christus segne dieses Haus.', hint: 'Wann ziehen die Sternsinger los? {{text:farben}}' },
+    { id: 'osterkerze', name: 'Große Kerze mit Kreuz, Alpha und Omega', x: 84, y: 27, w: 8, h: 36, icon: 'candle', answer: 3, why: 'Das ist die Osterkerze. Sie wird in der Osternacht angezündet und gehört zum Osterfestkreis.', hint: 'Bei welchem Fest wird diese große Kerze zum ersten Mal angezündet? {{text:farben}}' },
   ],
   box: { name: 'Der Schlüsselkasten', x: 51, y: 80, w: 13, h: 19 },
 };
@@ -141,16 +141,16 @@ const SONGS = {
     37: 'Richtig: Paul Gerhardt gehört zu den wichtigsten evangelischen Liederdichtern.',
     46: '„Stille Nacht“ stammt von einem katholischen Hilfspriester und einem Lehrer – heute singen es alle Kirchen.',
   },
-  hints: ['Das Gesangbuch beginnt mit dem Advent: Das erste Lied hat die Nummer 1.', 'Luthers Lied habt ihr schon im Notenschloss gesungen.'],
+  hints: ['Alle vier Lieder und ihre Dichter stehen im Sachtext {{text:lieder}}', 'Das Gesangbuch beginnt mit dem Advent: Das erste Lied hat die Nummer 1.'],
 };
 
 const RINGS = {
   intro: 'Mit dem Ersatzschlüssel lauft ihr zur Haupttür. Aber die alte Tür hat zusätzlich ein Walzenschloss. Frau Petersen hat daruntergeschrieben: „Nur ein wahrer Satz über Weihnachten öffnet die Tür.“',
   lead: 'An Weihnachten feiern Christen:',
   rings: [
-    { q: 'Was geschieht?', options: ['Gott wird Mensch', 'der Winter beginnt', 'der Weihnachtsmann kommt', 'das Jahr geht zu Ende'], answer: 0, hint: 'Erste Walze: Woran erinnert Weihnachten – an ein Wetter oder an ein Ereignis zwischen Gott und den Menschen?' },
-    { q: 'Wie?', options: ['als mächtiger Kaiser', 'als kleines Kind im Stall', 'mit einem Heer von Soldaten', 'auf einer goldenen Wolke'], answer: 1, hint: 'Zweite Walze: Denkt an den Gegensatz zwischen Kaiser Augustus und der Krippe.' },
-    { q: 'Für wen?', options: ['nur für reiche Leute', 'nur für die Römer', 'für alle Menschen', 'nur für Könige'], answer: 2, hint: 'Dritte Walze: Hirten aus Bethlehem, Weise aus fernen Ländern – für wen ist die gute Nachricht?' },
+    { q: 'Was geschieht?', options: ['Gott wird Mensch', 'der Winter beginnt', 'der Weihnachtsmann kommt', 'das Jahr geht zu Ende'], answer: 0, hint: 'Erste Walze: Lest den ersten Absatz von {{text:menschwerdung}}' },
+    { q: 'Wie?', options: ['als mächtiger Kaiser', 'als kleines Kind im Stall', 'mit einem Heer von Soldaten', 'auf einer goldenen Wolke'], answer: 1, hint: 'Zweite Walze: Lest den zweiten Absatz von {{text:menschwerdung}}' },
+    { q: 'Für wen?', options: ['nur für reiche Leute', 'nur für die Römer', 'für alle Menschen', 'nur für Könige'], answer: 2, hint: 'Dritte Walze: Lest den dritten Absatz von {{text:menschwerdung}}' },
   ],
   win: 'Die Walzen rasten ein. Mit einem Knarren schwingt die Tür auf – die Gemeinde kommt herein, und die Glocken beginnen zu läuten!',
 };

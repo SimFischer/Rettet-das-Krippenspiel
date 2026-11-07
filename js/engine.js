@@ -23,7 +23,7 @@ function fmtTime(ms) { const m = Math.floor(ms / 60000), s = Math.floor(ms / 100
 function keysHTML() { return `<span class="keys" aria-label="${S.solved.length} von 6 Schlössern offen">${STATIONS.map(s => `<i class="${S.solved.includes(s.id) ? 'on' : ''}"></i>`).join('')}</span>`; }
 function feedback(kind, title, text) {
   const ic = kind === 'ok' ? 'check' : kind === 'no' ? 'cross' : 'lantern';
-  return h(`<div class="feedback ${kind}" role="status">${icon(ic)}<div>${title ? `<b>${title}</b>` : ''}${text || ''}</div></div>`);
+  return h(`<div class="feedback ${kind}" role="status">${icon(ic)}<div>${title ? `<b>${title}</b>` : ''}${text ? linkify(text) : ''}</div></div>`);
 }
 
 /* ===== Weiche nach Spielphase ===== */
@@ -81,6 +81,7 @@ function showHub() {
       <span class="chip">${icon(S.teamIcon)} ${esc(S.team)}</span>
       <span class="chip">${icon('key')} ${keysHTML()}</span>
       <span class="spacer"></span>
+      ${shelfButton()}
       <button class="iconbtn" id="letter">${icon('scroll')} Brief</button>
       <button class="iconbtn" id="bonus" ${S.bonusOpen || S.finaleDone ? '' : 'disabled style="opacity:.4"'}>${icon('treasure')} Schatzkammer</button>
     </div>
@@ -105,6 +106,7 @@ function showHub() {
   el.querySelectorAll('.locklist button').forEach(b => b.onclick = () => open(b.dataset.id));
   el.querySelector('#letter').onclick = () => showLetter(false);
   el.querySelector('#bonus').onclick = showTreasury;
+  SHELF_CTX = null; wireShelfButtons(el);
   const fin = el.querySelector('#finale'); if (fin) fin.onclick = showChestOpen;
   mount(el);
 }
@@ -125,10 +127,11 @@ function showStation(id) {
     <div class="stage-slot"></div>
     <div class="st-foot">
       <button class="btn ghost small" id="back">${icon('back')} Zur Kiste</button>
-      <button class="btn ghost small lantern" id="hint">${icon('lantern')} Laterne: Hinweis</button>
+      <span class="foot-right">${shelfButton('btn ghost small')}<button class="btn ghost small lantern" id="hint">${icon('lantern')} Laterne: Hinweis</button></span>
     </div>
   </section>`);
   const slot = el.querySelector('.stage-slot');
+  wireShelfButtons(el);
   const dots = el.querySelector('.dots');
   const hintBtn = el.querySelector('#hint');
   const hintBox = el.querySelector('.hintbox');
@@ -141,6 +144,7 @@ function showStation(id) {
     renderDots();
     hintLevel = 0; hintBox.hidden = true;
     const step = st.steps[idx];
+    SHELF_CTX = step.ref || st.ref;
     hintBtn.hidden = !(step.hints && step.hints.length);
     slot.innerHTML = '';
     slot.appendChild(STEP[step.type](step, next, st));
@@ -155,7 +159,7 @@ function showStation(id) {
     const step = st.steps[idx];
     if (!step.hints) return;
     const n = Math.min(hintLevel, step.hints.length - 1);
-    hintBox.innerHTML = step.hints.slice(0, n + 1).map(t => `<div>${t}</div>`).join('');
+    hintBox.innerHTML = step.hints.slice(0, n + 1).map(t => `<div>${linkify(t)}</div>`).join('');
     hintBox.hidden = false;
     if (hintLevel < step.hints.length) { hintLevel++; if (!solved) { S.hints++; save(); } }
     hintBtn.innerHTML = `${icon('lantern')} ${hintLevel < step.hints.length ? 'Noch ein Hinweis' : 'Hinweise'}`;
@@ -199,11 +203,11 @@ const STEP = {
       : `<div style="display:grid;place-items:center;padding:30px;color:var(--candle-soft)">${icon(step.art === 'books' ? 'scroll' : step.art === 'note' ? 'note' : 'star', 'width="140" height="140"')}</div>`;
     const el = h(`<div class="paper">
       <div class="kicker">${step.kicker || ''}</div>
-      <div class="info-grid"><div style="display:grid;gap:14px;min-width:0"><h2>${step.title}</h2>${step.html}</div><div class="art">${art}${st ? `<img class="info-img" src="assets/scene/info-${st.id}.webp" alt="" onerror="this.remove()">` : ''}</div></div>
-      <div class="step-actions"><button class="btn ink">Verstanden ${icon('next')}</button></div>
+      <div class="info-grid"><div style="display:grid;gap:14px;min-width:0"><h2>${step.title}</h2>${linkify(step.html)}</div><div class="art">${art}${st ? `<img class="info-img" src="assets/scene/info-${st.id}.webp" alt="" onerror="this.remove()">` : ''}</div></div>
+      <div class="step-actions"><button class="btn ink">Los geht’s ${icon('next')}</button></div>
     </div>`);
     if (step.art === 'wheel') el.querySelectorAll('.fl').forEach(f => f.classList.add('on'));
-    el.querySelector('button').onclick = next;
+    el.querySelector('.step-actions button').onclick = next;
     return el;
   },
 

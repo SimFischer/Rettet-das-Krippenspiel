@@ -5,7 +5,7 @@
 const LETTER = `
 <p>Moin, liebes Krippenspiel-Team!</p>
 <p>Heute ist Heiligabend. Um 15 Uhr beginnt in unserer Kirche die Christvesper – mit eurem Krippenspiel. Kostüme, Krippenfiguren und das Drehbuch liegen in der alten Kiste in der Sakristei.</p>
-<p>Damit vorher niemand die Engelsflügel stibitzt, habe ich die Kiste mit <b>sechs Schlössern</b> gesichert. Und jetzt liege ich mit Grippe im Bett … Die Codes habe ich nicht aufgeschrieben. Aber wer die Advents- und Weihnachtszeit gut kennt, knackt jedes Schloss. Meine Notizen helfen euch.</p>
+<p>Damit vorher niemand die Engelsflügel stibitzt, habe ich die Kiste mit <b>sechs Schlössern</b> gesichert. Und jetzt liege ich mit Grippe im Bett … Die Codes habe ich nicht aufgeschrieben. Aber wer die Advents- und Weihnachtszeit gut kennt, knackt jedes Schloss. Alles, was ihr wissen müsst, steht in meinem <b>Bücherregal</b>: eine Bibel und viele Sachtexte. Lest gründlich – dann schafft ihr das!</p>
 <p>Schafft ihr es bis zum Glockenläuten? Ich drücke euch die Daumen!</p>
 <p class="sig">Eure Küsterin Hanne Petersen</p>`;
 
@@ -13,33 +13,34 @@ const STATIONS = [
   /* ---------------------------------------------------------- 1 */
   {
     id: 'kalender', name: 'Das Kalenderschloss', short: 'Advent', icon: 'cal',
-    sub: 'Advent und Kirchenjahr',
+    sub: 'Advent und Kirchenjahr', ref: 'text:advent',
     steps: [
       {
-        type: 'info', kicker: 'Notiz von Frau Petersen', title: 'Advent heißt Ankunft',
+        type: 'info', kicker: 'Notiz von Frau Petersen', title: 'Bald ist Weihnachten',
         art: 'window',
-        html: `<p>Das Wort <span class="term">Advent</span> kommt aus dem Lateinischen: <i>adventus</i> heißt <b>Ankunft</b>.</p>
-        <p>Im Advent bereiten sich Christinnen und Christen auf die Ankunft Jesu vor. Sie erinnern sich an seine Geburt in Bethlehem. Und sie hoffen, dass Christus am Ende der Zeit wiederkommt.</p>
-        <p>Mit dem <b>1. Advent</b> beginnt das neue <b>Kirchenjahr</b>. Der Advent hat vier Sonntage. Die Tücher an Altar und Kanzel sind in dieser Zeit <b>violett</b>: die Farbe der Vorbereitung und des Nachdenkens.</p>`,
+        html: `<p>Frau Petersen hat das Kalenderschloss mit Fragen zur Adventszeit gesichert: Was bedeutet das Wort Advent? Wann beginnt das Kirchenjahr? Und welche Farbe haben die Tücher am Altar?</p>
+        <p>Die Antworten stehen in ihrem Bücherregal. Lest zuerst gründlich nach – dann knackt ihr das Schloss.</p>
+        <p>{{text:advent}} {{text:farben}}</p>`,
       },
       {
         type: 'mc', q: 'Was bedeutet das Wort „Advent“?',
         options: ['Ankunft', 'Kerzenzeit', 'Warten auf Schnee', 'Geschenkezeit'], correct: 0,
         explain: 'Genau: adventus = Ankunft. Christen warten im Advent auf die Ankunft Jesu.',
-        hints: ['Lies noch einmal den ersten Satz in Frau Petersens Notiz.'],
+        hints: ['Die Übersetzung steht im ersten Absatz des Sachtexts {{text:advent}}'],
       },
       {
         type: 'mc', q: 'Frau Petersen hat die Altartücher für den Advent schon aufgehängt. Welche Farbe haben sie?',
         swatches: ['#6c4b94', '#f4f1ea', '#2f6b45', '#b8322a'],
         options: ['Violett', 'Weiß', 'Grün', 'Rot'], correct: 0,
         explain: 'Violett steht für Vorbereitung und Besinnung. An Weihnachten und Epiphanias wechselt die Farbe zu Weiß, der Farbe der Freude.',
-        hints: ['Die Farbe steht für Vorbereitung und Nachdenken. Sie ist auch auf dem Schloss-Bild zu sehen.'],
+        ref: 'text:farben',
+        hints: ['Im Bücherregal steht, welche Farbe zu welcher Zeit gehört: {{text:farben}}'],
       },
       {
         type: 'mc', q: 'Womit beginnt das Kirchenjahr?',
         options: ['Mit dem 1. Advent', 'Mit dem 1. Januar', 'Mit Weihnachten', 'Mit Ostern'], correct: 0,
         explain: 'Richtig. Das Kirchenjahr beginnt schon vor dem Kalenderjahr – mit dem 1. Advent.',
-        hints: ['Das Kirchenjahr ist nicht dasselbe wie das Kalenderjahr.'],
+        hints: ['Das Kirchenjahr ist nicht dasselbe wie das Kalenderjahr. Lest nach: {{text:advent}}'],
       },
       {
         type: 'tf', q: 'Schnellrunde: Stimmt das?',
@@ -49,13 +50,13 @@ const STATIONS = [
           { t: 'Am Ewigkeitssonntag, eine Woche vor dem 1. Advent, endet das alte Kirchenjahr.', ok: true, why: 'Ja. Am Ewigkeitssonntag (Totensonntag) denken evangelische Gemeinden an die Verstorbenen des Jahres.' },
           { t: 'Im Advent wird an die Ankunft Jesu gedacht – und an die Hoffnung, dass er wiederkommt.', ok: true, why: 'Genau: Erinnerung und Hoffnung gehören zusammen.' },
         ],
-        hints: ['Alles, was ihr braucht, steht in Frau Petersens Notiz am Anfang.'],
+        hints: ['Alle vier Aussagen könnt ihr im Sachtext prüfen: {{text:advent}}'],
       },
       {
         type: 'calendar',
         q: 'Der 4. Advent ist immer der letzte Sonntag vor dem 25. Dezember. Tippt im Kalender auf den 1. Advent 2026.',
         target: '2026-11-29',
-        hints: ['Sucht zuerst den 4. Advent: den letzten Sonntag vor dem 25.12.', 'Der 4. Advent ist am 20.12. Geht von dort immer eine Woche zurück: 3. Advent, 2. Advent, 1. Advent.'],
+        hints: ['Sucht zuerst den 4. Advent: den letzten Sonntag vor dem 25.12. So steht es auch im Sachtext {{text:advent}}', 'Der 4. Advent ist am 20.12. Geht von dort immer eine Woche zurück: 3. Advent, 2. Advent, 1. Advent.'],
       },
       {
         type: 'dial', kind: 'digits', format: ['TT', 'MM'], answer: '2911', lockIcon: 'cal',
@@ -67,14 +68,14 @@ const STATIONS = [
   /* ---------------------------------------------------------- 2 */
   {
     id: 'lichterrad', name: 'Das Kerzenschloss', short: 'Wichern', icon: 'candle',
-    sub: 'Wie der Adventskranz erfunden wurde',
+    sub: 'Wie der Adventskranz erfunden wurde', ref: 'text:wichern',
     steps: [
       {
-        type: 'info', kicker: 'Aus der Kirchenchronik', title: 'Hamburg, 1839',
+        type: 'info', kicker: 'Aus der Kirchenchronik', title: 'Ein Rad voller Kerzen',
         art: 'wheel',
-        html: `<p>Im <b>Rauhen Haus</b> in Hamburg-Horn leben Kinder aus den ärmsten Vierteln der Stadt. Der evangelische Theologe <b>Johann Hinrich Wichern</b> kümmert sich um sie.</p>
-        <p>Im Advent fragen die Kinder jeden Tag: „Wann ist endlich Weihnachten?“ Da hat Wichern eine Idee. Er baut ein großes Holzrad, so groß wie ein Wagenrad. Darauf stellt er für jeden <b>Sonntag eine große weiße Kerze</b> und für jeden <b>Werktag eine kleine rote Kerze</b>. Jeden Tag brennt eine Kerze mehr. An Heiligabend leuchten alle.</p>
-        <p>Später kamen Tannenzweige dazu. Zu Hause ließ man die kleinen Kerzen weg – übrig blieben die vier Sonntagskerzen. So entstand der <b>Adventskranz</b>: in einem evangelischen Kinderheim, ganz in der Nähe von Schleswig-Holstein.</p>`,
+        html: `<p>In der Kirchenchronik klebt ein altes Bild: ein großes Holzrad voller Kerzen, darunter viele Kinder. Daneben hat Frau Petersen notiert: „Ohne dieses Rad gäbe es keinen Adventskranz!“</p>
+        <p>Wer hat das Rad erfunden, warum – und wie viele Kerzen hatte es? Lest den Sachtext genau.</p>
+        <p>{{text:wichern}}</p>`,
       },
       {
         type: 'mc', q: 'Warum hat Wichern das Lichterrad gebaut?',
@@ -85,7 +86,7 @@ const STATIONS = [
           'Weil ein alter Brauch aus der Römerzeit das so vorschrieb.',
         ], correct: 0,
         explain: 'Genau. Das Rad war ein Kalender aus Licht: Jeden Tag wurde es ein bisschen heller.',
-        hints: ['Was haben die Kinder Wichern jeden Tag gefragt?'],
+        hints: ['Was haben die Kinder Wichern jeden Tag gefragt? Lest nach: {{text:wichern}}'],
       },
       {
         type: 'mc', q: 'Wichern gründete später die „Innere Mission“. Daraus wurde die Diakonie. Was macht die Diakonie heute?',
@@ -96,7 +97,7 @@ const STATIONS = [
           'Sie organisiert die Weihnachtsferien der Schulen.',
         ], correct: 0,
         explain: 'Richtig. Kindergärten, Pflegedienste, Beratungsstellen: Die Diakonie setzt fort, was Wichern begonnen hat – Nächstenliebe im Alltag.',
-        hints: ['Wichern hat armen Kindern geholfen. Die Diakonie macht etwas Ähnliches – nur viel größer.'],
+        hints: ['Der letzte Absatz im Sachtext erklärt die Diakonie: {{text:wichern}}'],
       },
       {
         type: 'tf', q: 'Schnellrunde: Stimmt das?',
@@ -106,28 +107,27 @@ const STATIONS = [
           { t: 'Die großen weißen Kerzen standen für die Sonntage.', ok: true, why: 'Genau. Daraus wurden die vier Kerzen unserer Adventskränze.' },
           { t: 'An Heiligabend brannten alle Kerzen auf dem Rad.', ok: true, why: 'Ja – dann war Weihnachten da.' },
         ],
-        hints: ['Lest noch einmal die Kirchenchronik am Anfang dieses Schlosses.'],
+        hints: ['Jede Aussage findet ihr im Sachtext: {{text:wichern}}'],
       },
       {
         type: 'dial', kind: 'digits', format: ['rote Kerzen'], answer: '22', lockIcon: 'candle',
         showDays: true, wheelAfter: true,
         q: 'Stellt euch vor, Wichern baut sein Lichterrad für 2026: vom 1. Advent (29.11.) bis Heiligabend (24.12.). Wie viele <b>kleine rote Kerzen</b> braucht er? Die Zahl öffnet das Kerzenschloss.',
-        hints: ['Rote Kerzen gibt es nur für Werktage. Zählt alle Tage und zieht die Sonntage ab.', 'Vom 29.11. bis 24.12. sind es 26 Tage. Davon sind 4 Sonntage.'],
+        hints: ['Rote Kerzen gibt es nur für Werktage ({{text:wichern}}). Zählt alle Tage und zieht die Sonntage ab.', 'Vom 29.11. bis 24.12. sind es 26 Tage. Davon sind 4 Sonntage.'],
       },
     ],
   },
   /* ---------------------------------------------------------- 3 */
   {
     id: 'lukas', name: 'Das Schriftrollenschloss', short: 'Lukas 2', icon: 'scroll',
-    sub: 'Die Weihnachtsgeschichte nach Lukas',
+    sub: 'Die Weihnachtsgeschichte nach Lukas', ref: 'bibel:lk2',
     steps: [
       {
-        type: 'info', kicker: 'Das Drehbuch', title: 'Die Weihnachtsgeschichte im Lukasevangelium',
+        type: 'info', kicker: 'Das Drehbuch', title: 'Das Drehbuch ist durcheinander',
         art: 'window',
-        html: `<p>Die bekannteste Weihnachtsgeschichte steht im <b>Lukasevangelium, Kapitel 2</b>. In der Christvesper wird sie vorgelesen – und im Krippenspiel nachgespielt.</p>
-        <blockquote>„Fürchtet euch nicht! Siehe, ich verkündige euch große Freude, die allem Volk widerfahren wird; denn euch ist heute der Heiland geboren, welcher ist Christus, der Herr, in der Stadt Davids.“</blockquote>
-        <p class="ref">Lukas 2,10–11 (Lutherbibel 1912)</p>
-        <p><b>Heiland</b> ist ein altes Wort für <b>Retter</b>. Leider sind Frau Petersens Drehbuch-Szenen durcheinandergefallen …</p>`,
+        html: `<p>Das Drehbuch für das Krippenspiel ist vom Tisch gefallen. Jetzt liegen alle Szenen durcheinander!</p>
+        <p>Die Vorlage für das Krippenspiel ist die Weihnachtsgeschichte im <b>Lukasevangelium, Kapitel 2</b>. Lest sie in der Bibel im Bücherregal. Achtet besonders darauf, was der Engel zu den Hirten sagt.</p>
+        <p>{{bibel:lk2}} {{text:hirten}}</p>`,
       },
       {
         type: 'fill',
@@ -138,7 +138,7 @@ const STATIONS = [
           { answer: 'Davids', choices: ['Roms', 'Nazareths', 'Davids', 'Jerusalems'] },
         ],
         explain: 'Bethlehem gilt als die Stadt Davids, des berühmten Königs Israels. Schon der Prophet Micha hatte gesagt, dass aus Bethlehem ein Herrscher kommen wird (Micha 5,1).',
-        hints: ['Schaut noch einmal in das Zitat auf der Notiz davor.'],
+        hints: ['Schlagt den Vers in der Bibel nach: {{bibel:lk2}} – Vers 11.'],
       },
       {
         type: 'mc', q: 'Warum hören bei Lukas zuerst die Hirten die gute Nachricht?',
@@ -149,7 +149,8 @@ const STATIONS = [
           'Die Hirten hatten den Engel schon lange erwartet.',
         ], correct: 0,
         explain: 'Genau. Auch der erwachsene Jesus wendet sich besonders den Armen und Ausgegrenzten zu. Lukas erzählt das schon bei seiner Geburt.',
-        hints: ['Denkt daran, wo Jesus geboren wird: nicht im Palast, sondern im Stall. Wer passt dazu?'],
+        ref: 'text:hirten',
+        hints: ['Lest im Sachtext, wie die Leute über Hirten dachten: {{text:hirten}}'],
       },
       {
         type: 'order', lockIcon: 'scroll', success: 'Klick – die Schriftrolle rollt sich auf!',
@@ -162,20 +163,21 @@ const STATIONS = [
           { icon: 'angel', text: 'Ein Engel sagt: „Fürchtet euch nicht!“ Viele Engel loben Gott.' },
           { icon: 'speech', text: 'Die Hirten finden das Kind, erzählen allen davon und loben Gott.' },
         ],
-        hints: ['Die Geschichte beginnt ganz oben bei der Macht: im Palast in Rom.', 'Erst kommt die Geburt im Stall, dann wechselt die Szene aufs Feld zu den Hirten.'],
+        hints: ['Lest die Geschichte in der Bibel: {{bibel:lk2}}. Die Szenen kommen dort in derselben Reihenfolge vor.', 'Verse 1–3: Kaiser · 4–5: Reise · 6–7: Geburt · 8: Hirten · 9–14: Engel · 15–20: Hirten erzählen.'],
       },
     ],
   },
   /* ---------------------------------------------------------- 4 */
   {
     id: 'evangelien', name: 'Das Siegelschloss', short: 'Lk oder Mt?', icon: 'seal',
-    sub: 'Zwei Weihnachtsgeschichten',
+    sub: 'Zwei Weihnachtsgeschichten', ref: 'text:zwei',
     steps: [
       {
-        type: 'info', kicker: 'Notiz von Frau Petersen', title: 'Zwei Evangelisten – zwei Geschichten',
+        type: 'info', kicker: 'Notiz von Frau Petersen', title: 'Zwei Geschichten in einem Krippenspiel',
         art: 'books',
-        html: `<p>In der Bibel gibt es nicht nur eine Weihnachtsgeschichte, sondern zwei: im <b>Lukasevangelium</b> und im <b>Matthäusevangelium</b>. Beide erzählen von der Geburt Jesu – aber ganz unterschiedlich.</p>
-        <p>Und manches, was wir aus Krippenspielen kennen, steht gar nicht in der Bibel!</p>
+        html: `<p>In der Bibel gibt es nicht nur eine Weihnachtsgeschichte, sondern zwei. In unseren Krippenspielen werden sie oft vermischt – und manches kommt dazu, was gar nicht in der Bibel steht.</p>
+        <p>Lest in Frau Petersens Bücherregal nach, was bei Lukas und was bei Matthäus steht.</p>
+        <p>{{text:zwei}} {{text:nichtbibel}} {{bibel:mt2}}</p>
         <p class="note">Das Siegel bricht nur, wenn alles richtig sortiert ist. – H. P.</p>`,
       },
       {
@@ -200,7 +202,7 @@ const STATIONS = [
           { t: 'Schnee in Bethlehem', b: 'no', why: 'Davon steht nichts in der Bibel. Schnee ist in Bethlehem sehr selten – das Bild kommt aus unseren Winterliedern.' },
           { t: 'Der Weihnachtsmann', b: 'no', why: 'Der Weihnachtsmann ist eine viel spätere Figur und kommt in der Bibel nicht vor.' },
         ],
-        hints: ['Lukas erzählt von armen Leuten auf dem Feld. Matthäus erzählt von Königen, Sternen und kostbaren Geschenken.', 'Fragt euch bei jeder Karte: Habe ich das schon im Drehbuch nach Lukas gelesen? Wenn nicht: Ist es eine Figur aus dem Stall-Bild oder dem Winter?'],
+        hints: ['Im Sachtext {{text:zwei}} steht, was bei Lukas und was bei Matthäus vorkommt.', 'Für die dritte Spalte: {{text:nichtbibel}}'],
       },
       {
         type: 'order', success: 'Die Matthäus-Geschichte stimmt!',
@@ -212,7 +214,8 @@ const STATIONS = [
           { icon: 'gift', text: 'Im Haus finden sie das Kind mit Maria, knien nieder und schenken Gold, Weihrauch und Myrrhe.' },
           { icon: 'back', text: 'Im Traum werden sie gewarnt und ziehen auf einem anderen Weg heim – nicht zurück zu Herodes.' },
         ],
-        hints: ['Die Weisen wissen zuerst nicht, wo das Kind ist. Wen fragen sie wohl in der Hauptstadt?', 'Zum Schluss meiden sie Herodes. Das feiert ihr später im Bonusspiel „Der andere Heimweg“.'],
+        ref: 'bibel:mt2',
+        hints: ['Lest die Geschichte in der Bibel: {{bibel:mt2}}', 'Verse 1–2: Stern · 3–8: Herodes · 9–10: Stern führt nach Bethlehem · 11: Haus und Gaben · 12: anderer Weg.'],
       },
       {
         type: 'mc', q: 'Warum erzählen Lukas und Matthäus so unterschiedlich?',
@@ -223,21 +226,21 @@ const STATIONS = [
           'Die Seiten der Bibel sind später durcheinandergeraten.',
         ], correct: 0,
         explain: 'Genau. Lukas zeigt: Gott kommt zu den Armen. Matthäus zeigt: Jesus ist ein König – und er ist für alle Völker da, auch für Fremde aus fernen Ländern.',
-        hints: ['Die Evangelisten wollten keinen Polizeibericht schreiben, sondern von ihrem Glauben erzählen.'],
+        hints: ['Der letzte Absatz im Sachtext beantwortet die Frage: {{text:zwei}}'],
       },
     ],
   },
   /* ---------------------------------------------------------- 5 */
   {
     id: 'evangelisch', name: 'Das Notenschloss', short: 'Evangelisch', icon: 'note',
-    sub: 'Evangelisch Weihnachten feiern',
+    sub: 'Evangelisch Weihnachten feiern', ref: 'text:konfessionen',
     steps: [
       {
-        type: 'info', kicker: 'Notiz von Frau Petersen', title: 'Was ist evangelisch an Weihnachten?',
+        type: 'info', kicker: 'Notiz von Frau Petersen', title: 'Evangelisch oder katholisch?',
         art: 'note',
-        html: `<p>Ihr spielt das Krippenspiel in einer <b>evangelischen</b> Kirche. Viele Weihnachtsbräuche sind in einer bestimmten Kirche entstanden: manche in der evangelischen, manche in der katholischen. Heute feiern viele Christinnen und Christen sie gemeinsam.</p>
-        <p><b>Martin Luther</b> lehnte die Verehrung von Heiligen ab. Darum sollten die Kinder ihre Geschenke nicht mehr vom heiligen Nikolaus bekommen, sondern vom <b>„Heiligen Christ“</b> – mit Blick auf Jesus. Daraus wurde später das <b>Christkind</b>.</p>
-        <p>Für die Weihnachtsfeier mit seiner Familie dichtete Luther um 1535 das Lied <b>„Vom Himmel hoch, da komm ich her“</b>.</p>`,
+        html: `<p>Ihr spielt das Krippenspiel in einer <b>evangelischen</b> Kirche. Viele Weihnachtsbräuche sind aber in einer bestimmten Kirche entstanden: manche in der evangelischen, manche in der katholischen.</p>
+        <p>Was hat Martin Luther verändert? Woher kommen Adventskranz, Krippe und Sternsinger? Und welches Lied hat Luther für seine Familie gedichtet? Lest nach:</p>
+        <p>{{text:konfessionen}} {{text:lieder}}</p>`,
       },
       {
         type: 'sort', lockIcon: 'note',
@@ -256,7 +259,7 @@ const STATIONS = [
           { t: 'Nikolaus bringt die Geschenke', b: 'ka', why: 'Der Brauch kommt aus der Heiligenverehrung. Evangelische Christen sehen Nikolaus als Vorbild, weil er Armen geholfen hat – sie beten aber nicht zu Heiligen.' },
           { t: 'Christmette: Messe um Mitternacht', b: 'ka', why: 'Die Mitternachtsmesse ist eine katholische Tradition. In evangelischen Kirchen ist am Nachmittag die Christvesper mit Krippenspiel typisch.' },
         ],
-        hints: ['Zwei Karten habt ihr heute schon kennengelernt: Wichern und Luther waren evangelisch.', 'Was mit Heiligen zu tun hat, kommt eher aus der katholischen Tradition.'],
+        hints: ['Alle acht Bräuche werden im Sachtext erklärt: {{text:konfessionen}}', 'Was mit Heiligen zu tun hat, kommt aus der katholischen Tradition.'],
       },
       {
         type: 'fill',
@@ -268,32 +271,33 @@ const STATIONS = [
           { answer: 'sagen', choices: ['sagen', 'tanzen', 'schweigen'] },
         ],
         explain: 'Gut! Die Strophe reimt sich: her – Mär, viel – will.',
-        hints: ['Achtet auf die Reime: her reimt sich auf …?'],
+        ref: 'text:lieder',
+        hints: ['Die ganze Strophe steht im Sachtext {{text:lieder}}'],
       },
       {
         type: 'dial', kind: 'letters', answer: 'ENGEL', alphabet: 'AEGHILNRST', lockIcon: 'note',
         q: 'Notiz am Notenschloss: „Wer singt die erste Strophe? Er kommt vom Himmel hoch und bringt eine gute Nachricht. Sein Name öffnet das Schloss.“',
-        hints: ['Bei Lukas bringt er den Hirten die gute Nachricht.', 'Gesucht ist der Engel: E-N-G-E-L.'],
+        hints: ['Lest nach, was ein Bote Gottes ist: {{text:engel}}', 'Gesucht ist der Engel: E-N-G-E-L.'],
       },
     ],
   },
   /* ---------------------------------------------------------- 6 */
   {
     id: 'epiphanias', name: 'Das Sternschloss', short: 'Epiphanias', icon: 'star',
-    sub: 'Die Weisen aus dem Morgenland',
+    sub: 'Die Weisen aus dem Morgenland', ref: 'text:epiphanias',
     steps: [
       {
-        type: 'info', kicker: 'Notiz von Frau Petersen', title: 'Epiphanias: Gott zeigt sich allen',
+        type: 'info', kicker: 'Notiz von Frau Petersen', title: 'Das Fest am 6. Januar',
         art: 'star',
-        html: `<p>Am <b>6. Januar</b> feiert die evangelische Kirche <span class="term">Epiphanias</span>. Das griechische Wort heißt <b>Erscheinung</b>. Gemeint ist: In Jesus wird Gott für <b>alle</b> Menschen sichtbar – auch für Menschen aus fernen Ländern.</p>
-        <p>Dazu gehört die Geschichte von den <b>Weisen aus dem Morgenland</b> (Matthäus 2). Die Sterndeuter folgen einem Stern, fragen bei König Herodes in Jerusalem nach und finden das Kind in Bethlehem. Sie knien nieder und schenken <b>Gold, Weihrauch und Myrrhe</b>.</p>
-        <p>In der katholischen Kirche heißt der Tag oft <b>Dreikönigstag</b>. Die Farbe im Gottesdienst ist weiß, wie an Weihnachten. Mit Epiphanias beginnt die Epiphaniaszeit. Die Weihnachtszeit klingt erst Anfang Februar aus.</p>`,
+        html: `<p>Auf dem Sternschloss klebt ein Zettel: „Epiphanias“. Darunter hat Frau Petersen einen Stern und drei Geschenke gemalt.</p>
+        <p>Was bedeutet das Wort? Was haben die Weisen aus dem Morgenland damit zu tun? Und was sollen ihre Geschenke sagen? Lest im Bücherregal nach:</p>
+        <p>{{text:epiphanias}} {{bibel:mt2}}</p>`,
       },
       {
         type: 'mc', q: 'Was bedeutet das Wort „Epiphanias“?',
         options: ['Erscheinung', 'Dreikönig', 'Sternenfest', 'Ende von Weihnachten'], correct: 0,
         explain: 'Richtig: Erscheinung. Gott erscheint in Jesus – für die ganze Welt.',
-        hints: ['Es ist ein griechisches Wort. Die Übersetzung steht in der Notiz.'],
+        hints: ['Die Übersetzung steht im ersten Satz des Sachtexts: {{text:epiphanias}}'],
       },
       {
         type: 'match',
@@ -304,7 +308,7 @@ const STATIONS = [
           { a: 'Myrrhe', ai: 'jar', b: 'Zeichen für einen Menschen, der leiden wird – Myrrhe ist ein Heil- und Salböl' },
         ],
         explain: 'So sagen die Geschenke: Jesus ist König, Gott und Mensch zugleich.',
-        hints: ['Was trägt ein König auf dem Kopf? Woraus ist es gemacht?', 'Weihrauch benutzt man im Gottesdienst. Myrrhe ist ein Öl, das man für Kranke und Verstorbene verwendete.'],
+        hints: ['Der dritte Absatz im Sachtext erklärt die Gaben: {{text:epiphanias}}'],
       },
       {
         type: 'mc', q: 'Warum ist es wichtig, dass die Weisen aus einem fremden Land kommen?',
@@ -315,12 +319,12 @@ const STATIONS = [
           'Weil König Herodes sie eingeladen hatte.',
         ], correct: 0,
         explain: 'Genau. Darum geht es an Epiphanias: Die gute Nachricht gilt der ganzen Welt.',
-        hints: ['Denkt an die Bedeutung von Epiphanias: Gott wird für wen sichtbar?'],
+        hints: ['Lest den zweiten Absatz: {{text:epiphanias}}'],
       },
       {
         type: 'dial', kind: 'digits', format: ['TT', 'MM'], answer: '0601', lockIcon: 'star',
         q: 'Notiz am Sternschloss: „Zwischen Weihnachten und Epiphanias liegen zwölf Tage. Zählt vom 1. Weihnachtstag, dem 25. Dezember, zwölf Tage weiter. Das Datum öffnet das Schloss: erst Tag, dann Monat.“',
-        hints: ['Der Dezember hat 31 Tage. Nach dem 31.12. geht es mit dem 1. Januar weiter.', 'Es ist der Tag von Epiphanias: 06 01.'],
+        hints: ['Der Dezember hat 31 Tage. Nach dem 31.12. geht es mit dem 1. Januar weiter. Das Datum steht auch im Sachtext {{text:epiphanias}}', 'Es ist der Tag von Epiphanias: 06 01.'],
       },
     ],
   },

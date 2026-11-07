@@ -15,6 +15,8 @@ Escape-Abenteuer für den evangelischen Religionsunterricht, Klasse 6 (45 Minute
 | Finale | Reflexionssatz, Urkunde | – |
 | Schatzkammer | Der andere Heimweg (Schleichspiel zu Mt 2,12), Kerzenwächter, Hirten suchen Schafe, Sternen-Memory | Bonus |
 
+**Frau Petersens Bücherregal** (in jedem Teil oben bzw. unten erreichbar): eine Bibel mit den wichtigen Stellen (Lk 1; Lk 2,1–20; Mt 1; Mt 2,1–14; Jes 1,3; Mi 5,1; Ps 24,7; Joh 8,12, Lutherbibel 1912 mit Worterklärungen) und 13 kindgerechte Sachtexte. Jede Aufgabe lässt sich aus diesen Texten lösen; die Infokarten am Anfang der Schlösser verraten die Lösungen nicht, sondern verweisen ins Regal. Die Laterne zeigt auf die passende Stelle.
+
 Lehrkraftbereich: unten auf dem Startbildschirm, PIN **2412**. Dort stehen Stundenverlauf, alle Lösungen und fachliche Hinweise; außerdem Sprünge zu Akt 2 und 3, Freigabe der Schatzkammer und Zurücksetzen.
 
 ## Dateien
@@ -29,6 +31,8 @@ js/walk.js           Top-down-Engine (Tippen zum Laufen, Wegsuche, Wachen mit Si
 js/engine.js         Spielstand, Bildschirme, Aufgabentypen, Lehrkraftbereich
 js/acts.js           Akt 2 (Kostüme) und Akt 3 (Schlüssel)
 js/games.js          Zwischen- und Bonusspiele
+js/library-content.js Bücherregal: Bibelstellen und Sachtexte
+js/library.js        Bücherregal: Oberfläche und Verweise ({{bibel:lk2}}, {{text:wichern}})
 assets/              gemalte Bilder (siehe ASSET-PROMPTS.md)
 tests/check.mjs      Inhalts- und Kartenprüfung: node tests/check.mjs
 ```
