@@ -674,3 +674,11 @@ body.shelf-open { overflow: hidden; }
 .sb-nav .iconbtn { background: var(--candle); color: #2a1b06; min-width: 56px; }
 .sb-nav .iconbtn[disabled] { opacity: .35; }
 .sb-count { color: var(--fg-dim); font-size: .92rem; font-variant-numeric: tabular-nums; }
+/* Spielfigur wählen */
+.figures { display: flex; gap: 14px; justify-content: center; }
+.figures button { width: 130px; border-radius: 16px; border: 2px solid rgba(243,234,216,.2); background: var(--night-2); display: grid; justify-items: center; gap: 6px; padding: 10px 8px; font-weight: 700; }
+.figures button[aria-pressed="true"] { border-color: var(--candle); background: var(--night-3); box-shadow: 0 0 0 4px rgba(242,189,98,.18); }
+.fig-prev { width: 84px; height: 84px; background-repeat: no-repeat; background-size: 300% 400%; background-position: 0 0; display: grid; place-items: center; color: var(--candle-soft); }
+.fig-prev svg { width: 44px; height: 44px; }
+.fig-prev.art svg { display: none; }
+.fig-prev:not(.art) { background-image: none !important; }

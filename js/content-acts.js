@@ -19,7 +19,7 @@ const COSTUMES = [
 const ACTORS = [
   {
     id: 'maria', ref: 'text:mariajosef', name: 'Lena', x: 745, y: 300, shirt: '#d98b5f', hair: '#5a3a22',
-    riddle: 'Ein Engel hat mich in Nazareth besucht. Er hat gesagt, dass ich ein Kind bekommen werde. Und jetzt liegt es in einer Futterkrippe!',
+    riddle: 'Ein Engel hat mich in Nazareth besucht. Er hat gesagt, dass ich ein Kind bekommen werde. Und jetzt liegt es in einer Krippe!',
     q: {
       q: 'Lena fragt: „Nach dem Besuch der Hirten steht etwas über mich in der Bibel. Was mache ich?“',
       options: ['Maria behielt alle diese Worte und bewegte sie in ihrem Herzen.', 'Maria schickte die Hirten wieder weg.', 'Maria lud alle zu einem Fest ein.', 'Maria schrieb einen Brief an den Kaiser.'],
@@ -71,7 +71,7 @@ const ACTORS = [
     id: 'kaiser', ref: 'text:augustus', name: 'Emma', x: 770, y: 865, shirt: '#a8452f', hair: '#e0b56b',
     riddle: 'Ich bin der mächtigste Mann der Welt und sitze in Rom. Mit meinem Befehl beginnt die ganze Geschichte.',
     q: {
-      q: 'Emma fragt: „Mich haben die Menschen damals als Retter und Friedensbringer gefeiert. Was will Lukas wohl zeigen, wenn er mich neben das Kind in der Krippe stellt?“',
+      q: 'Emma fragt: „Mich haben die Menschen damals als Retter und Friedensbringer gefeiert. Lukas erzählt von mir, dem mächtigen Kaiser – und von einem armen Kind in der Krippe. Was will er mit diesem Gegensatz zeigen?“',
       options: [
         'Der wahre Retter (Heiland) ist nicht der mächtige Kaiser, sondern das arme Kind im Stall.',
         'Der Kaiser war der Vater von Jesus.',

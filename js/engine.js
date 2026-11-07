@@ -2,8 +2,13 @@
 const KEY = 'rettet-das-krippenspiel-v1';
 const TEACHER_PIN = '2412';
 const TEAM_ICONS = ['sheep', 'star', 'angel', 'candle', 'bell', 'lantern'];
+const FIGURE_CHOICES = [
+  { id: 'maedchen', label: 'Mädchen', sheet: 'assets/walk/player-girl-sheet.webp', look: { body: '#8a3f5c', hair: '#c98a3a', cape: '#5a2440' } },
+  { id: 'junge', label: 'Junge', sheet: 'assets/walk/player-sheet.webp', look: { body: '#2f5a46', hair: '#7a4a26', cape: '#1f3d2f' } },
+];
+const playerFigure = () => FIGURE_CHOICES.find(f => f.id === S.figure) || FIGURE_CHOICES[1];
 
-const fresh = () => ({ team: '', teamIcon: 'sheep', started: null, finished: null, phase: 'kiste', solved: [], progress: {}, hints: 0, seenInterlude: [], bonusOpen: false, reflection: '', finaleDone: false, best: {}, shelf: { ctx: {}, done: [], seen: [], all: false }, act2: { delivered: [], shelf: false }, act3: { stage: 0, dark: [] }, times: {} });
+const fresh = () => ({ team: '', teamIcon: 'sheep', started: null, finished: null, phase: 'kiste', solved: [], progress: {}, hints: 0, seenInterlude: [], bonusOpen: false, reflection: '', finaleDone: false, figure: null, best: {}, shelf: { ctx: {}, done: [], seen: [], all: false }, act2: { delivered: [], shelf: false }, act3: { stage: 0, dark: [] }, times: {} });
 let S = load();
 function load() {
   try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(fresh(), JSON.parse(raw)); } catch (e) { /* ohne Speicher weiterspielen */ }
@@ -45,19 +50,21 @@ function showStart() {
     <form class="teamform" id="teamform">
       <label for="teamname">Wie heißt du?</label>
       <input id="teamname" maxlength="28" autocomplete="off" placeholder="Dein Vorname" required>
-      <p class="small-note" style="margin:0">Wähle dein Zeichen:</p>
-      <div class="teamicons" role="group" aria-label="Dein Zeichen">${TEAM_ICONS.map(i => `<button type="button" data-i="${i}" aria-pressed="${i === S.teamIcon}" aria-label="${i}">${icon(i)}</button>`).join('')}</div>
+      <p class="small-note" style="margin:0">Mit welcher Figur möchtest du spielen?</p>
+      <div class="figures" role="group" aria-label="Spielfigur">${FIGURE_CHOICES.map(f => `<button type="button" data-f="${f.id}" aria-pressed="${f.id === S.figure}"><span class="fig-prev" style="background-image:url(${f.sheet})">${icon('people')}</span><span>${f.label}</span></button>`).join('')}</div>
       <button class="btn" type="submit">Los geht's ${icon('next')}</button>
     </form>
     <button class="linkbtn" id="teacherlink">Für Lehrkräfte</button>
   </section>`);
-  el.querySelectorAll('.teamicons button').forEach(b => b.onclick = () => {
-    S.teamIcon = b.dataset.i; el.querySelectorAll('.teamicons button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  el.querySelectorAll('.figures button').forEach(b => b.onclick = () => {
+    S.figure = b.dataset.f; el.querySelectorAll('.figures button').forEach(x => x.setAttribute('aria-pressed', x === b));
   });
+  el.querySelectorAll('.fig-prev').forEach(p => { const im = new Image(); im.onload = () => p.classList.add('art'); im.src = p.style.backgroundImage.slice(5, -2); });
   el.querySelector('#teamform').onsubmit = e => {
     e.preventDefault();
     const v = el.querySelector('#teamname').value.trim();
     if (!v) return;
+    if (!S.figure) { shake(el.querySelector('.figures')); toast('Wähle noch deine Spielfigur.'); return; }
     S.team = v; save(); showLetter(true);
   };
   el.querySelector('#teacherlink').onclick = showPin;
@@ -697,6 +704,7 @@ function showTeacher() {
         <button class="btn small ink" id="openall">Alle Schlösser öffnen (Vorführung)</button>
         <button class="btn small ink" id="shelfall">${S.shelf && S.shelf.all ? 'Bücherregal ist ganz offen' : 'Bücherregal ganz freischalten'}</button>
         <button class="btn small ink" id="toact2">Direkt zu Akt 2</button>
+        <button class="btn small ink" id="figswap">Spielfigur: ${playerFigure().label} (wechseln)</button>
         <button class="btn small ink" id="toact3">Direkt zu Akt 3</button>
         <button class="btn small ink" id="bonus">${S.bonusOpen ? 'Schatzkammer ist frei' : 'Schatzkammer sofort freigeben'}</button>
         <button class="btn small" id="reset" style="background:var(--no);color:#fff;box-shadow:none">Spielstand auf diesem iPad löschen</button>
@@ -708,6 +716,7 @@ function showTeacher() {
   el.querySelector('#openall').onclick = () => { S.solved = STATIONS.map(s => s.id); S.seenInterlude = [2, 4]; if (!S.started) { S.started = Date.now(); S.team = S.team || 'Lehrkraft'; } save(); toast('Alle Schlösser offen'); showHub(); };
   const demo = () => { S.solved = STATIONS.map(s => s.id); S.seenInterlude = [2, 4]; if (!S.started) { S.started = Date.now(); S.team = S.team || 'Lehrkraft'; } };
   el.querySelector('#shelfall').onclick = e => { shelfState().all = true; save(); e.currentTarget.textContent = 'Bücherregal ist ganz offen'; toast('Alle Einträge im Bücherregal sind sichtbar'); };
+  el.querySelector('#figswap').onclick = e => { S.figure = S.figure === 'maedchen' ? 'junge' : 'maedchen'; save(); e.currentTarget.textContent = `Spielfigur: ${playerFigure().label} (wechseln)`; };
   el.querySelector('#toact2').onclick = () => { demo(); S.phase = 'kostueme'; save(); showAct2(); };
   el.querySelector('#toact3').onclick = () => { demo(); S.act2 = { delivered: ACTORS.map(a => a.id), shelf: true }; S.phase = 'schluessel'; S.act3 = { stage: 0, dark: [] }; save(); showAct3(); };
   el.querySelector('#bonus').onclick = e => { S.bonusOpen = true; save(); e.currentTarget.textContent = 'Schatzkammer ist frei'; toast('Schatzkammer freigegeben'); };

@@ -53,7 +53,7 @@ const BIBLE = [
       [19, 'Maria aber behielt alle diese Worte und bewegte sie in ihrem Herzen.'],
       [20, 'Und die Hirten kehrten wieder um, priesen und lobten Gott um alles, was sie gesehen und gehört hatten, wie denn zu ihnen gesagt war.'],
     ],
-    words: { 'geschätzt': 'gezählt und in Steuerlisten eingetragen', 'Landpfleger': 'römischer Statthalter, eine Art Gouverneur', 'vertrautes Weib': 'Verlobte', 'Herberge': 'Unterkunft für Reisende', 'Hürden': 'Zäune, in denen die Schafe nachts stehen', 'Klarheit': 'heller Glanz', 'Heiland': 'Retter', 'Heerscharen': 'eine riesige Menge (von Engeln)', 'kundgetan': 'mitgeteilt' },
+    words: { 'geschätzt': 'gezählt und in Steuerlisten eingetragen', 'Landpfleger': 'römischer Statthalter, eine Art Gouverneur', 'vertrautes Weib': 'Verlobte', 'Krippe': 'Futtertrog für Tiere', 'Herberge': 'Unterkunft für Reisende', 'Hürden': 'Zäune, in denen die Schafe nachts stehen', 'Klarheit': 'heller Glanz', 'Heiland': 'Retter', 'Heerscharen': 'eine riesige Menge (von Engeln)', 'kundgetan': 'mitgeteilt' },
   },
   {
     id: 'mt2', ref: 'Matthäus 2,1–12', title: 'Die Weisen aus dem Morgenland',
@@ -141,12 +141,12 @@ const TEXTS = [
     id: 'augustus', title: 'Kaiser Augustus', icon: 'laurel',
     html: `<p><b>Augustus</b> war zur Zeit von Jesu Geburt der römische Kaiser und damit der mächtigste Mann der damaligen Welt. Er herrschte von Rom aus über ein riesiges Reich rund um das Mittelmeer, zu dem auch das Land Israel gehörte.</p>
     <p>Lukas erzählt, dass Augustus befahl, alle Menschen in <b>Steuerlisten</b> einzutragen. Damit beginnt die Weihnachtsgeschichte: Wegen dieses Befehls müssen Maria und Josef nach Bethlehem reisen.</p>
-    <p>Viele Menschen verehrten Augustus damals wie einen Gott. Auf Inschriften wurde er als <b>„Retter“</b> und als Bringer des Friedens gefeiert. Lukas stellt ihm ein armes Kind in einer Futterkrippe gegenüber. Und der Engel sagt über dieses Kind: „Euch ist heute der <b>Heiland</b> geboren“ – Heiland heißt Retter. Lukas will damit sagen: <b>Der wahre Retter ist nicht der mächtige Kaiser, sondern das Kind im Stall.</b> Gott zeigt sich nicht im Palast, sondern bei den Armen.</p>`,
+    <p>Viele Menschen verehrten Augustus damals wie einen Gott. Auf Inschriften wurde er als <b>„Retter“</b> und als Bringer des Friedens gefeiert. Lukas stellt ihm ein armes Kind in einer Krippe gegenüber. Und der Engel sagt über dieses Kind: „Euch ist heute der <b>Heiland</b> geboren“ – Heiland heißt Retter. Lukas will damit sagen: <b>Der wahre Retter ist nicht der mächtige Kaiser, sondern das Kind im Stall.</b> Gott zeigt sich nicht im Palast, sondern bei den Armen.</p>`,
   },
   {
     id: 'zwei', title: 'Zwei Weihnachtsgeschichten: Lukas und Matthäus', icon: 'scroll',
     html: `<p>Viele denken, es gäbe in der Bibel nur eine Weihnachtsgeschichte. Tatsächlich erzählen aber nur zwei Evangelien von der Geburt Jesu: <b>Lukas</b> und <b>Matthäus</b>. Und sie erzählen ganz verschieden.</p>
-    <p>Bei <b>Lukas</b> beginnt alles mit dem Befehl von <b>Kaiser Augustus</b>. Maria und Josef reisen von Nazareth nach Bethlehem. Weil in der Herberge kein Raum ist, wird das Kind in eine <b>Futterkrippe</b> gelegt. Nachts erscheinen <b>Engel</b> den <b>Hirten auf dem Feld</b>, und ein Engelchor singt „Ehre sei Gott in der Höhe“. Lukas zeigt: Gott kommt zu den Armen und Kleinen.</p>
+    <p>Bei <b>Lukas</b> beginnt alles mit dem Befehl von <b>Kaiser Augustus</b>. Maria und Josef reisen von Nazareth nach Bethlehem. Weil in der Herberge kein Raum ist, wird das Kind in eine <b>Krippe</b> gelegt – einen Futtertrog für Tiere. Nachts erscheinen <b>Engel</b> den <b>Hirten auf dem Feld</b>, und ein Engelchor singt „Ehre sei Gott in der Höhe“. Lukas zeigt: Gott kommt zu den Armen und Kleinen.</p>
     <p>Bei <b>Matthäus</b> gibt es keine Hirten und keine Krippe. Stattdessen sehen <b>Weise aus dem Morgenland</b> einen <b>Stern</b>. Sie fragen in Jerusalem bei <b>König Herodes</b> nach dem neugeborenen König. Der Stern führt sie nach Bethlehem, wo sie das Kind in einem <b>Haus</b> finden und ihm <b>Gold, Weihrauch und Myrrhe</b> schenken. Danach muss die Familie vor Herodes nach Ägypten fliehen. Matthäus zeigt: Jesus ist ein König, und er ist für alle Völker da, sogar für Fremde aus fernen Ländern.</p>
     <p>Warum sind die Geschichten so verschieden? Die Evangelisten wollten keine Zeitungsberichte schreiben. Es sind <b>Glaubensgeschichten</b>. Jeder erzählt so, dass deutlich wird, wer Jesus für ihn ist. In unseren Krippenspielen werden beide Geschichten oft zu einer zusammengemischt.</p>`,
   },
@@ -184,7 +184,7 @@ const TEXTS = [
   {
     id: 'menschwerdung', title: 'Was feiern Christen an Weihnachten?', icon: 'heart',
     html: `<p>An Weihnachten feiern Christen nicht einfach einen Geburtstag. Sie glauben: In Jesus ist <b>Gott selbst Mensch geworden</b>. Gott bleibt nicht fern im Himmel, sondern kommt ganz nah zu den Menschen.</p>
-    <p>Dabei kommt Gott nicht als mächtiger Kaiser mit Soldaten und Palast. Er kommt <b>als kleines Kind</b>, arm, in einem Stall, in eine Futterkrippe gelegt. Das zeigt: Gott ist besonders bei den Kleinen, Schwachen und Armen.</p>
+    <p>Dabei kommt Gott nicht als mächtiger Kaiser mit Soldaten und Palast. Er kommt <b>als kleines Kind</b>, arm, in einem Stall, in eine Krippe gelegt. Das zeigt: Gott ist besonders bei den Kleinen, Schwachen und Armen.</p>
     <p>Und die gute Nachricht gilt nicht nur für wenige. Die Hirten aus der Gegend von Bethlehem hören sie zuerst, die Weisen kommen aus einem fernen Land. Der Engel sagt: „Ich verkündige euch große Freude, die <b>allem Volk</b> widerfahren wird.“ Weihnachten ist ein Fest <b>für alle Menschen</b>.</p>`,
   },
 ];

@@ -158,7 +158,7 @@ const STATIONS = [
         items: [
           { icon: 'crown', text: 'Kaiser Augustus befiehlt: Alle Menschen sollen sich in Steuerlisten eintragen lassen.' },
           { icon: 'staff', text: 'Josef zieht mit Maria von Nazareth nach Bethlehem.' },
-          { icon: 'manger', text: 'Maria bringt ihren Sohn zur Welt und legt ihn in eine Futterkrippe – in der Herberge ist kein Platz.' },
+          { icon: 'manger', text: 'Maria bringt ihren Sohn zur Welt und legt ihn in eine Krippe – in der Herberge ist kein Platz.' },
           { icon: 'sheep', text: 'Auf dem Feld halten Hirten in der Nacht Wache bei ihrer Herde.' },
           { icon: 'angel', text: 'Ein Engel sagt: „Fürchtet euch nicht!“ Viele Engel loben Gott.' },
           { icon: 'speech', text: 'Die Hirten finden das Kind, erzählen allen davon und loben Gott.' },
@@ -193,7 +193,7 @@ const STATIONS = [
           { t: 'Hirten auf dem Feld', b: 'lk', why: 'Die Hirten kommen nur bei Lukas vor.' },
           { t: 'Engelchor: „Ehre sei Gott in der Höhe“', b: 'lk', why: 'Die singenden Engel erscheinen den Hirten – bei Lukas.' },
           { t: 'Kaiser Augustus', b: 'lk', why: 'Lukas verbindet die Geburt mit der Weltgeschichte und nennt den römischen Kaiser.' },
-          { t: 'Futterkrippe', b: 'lk', why: 'Nur Lukas erzählt von der Krippe. Bei Matthäus finden die Weisen das Kind in einem Haus.' },
+          { t: 'Krippe', b: 'lk', why: 'Nur Lukas erzählt von der Krippe. Bei Matthäus finden die Weisen das Kind in einem Haus.' },
           { t: 'Stern', b: 'mt', why: 'Der Stern führt die Weisen – bei Matthäus.' },
           { t: 'Weise aus dem Morgenland', b: 'mt', why: 'Die Sterndeuter aus dem Osten kommen nur bei Matthäus vor.' },
           { t: 'König Herodes', b: 'mt', why: 'Bei Matthäus fragen die Weisen in Jerusalem bei König Herodes nach.' },
@@ -307,7 +307,7 @@ const STATIONS = [
         pairs: [
           { a: 'Gold', ai: 'gold', b: 'Zeichen für einen König' },
           { a: 'Weihrauch', ai: 'incense', b: 'Zeichen für Gott – sein Duft steigt beim Gebet zum Himmel' },
-          { a: 'Myrrhe', ai: 'jar', b: 'Zeichen für einen Menschen, der leiden wird – Myrrhe ist ein Heil- und Salböl' },
+          { a: 'Myrrhe', ai: 'jar', b: 'Zeichen für einen Menschen, der leiden wird – ein kostbares Heil- und Salböl' },
         ],
         explain: 'So sagen die Geschenke: Jesus ist König, Gott und Mensch zugleich.',
         hints: ['Der dritte Absatz im Sachtext erklärt die Gaben: {{text:epiphanias}}'],

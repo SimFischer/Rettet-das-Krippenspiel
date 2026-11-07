@@ -51,8 +51,8 @@ function showAct2() {
   ].filter(s => !s.hidden);
   const walk = Walk.create({
     map: CHURCH_MAP, drawBg: drawChurchPlaceholder, spots,
-    playerSprite: 'assets/walk/player-sheet.webp',
-    playerLook: { body: '#2f5a46', hair: '#7a4a26', cape: '#1f3d2f' },
+    playerSprite: playerFigure().sheet,
+    playerLook: playerFigure().look,
     drawSpot(ctx, s) {
       if (s.kind === 'shelf') {
         if (!s.done) bubble(ctx, s.x, s.y - 40, '!');

@@ -148,6 +148,14 @@ Das Spiel ist dunkel; nur der Lichtkegel der Laterne zeigt das Feld. Die Bilder 
 
 → Ich schneide `sheep-sheet` und `stone-sheet` zu `sheep.webp` und `stone.webp` zu.
 
+## Block G – Spielfigur Mädchen (neu)
+
+Am Anfang wählen die Kinder jetzt „Mädchen“ oder „Junge“. Dafür braucht es einen zweiten Bogen im **gleichen Aufbau wie `player-sheet.png`**. Am besten den bisherigen Jungen-Bogen als Referenz mit hochladen und dazuschreiben: *„Same style, same layout and same size as the attached sprite sheet.“*
+
+**`assets/sheets/player-girl-sheet.png`** – 768 × 1024, **transparent**, 3 Spalten × 4 Reihen (je 256 × 256)
+> Top-down game character sprite sheet (seen from above at a slight 3/4 angle so the face is visible), a 12-year-old girl helper with a red knitted scarf, a warm winter jacket in dark violet, and a long brown braid. 4 rows = facing down, left, right, up. 3 columns = standing, left foot forward, right foot forward. Same size, centred, feet on the same line in every cell, transparent background. Friendly, not cartoonish-silly, same painterly style as the reference sheet.
+→ wird zu `assets/walk/player-girl-sheet.webp`
+
 ## Übersicht: Datei → Verwendung im Spiel
 
 | Datei im Repo | Wo im Spiel | Ersetzt |
