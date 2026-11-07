@@ -718,3 +718,14 @@ body.shelf-open { overflow: hidden; }
 @media (max-width: 860px) { .fin-stage { grid-template-columns: 1fr; } .fin-door { max-width: 300px; margin: 0 auto; width: 100%; } .fin-text { text-align: center; } .fin-win .center-actions { justify-content: center; } }
 .fin-win { animation: none; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity .9s ease, transform .9s ease; }
 .finale.s4 .fin-win { opacity: 1; visibility: visible; transform: none; }
+/* Urkunde: Weihnachtsgedanke */
+.thought { position: relative; width: min(620px, 100%); margin: 6px auto; padding: 26px 26px 18px; border-radius: 18px; background: radial-gradient(ellipse at 50% 0%, #fff6dc, #f3e2b6 70%); box-shadow: 0 0 0 3px var(--brass), 0 0 0 9px rgba(201,161,76,.25), 0 14px 30px rgba(0,0,0,.18); display: grid; gap: 6px; justify-items: center; text-align: center; }
+.thought-star { position: absolute; top: -26px; width: 52px; height: 52px; border-radius: 50%; background: var(--candle); display: grid; place-items: center; box-shadow: 0 0 18px rgba(242,189,98,.8); color: #2a1b06; }
+.thought-star svg { width: 30px; height: 30px; fill: #fff2c4; }
+.thought-k { font-size: .78rem; text-transform: uppercase; letter-spacing: .14em; font-weight: 800; color: var(--advent); }
+.thought-t { margin: 0; font-family: var(--f-hand); font-size: clamp(1.7rem, 3.4vw, 2.3rem); line-height: 1.2; color: var(--ink); text-wrap: balance; }
+.thought.empty .thought-t { font-family: var(--f-body); font-size: 1rem; color: var(--ink-soft); }
+.thought-sig { font-family: var(--f-hand); font-size: 1.4rem; color: var(--advent); align-self: end; justify-self: end; }
+.thought-edit { color: var(--ink-soft); min-height: 36px; font-size: .85rem; }
+.cert { gap: 12px; }
+.cert .stats { gap: 16px; }

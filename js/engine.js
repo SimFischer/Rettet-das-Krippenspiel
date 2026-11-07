@@ -566,13 +566,21 @@ function showScript() {
       <h2 style="color:var(--ink);margin:.3em 0 .6em">Der Engel spricht zu den Hirten</h2>
       <blockquote style="margin:0;padding:10px 16px;border-left:4px solid var(--brass);font-family:var(--f-display);font-size:1.3rem">„Fürchtet euch nicht! Siehe, ich verkündige euch große Freude, die allem Volk widerfahren wird; denn euch ist heute der Heiland geboren, welcher ist Christus, der Herr, in der Stadt Davids.“</blockquote>
       <p class="small-note" style="color:var(--ink-soft)">Lukas 2,10–11</p>
-      <label for="reflect" style="display:block;font-weight:700;margin:1em 0 .4em">Die Pastorin fragt dich: Was ist für dich die wichtigste Botschaft von Weihnachten? Schreib einen Satz.</label>
+      <label for="reflect" style="display:block;font-weight:700;margin:1em 0 .4em">Die Pastorin fragt dich: Was ist für dich die wichtigste Botschaft von Weihnachten? Schreib einen Satz. Er kommt auf deine Urkunde.</label>
       <textarea id="reflect" class="reflect" maxlength="240" placeholder="Für mich ist an Weihnachten wichtig, dass …">${esc(S.reflection || '')}</textarea>
-      <div class="step-actions" style="margin-top:12px"><button class="btn" id="done">${icon('bell')} Die Glocken läuten!</button></div>
+      <div class="reflect-msg"></div>
+      <div class="step-actions" style="margin-top:12px"><button class="btn" id="done">${icon('scroll')} Auf die Urkunde schreiben</button></div>
     </div>
   </section>`);
+  let warned = false;
   el.querySelector('#done').onclick = () => {
-    S.reflection = el.querySelector('#reflect').value.trim();
+    const v = el.querySelector('#reflect').value.trim();
+    if (v.length < 8 && !warned) {
+      warned = true; shake(el.querySelector('#reflect'));
+      el.querySelector('.reflect-msg').replaceChildren(feedback('tip', '', 'Schreib noch deinen Satz – er steht dann groß auf deiner Urkunde. (Wenn du wirklich nichts schreiben möchtest, tippe noch einmal.)'));
+      return;
+    }
+    S.reflection = v;
     S.finaleDone = true; S.bonusOpen = true; S.phase = 'fertig'; if (!S.finished) S.finished = Date.now(); save(); showCertificate();
   };
   mount(el);
@@ -588,13 +596,20 @@ function showCertificate() {
       <div class="team">${esc(S.team)}</div>
       <p>hat die Krippenspiel-Kiste geknackt, alle Kostüme richtig verteilt und die Kirchentür geöffnet. Und kennt sich jetzt richtig gut aus mit Advent, Weihnachten und Epiphanias.</p>
       <div class="stats"><div><b>6 / 6</b>Schlösser</div><div><b>6 / 6</b>Kostüme</div><div><b>1</b>Kirchentür</div><div><b>${t}</b>Minuten</div><div><b>${S.hints}</b>Hinweise</div></div>
-      ${S.reflection ? `<p class="quote">„${esc(S.reflection)}“</p>` : ''}
+      <div class="thought${S.reflection ? '' : ' empty'}">
+        <div class="thought-star">${icon('star')}</div>
+        <div class="thought-k">Mein Weihnachtsgedanke</div>
+        <p class="thought-t">${S.reflection ? '„' + esc(S.reflection) + '“' : 'Noch kein Satz geschrieben.'}</p>
+        <div class="thought-sig">– ${esc(S.team)}</div>
+        <button class="linkbtn thought-edit" id="edit">${S.reflection ? 'Satz ändern' : 'Satz schreiben'}</button>
+      </div>
       <p class="small-note" style="color:var(--ink-soft)">Zeig diese Urkunde deiner Lehrkraft. Danke! – Hanne Petersen, Diakonin</p>
       <div class="center-actions"><button class="btn" id="treasure">${icon('treasure')} Zur Schatzkammer</button><button class="btn ghost small" id="hub" style="color:var(--ink);box-shadow:inset 0 0 0 2px rgba(42,32,23,.3)">Zur Kiste</button></div>
     </div>
   </section>`);
   el.querySelector('#treasure').onclick = showTreasury;
   el.querySelector('#hub').onclick = showHub;
+  el.querySelector('#edit').onclick = showScript;
   mount(el);
 }
 
@@ -699,6 +714,11 @@ function showTeacher() {
         <li>Die Deutung der Gaben (König – Gott – Mensch) ist eine spätere christliche Auslegung und wird so gekennzeichnet.</li>
         <li>Bibelzitate nach der Lutherbibel 1912 (gemeinfrei).</li>
       </ul>
+      <h2 style="font-size:1.3rem">Ergebnis auf diesem iPad</h2>
+      <div class="tablewrap"><table>
+        <tr><th>Name</th><th>Stand</th><th>Zeit</th><th>Hinweise</th><th>Weihnachtsgedanke</th></tr>
+        <tr><td>${esc(S.team || '–')}</td><td>${{ kiste: `Akt 1 · ${S.solved.length}/6 Schlösser`, kostueme: `Akt 2 · ${S.act2.delivered.length}/6 Kostüme`, schluessel: 'Akt 3 · Schlüssel', fertig: 'Fertig' }[S.phase] || '–'}</td><td>${S.finished && S.started ? fmtTime(S.finished - S.started) + ' min' : '–'}</td><td>${S.hints}</td><td>${S.reflection ? '„' + esc(S.reflection) + '“' : '–'}</td></tr>
+      </table></div>
       <h2 style="font-size:1.3rem">Steuerung</h2>
       <div class="toggles">
         <button class="btn small ink" id="openall">Alle Schlösser öffnen (Vorführung)</button>
