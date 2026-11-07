@@ -84,7 +84,7 @@ const ACTORS = [
 ];
 
 const ACT2_SHELF = {
-  id: 'regal', ref: 'text:epiphanias', name: 'Regal „6. Januar“', x: 1300, y: 150,
+  id: 'regal', ref: 'text:epiphanias', name: 'Regal „6. Januar“', x: 1305, y: 200,
   text: 'Ein Kostüm ist übrig geblieben: die Krone mit Stern. Auf dem Regal steht ein Schild: „Für den Gottesdienst am 6. Januar“.',
   q: {
     q: 'Warum hat im Krippenspiel nach Lukas niemand dieses Kostüm bekommen?',
@@ -107,12 +107,12 @@ const ACT3_INTRO = {
 const DARK = {
   drawers: ['Advent', 'Weihnachten', 'Epiphanias', 'Gehört nicht zur Weihnachtszeit'],
   spots: [
-    { id: 'violett', name: 'Violettes Tuch für Altar und Kanzel', x: 20, y: 67, w: 20, h: 38, icon: 'cloth', answer: 0, why: 'Violett ist die Farbe des Advents: Vorbereitung und Besinnung.', hint: 'Welche Farbe hatten die Altartücher im Advent? {{text:farben}}' },
-    { id: 'weiss', name: 'Weißes Tuch mit goldenem Stern', x: 47, y: 35, w: 24, h: 30, icon: 'cloth', answer: 1, why: 'Weiß ist die Farbe der Freude. Ab Heiligabend hängt es an Altar und Kanzel.', hint: 'Welche Farbe ersetzt am Heiligabend das Violett? {{text:farben}}' },
-    { id: 'kreide', name: 'Kreide und ein Zettel: 20*C+M+B+27', x: 74, y: 70, w: 16, h: 20, icon: 'star', answer: 2, why: 'Um den 6. Januar schreiben Sternsinger den Segen an die Türen: C+M+B heißt „Christus mansionem benedicat“ – Christus segne dieses Haus.', hint: 'Wann ziehen die Sternsinger los? {{text:farben}}' },
-    { id: 'osterkerze', name: 'Große Kerze mit Kreuz, Alpha und Omega', x: 84, y: 27, w: 8, h: 36, icon: 'candle', answer: 3, why: 'Das ist die Osterkerze. Sie wird in der Osternacht angezündet und gehört zum Osterfestkreis.', hint: 'Bei welchem Fest wird diese große Kerze zum ersten Mal angezündet? {{text:farben}}' },
+    { id: 'violett', name: 'Violettes Tuch für Altar und Kanzel', x: 23, y: 68, w: 26, h: 26, icon: 'cloth', answer: 0, why: 'Violett ist die Farbe des Advents: Vorbereitung und Besinnung.', hint: 'Welche Farbe hatten die Altartücher im Advent? {{text:farben}}' },
+    { id: 'weiss', name: 'Weißes Tuch mit goldenem Stern', x: 47, y: 33, w: 24, h: 32, icon: 'cloth', answer: 1, why: 'Weiß ist die Farbe der Freude. Ab Heiligabend hängt es an Altar und Kanzel.', hint: 'Welche Farbe ersetzt am Heiligabend das Violett? {{text:farben}}' },
+    { id: 'kreide', name: 'Kreide und ein Zettel: 20*C+M+B+27', x: 73, y: 66, w: 19, h: 18, icon: 'star', answer: 2, why: 'Um den 6. Januar schreiben Sternsinger den Segen an die Türen: C+M+B heißt „Christus mansionem benedicat“ – Christus segne dieses Haus.', hint: 'Wann ziehen die Sternsinger los? {{text:farben}}' },
+    { id: 'osterkerze', name: 'Große Kerze mit Kreuz, Alpha und Omega', x: 84, y: 27, w: 8, h: 38, icon: 'candle', answer: 3, why: 'Das ist die Osterkerze. Sie wird in der Osternacht angezündet und gehört zum Osterfestkreis.', hint: 'Bei welchem Fest wird diese große Kerze zum ersten Mal angezündet? {{text:farben}}' },
   ],
-  box: { name: 'Der Schlüsselkasten', x: 51, y: 80, w: 13, h: 19 },
+  box: { name: 'Der Schlüsselkasten', x: 51, y: 76, w: 12, h: 20 },
 };
 
 const SONGS = {

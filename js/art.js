@@ -64,8 +64,8 @@ function chestSVG(opts = {}) {
         <rect x="-28" y="-18" width="56" height="50" rx="9" fill="none" stroke="rgba(255,240,200,.35)" stroke-width="1.5"/>
         <g transform="translate(-17 -14) scale(1.42)" color="#3a2a0c">${icon(s.icon).replace('<svg', '<svg width="24" height="24"')}</g>
       </g>
-      <image class="lockart" href="assets/ui/lock-${s.id}${open ? '-open' : ''}.webp" x="-60" y="-78" width="120" height="132" onload="this.parentNode.classList.add('has-lockart')"/>
-      <text y="54" text-anchor="middle" font-family="Alegreya, Georgia, serif" font-size="15" font-weight="700" fill="${open ? '#f8dca2' : '#e9d8b6'}">${s.short}</text>
+      <image class="lockart" href="assets/ui/lock-${s.id}${open ? '-open' : ''}.webp" x="-56" y="-74" width="112" height="124" onload="this.parentNode.classList.add('has-lockart')"/>
+      <text class="locklabel" y="56" text-anchor="middle" font-family="Alegreya, Georgia, serif" font-size="15" font-weight="700" fill="${open ? '#f8dca2' : '#e9d8b6'}">${s.short}</text>
     </g>`;
   }).join('');
   const allOpen = stations.length && stations.every(s => solved.includes(s.id));
@@ -134,9 +134,9 @@ function chestSVG(opts = {}) {
   </g>
   <image class="art closed-art" href="assets/scene/chest-closed.webp" x="0" y="0" width="800" height="560" onload="this.ownerSVGElement.classList.add('has-art')"/>
   <image class="art open-art" href="assets/scene/chest-open.webp" x="0" y="0" width="800" height="560"/>
-  <g class="label" transform="translate(400 176)">
-    <rect x="-150" y="-23" width="300" height="46" rx="8" fill="#f1e5c9" stroke="#8a6a2c" stroke-width="3"/>
-    <text y="7" text-anchor="middle" font-family="Caveat, cursive" font-size="26" fill="#2a2017">Krippenspiel – Nicht öffnen!</text>
+  <g class="label" transform="translate(400 200)">
+    <rect class="lblrect" x="-90" y="-19" width="180" height="38" rx="6" fill="#f1e5c9" stroke="#8a6a2c" stroke-width="3"/>
+    <text y="8" text-anchor="middle" font-family="Caveat, cursive" font-size="25" font-weight="700" fill="#2a2017">Krippenspiel</text>
   </g>
   ${locks}
 </svg>`;

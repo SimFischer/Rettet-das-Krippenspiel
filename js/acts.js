@@ -59,12 +59,12 @@ function showAct2() {
       const cos = COSTUMES.find(c => c.id === s.id);
       const src = `assets/walk/actor-${s.id}.webp`;
       const im = img(src);
-      if (im) { const fw = im.width / 2, sc = 92 / im.height; ctx.drawImage(im, s.done ? fw : 0, 0, fw, im.height, s.x - fw * sc / 2, s.y - 92 + 14, fw * sc, 92); }
+      if (im) { const fw = im.width / 2, sz = 108, sc = sz / im.height; ctx.drawImage(im, s.done ? fw : 0, 0, fw, im.height, s.x - fw * sc / 2, s.y - sz + 14, fw * sc, sz); }
       else drawPerson(ctx, s.x, s.y, { dir: 'down', body: s.shirt, hair: s.hair, cape: s.done ? cos.color : null, crown: s.done && s.id === 'kaiser' });
       ctx.fillStyle = 'rgba(19,26,44,.75)'; ctx.font = '700 20px Atkinson Hyperlegible, sans-serif'; ctx.textAlign = 'center';
       const w = ctx.measureText(s.name).width + 16; ctx.fillRect(s.x - w / 2, s.y + 20, w, 26);
       ctx.fillStyle = '#f3ead8'; ctx.fillText(s.name, s.x, s.y + 40);
-      if (!s.done) bubble(ctx, s.x, s.y - 48, '?'); else bubble(ctx, s.x, s.y - 48, '✓', '#3f7d52');
+      if (!s.done) bubble(ctx, s.x, s.y - 104, '?'); else bubble(ctx, s.x, s.y - 104, '✓', '#3f7d52');
     },
     onReach(s) {
       if (s.done) return;

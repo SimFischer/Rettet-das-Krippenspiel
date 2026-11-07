@@ -39,7 +39,7 @@ tests/check.mjs      Inhalts- und Kartenprüfung: node tests/check.mjs
 
 ## Bilder
 
-Alle Bilder sind optional: Fehlt eine Datei, zeichnet das Spiel einen Platzhalter. Die Prompts für ChatGPT mit Dateinamen, Formaten und den genauen Positionen für Karten stehen in [ASSET-PROMPTS.md](ASSET-PROMPTS.md).
+Die gemalten Bilder liegen als WebP in `assets/` (zusammen ca. 3 MB). Sie wurden aus den ChatGPT-Bildern zugeschnitten: Sprite-Bögen auf 256-px-Zellen mit gemeinsamer Fußlinie, Kiste auf das Koordinatensystem der Schlösser gesetzt, Laufwege und Fundstellen an die gemalten Karten angepasst. Fehlt eine Datei, zeichnet das Spiel einen Platzhalter. Die Prompts für ChatGPT mit Dateinamen, Formaten und den genauen Positionen für Karten stehen in [ASSET-PROMPTS.md](ASSET-PROMPTS.md).
 
 ## Datenschutz
 

@@ -66,7 +66,7 @@ function showStart() {
 function showLetter(first) {
   const el = h(`<section class="screen">
     <div class="topbar"><span class="chip">${icon(S.teamIcon)} ${esc(S.team)}</span><span class="spacer"></span></div>
-    <div class="letter"><div class="stamp">${icon('bell')}</div><div class="hand">${LETTER}</div></div>
+    <div class="letter"><div class="hand">${LETTER}</div></div>
     <div class="center-actions"><button class="btn" id="go">${first ? 'Zur Kiste in der Sakristei' : 'Zurück'} ${icon('next')}</button></div>
   </section>`);
   el.querySelector('#go').onclick = () => { if (!S.started) { S.started = Date.now(); save(); } route(); };

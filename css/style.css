@@ -414,7 +414,7 @@ body { background: var(--night) url("../assets/scene/sakristei-bg.webp") center 
 .drawer:not([disabled]) { box-shadow: 0 0 0 3px rgba(242,189,98,.35); }
 .drawer small { color: var(--candle-soft); font-size: .78rem; }
 .drawer.filled { border-color: var(--candle); }
-.hand { background: rgba(0,0,0,.25); border-radius: 10px; padding: 10px; color: var(--fg); }
+.drawers .hand { background: rgba(0,0,0,.25); border-radius: 10px; padding: 10px; color: var(--fg); }
 .fb.wide, .step-actions.wide { max-width: 1240px; width: 100%; margin: 0 auto; }
 
 .songs { display: grid; grid-template-columns: 230px minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: start; }
@@ -519,3 +519,9 @@ body.shelf-open { overflow: hidden; }
   .shelf-list { grid-auto-flow: column; grid-auto-columns: 200px; overflow-x: auto; overflow-y: hidden; background: none; }
   .shelf-read { overflow: visible; }
 }
+.chest-svg.has-art .lblrect { display: none; }
+.chest-svg .locklabel { paint-order: stroke; stroke: #1c120a; stroke-width: 4px; stroke-linejoin: round; }
+.chest-svg .lock { transition: opacity .6s; }
+.chest-svg.opened .lock { opacity: 0; pointer-events: none; }
+.letter { background: url("../assets/paper/letter.webp") center / 100% 100% no-repeat; box-shadow: none; filter: drop-shadow(0 18px 30px rgba(0,0,0,.5)); padding: clamp(34px, 6vw, 64px) clamp(28px, 6vw, 60px); }
+.start .chestmini { width: min(520px, 86vw); }

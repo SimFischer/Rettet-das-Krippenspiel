@@ -19,15 +19,17 @@ const CHURCH_MAP = {
   w: 1600, h: 1000, bg: 'assets/walk/church-topdown.webp',
   start: { x: 1250, y: 260 },
   obstacles: [
-    [0, 0, 1600, 100], [0, 900, 1600, 100], [0, 0, 240, 1000], [1360, 0, 240, 1000],          // Außenmauern
-    [240, 100, 240, 240],                                                                       // Mauer links vom Altarraum
-    [1120, 100, 20, 120], [1120, 300, 20, 40], [1140, 320, 220, 20],                            // Sakristei-Wände mit Tür
-    [720, 140, 160, 60],                                                                        // Altar
-    [470, 330, 70, 70],                                                                         // Kanzel
-    [1015, 355, 60, 60],                                                                        // Taufbecken
-    [1170, 110, 110, 70],                                                                       // Kiste in der Sakristei
-    ...[0, 1, 2, 3, 4, 5, 6].flatMap(i => [[300, 470 + i * 52, 430, 24], [870, 470 + i * 52, 430, 24]]), // Bänke
-    [240, 840, 470, 60], [890, 840, 470, 60],                                                   // Turmfuß links/rechts vom Portal
+    [0, 0, 1600, 112], [0, 905, 1600, 95], [0, 0, 240, 1000], [1360, 0, 240, 1000],           // Außenmauern
+    [240, 100, 260, 262],                                                                       // Mauerblock links vom Altarraum
+    [1088, 100, 20, 125], [1088, 290, 20, 70], [1088, 340, 272, 20],                            // Sakristei-Wände mit Tür
+    [690, 150, 220, 90],                                                                        // Altar
+    [765, 268, 70, 45],                                                                         // Krippe
+    [450, 345, 85, 95],                                                                         // Kanzel
+    [1000, 375, 75, 70],                                                                        // Taufbecken
+    [1140, 130, 110, 72],                                                                       // Kiste in der Sakristei
+    [1265, 100, 95, 60],                                                                        // Bücherregal Sakristei
+    ...[0, 1, 2, 3, 4, 5, 6].flatMap(i => [[320, 462 + i * 50, 400, 28], [880, 462 + i * 50, 398, 28]]), // Bänke
+    [240, 838, 470, 70], [890, 838, 470, 70],                                                   // Turmfuß links/rechts vom Portal
   ],
   door: { x: 800, y: 900 },
 };
@@ -39,9 +41,9 @@ const BETHLEHEM_MAP = {
   checkpoints: [{ x: 110, y: 500 }, { x: 640, y: 560 }, { x: 1010, y: 560 }],
   obstacles: [
     [0, 0, 1600, 40], [0, 960, 1600, 40],
-    [220, 110, 200, 200], [220, 690, 220, 220], [520, 300, 170, 170], [520, 620, 160, 230],
-    [800, 90, 170, 230], [790, 470, 150, 170], [1080, 290, 200, 150], [1080, 640, 200, 220],
-    [1330, 100, 160, 180], [1350, 760, 160, 160], [1240, 500, 50, 50], [350, 480, 40, 40], [960, 880, 60, 60],
+    [225, 110, 195, 220], [518, 303, 172, 165], [800, 90, 168, 240], [1060, 290, 220, 150], [1330, 100, 148, 195],
+    [775, 462, 145, 175], [222, 655, 206, 230], [520, 592, 147, 222], [1062, 620, 195, 215], [1350, 732, 155, 165],
+    [345, 478, 40, 40], [1240, 505, 45, 45], [955, 865, 45, 45],
   ],
   guards: [
     { path: [[470, 120], [470, 880]], speed: 70 },
@@ -292,11 +294,11 @@ const Walk = (() => {
       guards.forEach(g => items.push({ y: g.y, draw: () => {
         const dir = Math.abs(Math.cos(g.ang)) > Math.abs(Math.sin(g.ang)) ? (Math.cos(g.ang) > 0 ? 'right' : 'left') : (Math.sin(g.ang) > 0 ? 'down' : 'up');
         const fr = Math.floor(performance.now() / 180) % 4; const frame = [0, 1, 0, 2][fr];
-        if (!drawSprite(ctx, 'assets/bonus/soldier-sheet.webp', g.x, g.y, dir, frame, 86)) drawPerson(ctx, g.x, g.y, { dir, frame, body: '#8c2f2a', hair: '#3a3a40', cape: '#5a1712', scale: 1.15 });
+        if (!drawSprite(ctx, 'assets/bonus/soldier-sheet.webp', g.x, g.y, dir, frame, 108)) drawPerson(ctx, g.x, g.y, { dir, frame, body: '#8c2f2a', hair: '#3a3a40', cape: '#5a1712', scale: 1.15 });
       } }));
       items.push({ y: P.y, draw: () => {
         const frame = P.moving ? [0, 1, 0, 2][Math.floor(P.dist / 22) % 4] : 0;
-        if (!drawSprite(ctx, o.playerSprite, P.x, P.y, P.dir, frame, 86)) drawPerson(ctx, P.x, P.y, { dir: P.dir, frame, ...(o.playerLook || {}) });
+        if (!drawSprite(ctx, o.playerSprite, P.x, P.y, P.dir, frame, 108)) drawPerson(ctx, P.x, P.y, { dir: P.dir, frame, ...(o.playerLook || {}) });
       } });
       items.sort((a, b) => a.y - b.y).forEach(i => i.draw());
       if (o.onDraw) o.onDraw(ctx);
