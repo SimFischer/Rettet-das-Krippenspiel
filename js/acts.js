@@ -6,12 +6,13 @@ function actHeader(nr, title, sub) {
     <span class="chip act-chip"><b>Akt ${nr}</b> · ${title}</span>
     <span class="spacer"></span>
     ${shelfButton()}
+    ${saveButton()}
     ${treasureButton()}
     ${teacherButton()}
     <button class="iconbtn" id="letter">${icon('scroll')} Brief</button>
   </div>${sub ? `<p class="act-sub">${sub}</p>` : ''}`;
 }
-function wireHeader(el, ref) { const l = el.querySelector('#letter'); if (l) l.onclick = () => showLetter(false); wireTreasure(el); wireTeacher(el); SHELF_CTX = ref || null; wireShelfButtons(el); }
+function wireHeader(el, ref) { const l = el.querySelector('#letter'); if (l) l.onclick = () => showLetter(false); wireTreasure(el); wireTeacher(el); wireSave(el); SHELF_CTX = ref || null; wireShelfButtons(el); }
 
 /* ---------- Kiste öffnet sich ---------- */
 function showChestOpen() {

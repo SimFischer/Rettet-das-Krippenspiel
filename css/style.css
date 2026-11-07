@@ -729,3 +729,13 @@ body.shelf-open { overflow: hidden; }
 .thought-edit { color: var(--ink-soft); min-height: 36px; font-size: .85rem; }
 .cert { gap: 12px; }
 .cert .stats { gap: 16px; }
+/* Speicher-Code */
+.modal { position: fixed; inset: 0; z-index: 70; background: rgba(8,10,20,.7); display: grid; place-items: center; padding: 16px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); animation: fadeIn .2s ease; }
+.modal-card { max-width: 560px; }
+.code-show { font-family: "Atkinson Hyperlegible", monospace; font-weight: 800; font-size: clamp(2.6rem, 9vw, 3.8rem); letter-spacing: .14em; text-align: center; background: var(--ink); color: var(--candle-soft); border-radius: 14px; padding: 14px 10px; font-variant-numeric: tabular-nums; }
+.code-show span { color: var(--fg-dim); margin: 0 .1em; }
+.code-name { text-align: center; color: var(--ink-soft); }
+.loadform { display: grid; gap: 8px; }
+.loadform label { font-weight: 700; }
+.loadform input { font: inherit; font-size: 1.15rem; padding: 12px 14px; border-radius: 10px; border: 2px solid rgba(42,32,23,.25); background: #fffaf0; color: var(--ink); }
+.savebtn svg { color: var(--candle); }

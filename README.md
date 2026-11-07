@@ -43,6 +43,10 @@ tests/check.mjs      Inhalts- und Kartenprüfung: node tests/check.mjs
 
 Die gemalten Bilder liegen als WebP in `assets/` (zusammen ca. 3 MB). Sie wurden aus den ChatGPT-Bildern zugeschnitten: Sprite-Bögen auf 256-px-Zellen mit gemeinsamer Fußlinie, Kiste auf das Koordinatensystem der Schlösser gesetzt, Laufwege und Fundstellen an die gemalten Karten angepasst. Fehlt eine Datei, zeichnet das Spiel einen Platzhalter. Die Prompts für ChatGPT mit Dateinamen, Formaten und den genauen Positionen für Karten stehen in [ASSET-PROMPTS.md](ASSET-PROMPTS.md).
 
+## Speicher-Code (Weiterspielen in der nächsten Stunde)
+
+Über „Speichern“ in der oberen Leiste bekommt jedes Kind einen 6-stelligen Code (z. B. `RAN-LHD`). Auf dem Startbildschirm unter „Ich habe einen Speicher-Code“ mit Vornamen und Code eingeben – das Spiel geht an derselben Stelle weiter, auch auf einem anderen iPad. Es läuft kein Server: Der Code enthält den Spielstand selbst (geöffnete Schlösser, verteilte Kostüme, Stand in Akt 3, Spielfigur) und eine Prüfsumme, die mit dem Vornamen verrechnet ist. Ein Code funktioniert deshalb nur mit dem richtigen Namen. Nicht gespeichert werden ein angefangenes Schloss, Zeit, Hinweise, Bestwerte und der Weihnachtsgedanke. Der aktuelle Code steht auch im Lehrkraftbereich.
+
 ## Datenschutz
 
 Der Spielstand liegt nur im Browser des jeweiligen iPads (localStorage). Es werden keine Daten verschickt. Gespeichert wird nur der eingegebene Vorname, und auch der nur auf dem Gerät.

@@ -54,6 +54,7 @@ function showStart() {
       <div class="figures" role="group" aria-label="Spielfigur">${FIGURE_CHOICES.map(f => `<button type="button" data-f="${f.id}" aria-pressed="${f.id === S.figure}"><span class="fig-prev" style="background-image:url(${f.sheet})">${icon('people')}</span><span>${f.label}</span></button>`).join('')}</div>
       <button class="btn" type="submit">Los geht's ${icon('next')}</button>
     </form>
+    <button class="btn ghost small" id="loadcode">${icon('key')} Ich habe einen Speicher-Code</button>
     <button class="linkbtn" id="teacherlink">Für Lehrkräfte</button>
   </section>`);
   el.querySelectorAll('.figures button').forEach(b => b.onclick = () => {
@@ -68,6 +69,7 @@ function showStart() {
     S.team = v; save(); showLetter(true);
   };
   el.querySelector('#teacherlink').onclick = showPin;
+  el.querySelector('#loadcode').onclick = showLoadCode;
   mount(el);
 }
 
@@ -91,6 +93,7 @@ function showHub() {
       <span class="spacer"></span>
       ${shelfButton()}
       <button class="iconbtn" id="letter">${icon('scroll')} Brief</button>
+      ${saveButton()}
       ${treasureButton()}
       ${teacherButton()}
     </div>
@@ -114,7 +117,7 @@ function showHub() {
   });
   el.querySelectorAll('.locklist button').forEach(b => b.onclick = () => open(b.dataset.id));
   el.querySelector('#letter').onclick = () => showLetter(false);
-  wireTreasure(el); wireTeacher(el);
+  wireTreasure(el); wireTeacher(el); wireSave(el);
   SHELF_CTX = null; SHELF_CUR = null; wireShelfButtons(el);
   const fin = el.querySelector('#finale'); if (fin) fin.onclick = showChestOpen;
   mount(el);
@@ -716,8 +719,8 @@ function showTeacher() {
       </ul>
       <h2 style="font-size:1.3rem">Ergebnis auf diesem iPad</h2>
       <div class="tablewrap"><table>
-        <tr><th>Name</th><th>Stand</th><th>Zeit</th><th>Hinweise</th><th>Weihnachtsgedanke</th></tr>
-        <tr><td>${esc(S.team || '–')}</td><td>${{ kiste: `Akt 1 · ${S.solved.length}/6 Schlösser`, kostueme: `Akt 2 · ${S.act2.delivered.length}/6 Kostüme`, schluessel: 'Akt 3 · Schlüssel', fertig: 'Fertig' }[S.phase] || '–'}</td><td>${S.finished && S.started ? fmtTime(S.finished - S.started) + ' min' : '–'}</td><td>${S.hints}</td><td>${S.reflection ? '„' + esc(S.reflection) + '“' : '–'}</td></tr>
+        <tr><th>Name</th><th>Stand</th><th>Zeit</th><th>Hinweise</th><th>Speicher-Code</th><th>Weihnachtsgedanke</th></tr>
+        <tr><td>${esc(S.team || '–')}</td><td>${{ kiste: `Akt 1 · ${S.solved.length}/6 Schlösser`, kostueme: `Akt 2 · ${S.act2.delivered.length}/6 Kostüme`, schluessel: 'Akt 3 · Schlüssel', fertig: 'Fertig' }[S.phase] || '–'}</td><td>${S.finished && S.started ? fmtTime(S.finished - S.started) + ' min' : '–'}</td><td>${S.hints}</td><td>${S.team ? makeCode(S) : '–'}</td><td>${S.reflection ? '„' + esc(S.reflection) + '“' : '–'}</td></tr>
       </table></div>
       <h2 style="font-size:1.3rem">Steuerung</h2>
       <div class="toggles">
