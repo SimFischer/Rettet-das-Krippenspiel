@@ -304,42 +304,70 @@ function act3Dark() {
 
 function act3Songs() {
   const placed = Array(SONGS.clues.length).fill(null);
-  let sel = 0, hl = 0;
+  let sel = 0, hl = 0, page = 0;
   const el = h(`<section class="screen">
     ${actHeader(3, 'Die Liedtafel', SONGS.intro)}
     <div class="songs">
       <div class="liedtafel" aria-label="Liedtafel">${SONGS.clues.map((_, i) => `<button class="lt-row" data-i="${i}"><span class="lt-num">–</span></button>`).join('')}<div class="lt-safe">${icon('key')} Schlüsselkasten: <b class="code">_ _ _ _</b></div></div>
       <div class="clues"><ol class="howto">${SONGS.steps.map(t => `<li>${t}</li>`).join('')}</ol>${SONGS.clues.map((c, i) => `<button class="clue" data-i="${i}"><b>Zettel ${i + 1}</b><span>${c.t}</span></button>`).join('')}</div>
-      <div class="hymnal paper"><div class="kicker">Evangelisches Gesangbuch · Advent und Weihnachten</div><ul>${SONGS.book.map(b => `<li><button class="song" data-eg="${b.eg}"><span class="eg">${b.eg}</span><span class="song-t"><b>${b.t}</b><small class="who">${b.who} · ${b.kind}</small><small class="start">${b.start}</small></span></button></li>`).join('')}</ul></div>
+      <div class="songbook">
+        <div class="sb-head">${icon('book')} Evangelisches Gesangbuch</div>
+        <div class="sb-page paper"></div>
+        <div class="sb-nav">
+          <button class="iconbtn sb-prev" aria-label="Vorige Seite">${icon('back')}</button>
+          <span class="sb-count"></span>
+          <button class="iconbtn sb-next" aria-label="Nächste Seite">${icon('next')}</button>
+        </div>
+      </div>
     </div>
     <div class="fb wide"></div>
     <div class="st-foot"><span></span><button class="btn ghost small lantern" id="hint">${icon('lantern')} Laterne: Hinweis</button></div>
   </section>`);
   wireHeader(el, 'text:lieder');
   { const lb = lookupBar(['text:lieder']); const sub = el.querySelector('.act-sub'); if (lb && sub) sub.insertAdjacentElement('afterend', lb); }
-  const fb = el.querySelector('.fb');
+  const fb = el.querySelector('.fb'), pg = el.querySelector('.sb-page');
+  function renderPage(dir) {
+    const b = SONGS.book[page];
+    pg.innerHTML = `<div class="sb-top"><span class="sb-eg">${b.eg}</span><span class="sb-kind">${b.kind}</span></div>
+      <h3 class="sb-title">${b.t}</h3>
+      <p class="sb-who">${b.who}</p>
+      <div class="sb-verse"><small>${b.part}</small>${b.verse.map(l => `<span>${l}</span>`).join('')}</div>
+      <div class="sb-act"><button class="btn ink sb-pick">${icon('check')} Auf die Liedtafel${sel != null ? ` (Zettel ${sel + 1})` : ''}</button></div>`;
+    pg.classList.remove('flip-l', 'flip-r'); void pg.offsetWidth; if (dir) pg.classList.add(dir > 0 ? 'flip-r' : 'flip-l');
+    el.querySelector('.sb-count').textContent = `Seite ${page + 1} von ${SONGS.book.length}`;
+    el.querySelector('.sb-prev').disabled = page === 0;
+    el.querySelector('.sb-next').disabled = page === SONGS.book.length - 1;
+    pg.querySelector('.sb-pick').onclick = () => pick(b.eg);
+  }
+  el.querySelector('.sb-prev').onclick = () => { if (page > 0) { page--; renderPage(-1); } };
+  el.querySelector('.sb-next').onclick = () => { if (page < SONGS.book.length - 1) { page++; renderPage(1); } };
+  let sx = null;
+  pg.addEventListener('pointerdown', e => { sx = e.clientX; });
+  pg.addEventListener('pointerup', e => { if (sx == null) return; const d = e.clientX - sx; sx = null; if (Math.abs(d) > 60) el.querySelector(d < 0 ? '.sb-next' : '.sb-prev').click(); });
   function render() {
     el.querySelectorAll('.clue').forEach((c, i) => { c.classList.toggle('sel', i === sel); c.classList.toggle('done', placed[i] != null); });
     el.querySelectorAll('.lt-row').forEach((r, i) => { r.querySelector('.lt-num').textContent = placed[i] ?? '–'; r.classList.toggle('sel', i === sel); });
     el.querySelector('.code').textContent = placed.map(p => p ?? '_').join(' ');
+    const pk = pg.querySelector('.sb-pick'); if (pk) pk.innerHTML = `${icon('check')} Auf die Liedtafel${sel != null ? ` (Zettel ${sel + 1})` : ''}`;
   }
-  el.querySelectorAll('.clue, .lt-row').forEach(c => c.onclick = () => { sel = +c.dataset.i; render(); });
-  el.querySelectorAll('.song').forEach(b => b.onclick = () => {
+  el.querySelectorAll('.clue, .lt-row').forEach(c => c.onclick = () => { if (placed[+c.dataset.i] != null) return; sel = +c.dataset.i; render(); });
+  function pick(eg) {
     fb.innerHTML = '';
     if (sel == null || placed[sel] != null) { fb.appendChild(feedback('tip', '', 'Tippe zuerst einen Zettel an, der noch keine Nummer hat.')); return; }
-    const eg = +b.dataset.eg;
     if (eg === SONGS.clues[sel].eg) {
-      placed[sel] = eg; fb.appendChild(feedback('ok', `EG ${eg}!`, ' ' + SONGS.why[eg]));
+      placed[sel] = eg; fb.appendChild(feedback('ok', `EG ${eg} passt zu Zettel ${sel + 1}!`, ' ' + SONGS.why[eg]));
       const nxt = placed.findIndex(p => p == null); sel = nxt < 0 ? null : nxt; render();
       if (nxt < 0) {
         el.querySelector('.lt-safe').classList.add('open');
         const n = h(`<div class="step-actions wide"><button class="btn">${icon('key')} Der Kasten springt auf – Ersatzschlüssel nehmen!</button></div>`);
         n.querySelector('button').onclick = nextAct3; fb.after(n);
       }
-    } else { shake(b); fb.appendChild(feedback('no', 'Das ist ein anderes Lied.', ' Lies den Zettel noch einmal genau.')); }
-  });
+    } else {
+      shake(pg); fb.appendChild(feedback('no', 'Dieses Lied passt nicht zu dem Zettel.', ' Lies den Zettel noch einmal genau und blättere weiter.'));
+    }
+  }
   el.querySelector('#hint').onclick = () => { fb.innerHTML = ''; fb.appendChild(feedback('tip', '', SONGS.hints[hl++ % SONGS.hints.length])); S.hints++; save(); };
-  render();
+  renderPage(0); render();
   mount(el);
 }
 

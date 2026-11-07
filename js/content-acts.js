@@ -117,7 +117,7 @@ const DARK = {
 
 const SONGS = {
   intro: 'Neben dem Schlüsselkasten hängt die Liedtafel für den Gottesdienst am Heiligen Abend. Frau Petersen hat die Nummern noch nicht eingesteckt, nur vier Zettel daneben geklebt. Die vier Liednummern sind der Code für den Schlüsselkasten.',
-  steps: ['Tippe einen Zettel an.', 'Lies im Gesangbuch rechts, wer jedes Lied geschrieben hat, wann – und wie es anfängt.', 'Tippe das Lied an, das zum Zettel passt. Die Nummer erscheint auf der Liedtafel.'],
+  steps: ['Tippe einen Zettel an.', 'Blättere rechts durch das Gesangbuch und lies die Lieder.', 'Hast du das passende Lied gefunden? Tippe auf „Auf die Liedtafel“.'],
   clues: [
     { t: 'Eingangslied – ein Adventslied: „Die Tore sollen weit aufgehen, denn der König der Herrlichkeit kommt.“', eg: 1 },
     { t: 'Martin Luther hat es für seine Familie geschrieben. In der ersten Strophe singt der Engel.', eg: 24 },
@@ -125,16 +125,16 @@ const SONGS = {
     { t: 'Zum ersten Mal 1818 in Oberndorf bei Salzburg gesungen – heute auf der ganzen Welt bekannt.', eg: 46 },
   ],
   book: [
-    { eg: 1, t: 'Macht hoch die Tür, die Tor macht weit', who: 'Georg Weissel, 1623', kind: 'Advent', start: '„Macht hoch die Tür, die Tor macht weit; es kommt der Herr der Herrlichkeit …“' },
-    { eg: 8, t: 'Es kommt ein Schiff, geladen', who: 'nach einem alten Lied, um 1600', kind: 'Advent', start: '„Es kommt ein Schiff, geladen bis an sein’ höchsten Bord …“' },
-    { eg: 13, t: 'Tochter Zion, freue dich', who: 'Melodie von Georg Friedrich Händel', kind: 'Advent', start: '„Tochter Zion, freue dich, jauchze laut, Jerusalem!“' },
-    { eg: 24, t: 'Vom Himmel hoch, da komm ich her', who: 'Martin Luther, um 1535 – für seine Kinder', kind: 'Weihnachten', start: '„Vom Himmel hoch, da komm ich her, ich bring euch gute neue Mär …“ (das singt der Engel)' },
-    { eg: 27, t: 'Lobt Gott, ihr Christen alle gleich', who: 'Nikolaus Herman, 1560', kind: 'Weihnachten', start: '„Lobt Gott, ihr Christen alle gleich, in seinem höchsten Thron …“' },
-    { eg: 30, t: 'Es ist ein Ros entsprungen', who: 'Dichter unbekannt, 16. Jahrhundert', kind: 'Weihnachten', start: '„Es ist ein Ros entsprungen aus einer Wurzel zart …“' },
-    { eg: 37, t: 'Ich steh an deiner Krippen hier', who: 'Paul Gerhardt, evangelischer Pfarrer, 1653', kind: 'Weihnachten', start: '„Ich steh an deiner Krippen hier, o Jesu, du mein Leben …“' },
-    { eg: 43, t: 'Ihr Kinderlein, kommet', who: 'Christoph von Schmid, um 1800', kind: 'Weihnachten', start: '„Ihr Kinderlein, kommet, o kommet doch all …“' },
-    { eg: 44, t: 'O du fröhliche', who: 'Johannes Daniel Falk, 1816', kind: 'Weihnachten', start: '„O du fröhliche, o du selige, gnadenbringende Weihnachtszeit …“' },
-    { eg: 46, t: 'Stille Nacht, heilige Nacht', who: 'Joseph Mohr und Franz Xaver Gruber – zuerst gesungen 1818 in Oberndorf bei Salzburg', kind: 'Weihnachten', start: '„Stille Nacht, heilige Nacht! Alles schläft, einsam wacht …“' },
+    { eg: 1, t: 'Macht hoch die Tür, die Tor macht weit', who: 'Georg Weissel, 1623', kind: 'Advent', part: '1. Strophe', verse: ["Macht hoch die Tür, die Tor macht weit;", "es kommt der Herr der Herrlichkeit,", "ein König aller Königreich,", "ein Heiland aller Welt zugleich,", "der Heil und Leben mit sich bringt;", "derhalben jauchzt, mit Freuden singt:", "Gelobet sei mein Gott,", "mein Schöpfer reich von Rat."] },
+    { eg: 8, t: 'Es kommt ein Schiff, geladen', who: 'nach einem alten Lied, um 1600', kind: 'Advent', part: '1. Strophe', verse: ["Es kommt ein Schiff, geladen", "bis an sein’ höchsten Bord,", "trägt Gottes Sohn voll Gnaden,", "des Vaters ewigs Wort."] },
+    { eg: 13, t: 'Tochter Zion, freue dich', who: 'Melodie von Georg Friedrich Händel', kind: 'Advent', part: 'Refrain', verse: ["Tochter Zion, freue dich,", "jauchze laut, Jerusalem!", "Sieh, dein König kommt zu dir,", "ja, er kommt, der Friedefürst.", "Tochter Zion, freue dich,", "jauchze laut, Jerusalem!"] },
+    { eg: 24, t: 'Vom Himmel hoch, da komm ich her', who: 'Martin Luther, um 1535 – für seine Kinder', kind: 'Weihnachten', part: '1. Strophe', verse: ["Vom Himmel hoch, da komm ich her,", "ich bring euch gute neue Mär;", "der guten Mär bring ich so viel,", "davon ich singn und sagen will."] },
+    { eg: 27, t: 'Lobt Gott, ihr Christen alle gleich', who: 'Nikolaus Herman, 1560', kind: 'Weihnachten', part: '1. Strophe', verse: ["Lobt Gott, ihr Christen alle gleich,", "in seinem höchsten Thron,", "der heut schließt auf sein Himmelreich", "und schenkt uns seinen Sohn,", "und schenkt uns seinen Sohn."] },
+    { eg: 30, t: 'Es ist ein Ros entsprungen', who: 'Dichter unbekannt, 16. Jahrhundert', kind: 'Weihnachten', part: '1. Strophe', verse: ["Es ist ein Ros entsprungen", "aus einer Wurzel zart,", "wie uns die Alten sungen,", "von Jesse kam die Art", "und hat ein Blümlein bracht", "mitten im kalten Winter", "wohl zu der halben Nacht."] },
+    { eg: 37, t: 'Ich steh an deiner Krippen hier', who: 'Paul Gerhardt, evangelischer Pfarrer, 1653', kind: 'Weihnachten', part: '1. Strophe', verse: ["Ich steh an deiner Krippen hier,", "o Jesu, du mein Leben;", "ich komme, bring und schenke dir,", "was du mir hast gegeben.", "Nimm hin, es ist mein Geist und Sinn,", "Herz, Seel und Mut, nimm alles hin", "und lass dir’s wohlgefallen."] },
+    { eg: 43, t: 'Ihr Kinderlein, kommet', who: 'Christoph von Schmid, um 1800', kind: 'Weihnachten', part: '1. Strophe', verse: ["Ihr Kinderlein, kommet, o kommet doch all!", "Zur Krippe her kommet in Bethlehems Stall", "und seht, was in dieser hochheiligen Nacht", "der Vater im Himmel für Freude uns macht."] },
+    { eg: 44, t: 'O du fröhliche', who: 'Johannes Daniel Falk, 1816', kind: 'Weihnachten', part: '1. Strophe', verse: ["O du fröhliche, o du selige,", "gnadenbringende Weihnachtszeit!", "Welt ging verloren, Christ ward geboren:", "Freue, freue dich, o Christenheit!"] },
+    { eg: 46, t: 'Stille Nacht, heilige Nacht', who: 'Joseph Mohr und Franz Xaver Gruber – zuerst gesungen 1818 in Oberndorf bei Salzburg', kind: 'Weihnachten', part: '1. Strophe', verse: ["Stille Nacht, heilige Nacht!", "Alles schläft, einsam wacht", "nur das traute, hochheilige Paar.", "Holder Knabe im lockigen Haar,", "schlaf in himmlischer Ruh,", "schlaf in himmlischer Ruh."] },
   ],
   why: {
     1: '„Macht hoch die Tür“ (EG 1) eröffnet das Gesangbuch – es beginnt wie das Kirchenjahr mit dem Advent.',
@@ -142,7 +142,7 @@ const SONGS = {
     37: 'Richtig: Paul Gerhardt gehört zu den wichtigsten evangelischen Liederdichtern.',
     46: '„Stille Nacht“ stammt von einem katholischen Hilfspriester und einem Lehrer – heute singen es alle Kirchen.',
   },
-  hints: ['Vergleiche die Namen und Jahreszahlen auf dem Zettel mit den kleinen Angaben unter jedem Lied im Gesangbuch.', 'Zettel 1: Tore und Türen stehen im Liedanfang. Zettel 2: Martin Luther. Zettel 3: Paul Gerhardt, 1653. Zettel 4: 1818, Oberndorf.'],
+  hints: ['Blättere jede Seite durch und lies Dichter, Jahr und den Liedtext. Vergleiche sie mit dem Zettel.', 'Zettel 1: Im Liedtext geht es um eine Tür. Zettel 2: Martin Luther. Zettel 3: Paul Gerhardt, 1653. Zettel 4: 1818, Oberndorf.'],
 };
 
 const RINGS = {
