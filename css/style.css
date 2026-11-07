@@ -682,3 +682,39 @@ body.shelf-open { overflow: hidden; }
 .fig-prev svg { width: 44px; height: 44px; }
 .fig-prev.art svg { display: none; }
 .fig-prev:not(.art) { background-image: none !important; }
+/* Walzen rasten ein */
+.ring.locked .ring-val { box-shadow: inset 0 0 0 3px var(--candle), 0 0 22px rgba(242,189,98,.7); color: #fff2c4; background: linear-gradient(180deg, #6b4a1c, #3b2a12); transition: all .3s; }
+.ring.locked .ring-val::after { content: " ✓"; color: #9fdcae; }
+
+/* Großes Finale an der Kirchentür */
+.finale { justify-content: center; }
+.fin-stage { position: relative; display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 28px; align-items: center; max-width: 1150px; margin: 0 auto; width: 100%; }
+.fin-sky { position: fixed; inset: 0; pointer-events: none; z-index: 0; background: radial-gradient(ellipse 50% 60% at 30% 55%, rgba(255,214,140,0), transparent); transition: background 1.2s; }
+.finale.s3 .fin-sky { background: radial-gradient(ellipse 55% 70% at 30% 55%, rgba(255,214,140,.35), transparent 70%); }
+.fin-fx { width: 100%; height: 100%; display: block; }
+.fin-door { position: relative; z-index: 1; aspect-ratio: 400 / 520; border-radius: var(--r); overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+.fin-door > div { position: absolute; inset: 0; }
+.fin-door img, .fin-door svg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.fin-open { opacity: 0; transition: opacity 1s ease; }
+.finale.s2 .fin-closed { animation: rattle .5s ease 2; }
+@keyframes rattle { 0%,100% { transform: none; } 25% { transform: translateX(-4px) rotate(-.4deg); } 75% { transform: translateX(4px) rotate(.4deg); } }
+.finale.s3 .fin-open { opacity: 1; }
+.fin-burst { background: radial-gradient(circle at 50% 60%, rgba(255,240,200,.95), rgba(255,210,120,.5) 30%, transparent 65%); opacity: 0; transform: scale(.2); }
+.finale.s3 .fin-burst { animation: burst 1.6s ease-out forwards; }
+@keyframes burst { 0% { opacity: 0; transform: scale(.2); } 30% { opacity: 1; } 100% { opacity: 0; transform: scale(2.2); } }
+.fin-text { position: relative; z-index: 1; display: grid; gap: 14px; }
+.fin-lead { margin: 0; color: var(--candle-soft); font-family: var(--f-display); font-size: 1.3rem; opacity: 0; transition: opacity .6s; }
+.fin-sentence { margin: 0; font-family: var(--f-display); font-weight: 800; font-size: clamp(1.6rem, 3.4vw, 2.5rem); line-height: 1.2; color: var(--candle); text-wrap: balance; }
+.fin-sentence span { opacity: 0; display: inline-block; transform: translateY(10px); transition: opacity .6s, transform .6s; transition-delay: calc(var(--d, 0) * .45s); }
+.fin-sentence .dash { transition-delay: .2s; }
+.finale.s1 .fin-lead, .finale.s1 .fin-sentence span { opacity: 1; transform: none; }
+.finale.s3 .fin-sentence { text-shadow: 0 0 24px rgba(242,189,98,.6); }
+.fin-win { display: grid; gap: 12px; animation: fadeIn .8s ease; }
+.fin-win h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); color: #fff6dc; }
+.fin-win p { margin: 0; font-size: 1.1rem; max-width: 52ch; }
+.fin-win blockquote { margin: 0; padding: 10px 16px; border-left: 4px solid var(--candle); color: var(--candle-soft); font-family: var(--f-display); font-style: italic; font-size: 1.15rem; }
+.fin-win blockquote small { display: block; font-style: normal; font-size: .8rem; color: var(--fg-dim); margin-top: 4px; }
+.fin-win .center-actions { justify-content: flex-start; }
+@media (max-width: 860px) { .fin-stage { grid-template-columns: 1fr; } .fin-door { max-width: 300px; margin: 0 auto; width: 100%; } .fin-text { text-align: center; } .fin-win .center-actions { justify-content: center; } }
+.fin-win { animation: none; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity .9s ease, transform .9s ease; }
+.finale.s4 .fin-win { opacity: 1; visibility: visible; transform: none; }

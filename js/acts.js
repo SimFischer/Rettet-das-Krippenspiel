@@ -399,7 +399,14 @@ function act3Rings() {
   el.querySelector('#pull').onclick = () => {
     fb.innerHTML = '';
     const wrong = RINGS.rings.findIndex((r, i) => pos[i] !== r.answer);
-    if (wrong < 0) { S.times.schluessel = Date.now(); nextAct3(); return; }
+    if (wrong < 0) {
+      S.times.schluessel = Date.now();
+      el.querySelectorAll('.ring button, #pull, #hint').forEach(b => b.disabled = true);
+      el.querySelectorAll('.ring').forEach((rg, i) => setTimeout(() => { rg.classList.add('locked'); chime(i); }, 350 * i));
+      setTimeout(() => fb.appendChild(feedback('ok', 'Klack – klack – klack!', ' Alle drei Walzen sind eingerastet. Der Schlüssel dreht sich …')), 1100);
+      setTimeout(nextAct3, 2300);
+      return;
+    }
     const rg = el.querySelectorAll('.ring')[wrong]; shake(rg);
     fb.appendChild(feedback('no', 'Der Schlüssel dreht sich nicht.', ` Mindestens eine Walze stimmt noch nicht. ${RINGS.rings[wrong].hint}`));
   };
@@ -420,16 +427,78 @@ function doorSVG(open) {
 }
 
 function act3Door() {
-  const el = h(`<section class="screen">
-    ${actHeader(3, 'Die Tür ist offen!')}
-    <div class="door-wrap">
-      <div class="door-art">${doorSVG(true)}<img src="assets/act3/kirchentuer-offen.webp" alt="" onerror="this.remove()"></div>
-      <div class="paper"><div class="kicker">Geschafft</div><h2>Die Gemeinde kommt herein</h2><p>${RINGS.win}</p>
-        <p class="note">„Du hast das Krippenspiel gerettet!“ – Pastorin Ahrens</p>
-        <div class="step-actions"><button class="btn" id="go">${icon('scroll')} Zum Drehbuch</button></div></div>
+  const parts = RINGS.rings.map(r => r.options[r.answer]);
+  const name = esc(S.team || '');
+  const el = h(`<section class="screen finale">
+    <div class="fin-stage">
+      <div class="fin-sky"><canvas class="fin-fx"></canvas></div>
+      <div class="fin-door">
+        <div class="fin-closed">${doorSVG(false)}<img src="assets/act3/kirchentuer.webp" alt="" onerror="this.remove()"></div>
+        <div class="fin-open">${doorSVG(true)}<img src="assets/act3/kirchentuer-offen.webp" alt="" onerror="this.remove()"></div>
+        <div class="fin-burst"></div>
+      </div>
+      <div class="fin-text">
+        <p class="fin-lead">${RINGS.lead}</p>
+        <p class="fin-sentence">${parts.map((p, i) => `<span style="--d:${i}">${p}</span>`).join('<span class="dash">&nbsp;–&nbsp;</span>')}</p>
+        <div class="fin-win">
+          <h1>Geschafft${name ? ', ' + name : ''}!</h1>
+          <p>Die Tür ist offen, die Gemeinde kommt herein, und die Glocken läuten. Das Krippenspiel kann beginnen – <b>du hast es gerettet!</b></p>
+          <blockquote>„Fürchtet euch nicht! Siehe, ich verkündige euch große Freude, die allem Volk widerfahren wird.“ <small>Lukas 2,10</small></blockquote>
+          <div class="center-actions"><button class="btn" id="go">${icon('scroll')} Zum Drehbuch</button></div>
+        </div>
+      </div>
     </div>
   </section>`);
-  wireHeader(el);
-  el.querySelector('#go').onclick = showScript;
+  el.querySelector('#go').onclick = () => { stopFx(); showScript(); };
   mount(el);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const T = reduce ? [0, 0, 0, 0] : [300, 1900, 2500, 3600];
+  setTimeout(() => el.classList.add('s1'), T[0]);                         // Satz baut sich auf
+  setTimeout(() => el.classList.add('s2'), T[1]);                         // Tür ruckelt
+  setTimeout(() => { el.classList.add('s3'); bells(); startFx(); }, T[2]); // Tür auf, Licht, Funken
+  setTimeout(() => el.classList.add('s4'), T[3]);
+  // Funken und Schnee
+  const cv = el.querySelector('.fin-fx'), ctx = cv.getContext('2d');
+  let raf = 0, parts2 = [], last = 0;
+  function startFx() {
+    if (reduce) return;
+    const W = cv.clientWidth, H = cv.clientHeight, d = Math.min(2, devicePixelRatio || 1);
+    cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0);
+    for (let i = 0; i < 70; i++) parts2.push({ snow: true, x: Math.random() * W, y: Math.random() * H, v: 20 + Math.random() * 30, r: 1 + Math.random() * 2.2, w: Math.random() * 6 });
+    const dr = el.querySelector('.fin-door').getBoundingClientRect(), cr = cv.getBoundingClientRect();
+    const sx = dr.left - cr.left + dr.width * .5, sy = dr.top - cr.top + dr.height * .62;
+    const spawn = () => { for (let i = 0; i < 4; i++) parts2.push({ x: sx + (Math.random() - .5) * dr.width * .5, y: sy, vx: (Math.random() - .5) * 90, vy: -60 - Math.random() * 120, life: 1, r: 1.5 + Math.random() * 2.5 }); };
+    const loop = t => {
+      if (!cv.isConnected) return stopFx();
+      const dt = last ? Math.min(.05, (t - last) / 1000) : 0; last = t;
+      if (Math.random() < .7) spawn();
+      ctx.clearRect(0, 0, W, H);
+      parts2 = parts2.filter(p => {
+        if (p.snow) { p.y += p.v * dt; p.x += Math.sin((t / 1000) + p.w) * 12 * dt; if (p.y > H) p.y = -5; ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill(); return true; }
+        p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 15 * dt; p.life -= dt * .45;
+        if (p.life <= 0) return false;
+        ctx.fillStyle = `rgba(255,${200 + Math.random() * 40 | 0},120,${p.life})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill();
+        return true;
+      });
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+  }
+  function stopFx() { cancelAnimationFrame(raf); }
 }
+
+/* Leises Glockengeläut, mit Web Audio erzeugt (nur nach einem Antippen möglich) */
+let AUDIO = null;
+function audioCtx() { try { AUDIO = AUDIO || new (window.AudioContext || window.webkitAudioContext)(); return AUDIO; } catch (e) { return null; } }
+function bell(freq, when, vol = .12, len = 3.2) {
+  const ac = audioCtx(); if (!ac) return;
+  const t0 = ac.currentTime + when;
+  [[1, 1], [2.0, .5], [2.76, .35], [5.4, .15]].forEach(([m, g]) => {
+    const o = ac.createOscillator(), gn = ac.createGain();
+    o.type = 'sine'; o.frequency.value = freq * m;
+    gn.gain.setValueAtTime(0, t0); gn.gain.linearRampToValueAtTime(vol * g, t0 + .01); gn.gain.exponentialRampToValueAtTime(.0001, t0 + len / m);
+    o.connect(gn).connect(ac.destination); o.start(t0); o.stop(t0 + len);
+  });
+}
+function chime(i) { bell([784, 880, 988][i % 3], 0, .05, 1.2); }
+function bells() { [392, 330, 294, 392, 330, 262].forEach((f, i) => bell(f, i * .55, .1)); }
