@@ -200,40 +200,47 @@ GAMES.candles = function (done) {
   mount(el);
 };
 
-/* --- Der andere Heimweg (Bonus, Matthäus 2,12) --- */
+/* --- Der andere Heimweg (Bonus, Matthäus 2,12) ---
+   Wer entdeckt wird, muss ganz von vorne anfangen. Posten an den Rändern schwenken ihren Blick. */
 GAMES.heimweg = function (done) {
-  const el = gameShell('Der andere Heimweg', '„Und Gott befahl ihnen im Traum, dass sie sich nicht sollten wieder zu Herodes lenken; und zogen durch einen andern Weg wieder in ihr Land.“ (Matthäus 2,12) – Schleich an den Wachen vorbei nach Osten.', done);
+  const el = gameShell('Der andere Heimweg', '„Und Gott befahl ihnen im Traum, dass sie sich nicht sollten wieder zu Herodes lenken; und zogen durch einen andern Weg wieder in ihr Land.“ (Matthäus 2,12)', done);
   const m = BETHLEHEM_MAP;
-  let cp = 0, caught = 0, flash = 0, finished = false, t0 = performance.now();
-  const hud = h(`<div class="walk-hud"><span class="chip">${icon('star')} Ziel: rechts der Weg ins Morgenland</span><span class="chip cnt">0 × entdeckt</span></div>`);
+  let tries = 1, flash = 0, finished = false, t0 = performance.now(), started = false;
+  const hud = h(`<div class="walk-hud"><span class="chip">${icon('star')} Ziel: ganz rechts der Weg ins Morgenland</span><span class="chip cnt">Versuch 1</span></div>`);
   const walk = Walk.create({
-    map: m, drawBg: drawBethlehemPlaceholder, speed: 230,
+    map: m, drawBg: drawBethlehemPlaceholder, speed: 220,
     playerSprite: 'assets/bonus/weise-sheet.webp',
     playerLook: { body: '#6c4b94', hair: '#2a2420', cape: '#c9a14c', crown: true },
     spots: () => [],
-    viewRange: 220, viewAngle: 0.55,
+    viewRange: 230, viewAngle: 0.5,
     onTick(P) {
-      if (finished) return;
-      m.checkpoints.forEach((c, i) => { if (i > cp && P.x > c.x) { cp = i; toast('Zwischenstation erreicht'); } });
+      if (finished || !started) return;
       if (flash <= 0 && walk && walk.guards.some(g => walk.sees(g))) {
-        caught++; flash = 0.6; hud.querySelector('.cnt').textContent = `${caught} × entdeckt`;
-        const c = m.checkpoints[cp]; walk.teleport(c.x, c.y);
+        tries++; flash = 0.9; hud.querySelector('.cnt').textContent = `Versuch ${tries}`;
+        walk.teleport(m.start.x, m.start.y); toast('Entdeckt! Zurück zum Anfang.');
       }
       if (P.x > m.goalX) { finished = true; win(); }
     },
     onDraw(ctx) {
-      if (flash > 0) { ctx.fillStyle = `rgba(168,69,47,${flash * .6})`; ctx.fillRect(0, 0, m.w, m.h); flash -= 0.02; }
-      m.checkpoints.forEach((c, i) => { if (i) { ctx.strokeStyle = i <= cp ? 'rgba(242,189,98,.8)' : 'rgba(242,189,98,.3)'; ctx.lineWidth = 4; ctx.setLineDash([10, 10]); ctx.beginPath(); ctx.moveTo(c.x, 40); ctx.lineTo(c.x, 960); ctx.stroke(); ctx.setLineDash([]); } });
+      if (flash > 0) { ctx.fillStyle = `rgba(168,69,47,${flash * .55})`; ctx.fillRect(0, 0, m.w, m.h); flash -= 0.02; }
+      ctx.fillStyle = 'rgba(242,189,98,.18)'; ctx.fillRect(m.goalX, 40, m.w - m.goalX, 920);
     },
   });
   const slot = el.querySelector('.gslot'); slot.classList.add('walk-game');
   slot.appendChild(hud); slot.appendChild(walk.el);
+  const intro = h(`<div class="paper heim-intro"><div class="kicker">So geht’s</div><h2>Schleich dich an den Wachen vorbei</h2>
+    <p>Tippe dorthin, wo der Weise hinlaufen soll. Die hellen Kegel zeigen, wohin die Soldaten von König Herodes schauen. Einige laufen Streife, andere stehen still und drehen den Kopf hin und her. Warte im Schatten der Häuser auf den richtigen Moment.</p>
+    <p><b>Wirst du gesehen, beginnst du wieder ganz am Anfang.</b></p>
+    <div class="step-actions"><button class="btn">${icon('star')} Los geht’s</button></div></div>`);
+  slot.insertBefore(intro, walk.el);
+  walk.pause();
+  intro.querySelector('button').onclick = () => { intro.remove(); started = true; t0 = performance.now(); walk.resume(); };
   function win() {
     walk.pause();
     const secs = Math.round((performance.now() - t0) / 1000);
-    const rec = saveBest('heimweg', caught, true);
+    const rec = saveBest('heimweg', tries, true);
     const ov = h(`<div class="paper" style="text-align:center;align-items:center;max-width:680px;margin:0 auto"><h2>Die Weisen sind auf dem Heimweg!</h2>
-      <p>${caught ? `${caught}-mal entdeckt` : 'Kein einziges Mal entdeckt'} · ${secs} Sekunden${rec ? ' · neuer Bestwert!' : ''}</p>
+      <p>${tries === 1 ? 'Gleich im ersten Versuch geschafft!' : `Geschafft im ${tries}. Versuch`} · ${secs} Sekunden${rec ? ' · neuer Bestwert!' : ''}</p>
       <p>Die Weisen verraten Herodes nicht, wo das Kind ist. Matthäus erzählt: Gott beschützt das Kind – und Fremde aus fernen Ländern werden zu seinen ersten Verehrern.</p>
       <div class="center-actions"><button class="btn" id="cont">Weiter ${icon('next')}</button><button class="btn ghost small" id="again" style="color:var(--ink);box-shadow:inset 0 0 0 2px rgba(42,32,23,.3)">Nochmal</button></div></div>`);
     slot.appendChild(ov); ov.scrollIntoView({ behavior: 'smooth', block: 'center' });

@@ -185,10 +185,15 @@ function darkRoomArt() {
 function act3Dark() {
   const found = new Set(S.act3.dark || []);
   const el = h(`<section class="screen">
-    ${actHeader(3, 'Die dunkle Turmkammer', 'Bewege die Taschenlampe mit dem Finger. Leuchtet etwas auf? Tippe darauf und lege es in den richtigen Kasten.')}
+    ${actHeader(3, 'Die dunkle Turmkammer', 'Im Dunkeln liegen vier Dinge aus dem Kirchenjahr – und irgendwo der Schlüsselkasten.')}
     <div class="dark-wrap">
-      <div class="dark-room">${darkRoomArt()}<img class="dark-img" src="assets/act3/turmkammer.webp" alt="" onerror="this.remove()"><canvas></canvas><div class="dark-spots"></div></div>
-      <aside class="drawers"><h3>Kästen im Kirchenschrank</h3>${DARK.drawers.map((d, k) => `<button class="drawer" data-k="${k}" disabled><span>${d}</span><small></small></button>`).join('')}<div class="hand small-note">Noch nichts gefunden.</div></aside>
+      <div class="dark-room">${darkRoomArt()}<img class="dark-img" src="assets/act3/turmkammer.webp" alt="" onerror="this.remove()"><canvas></canvas><div class="dark-spots"></div>
+        <div class="dark-card" hidden></div>
+      </div>
+      <aside class="finds"><h3>${icon('lantern')} Deine Funde</h3>
+        <ol class="find-list">${DARK.spots.map(sp => `<li data-id="${sp.id}"><span class="fi">?</span><span class="ft">Noch nicht gefunden</span></li>`).join('')}
+          <li class="keybox"><span class="fi">${icon('key')}</span><span class="ft">Schlüsselkasten – erst wenn alle vier gefunden sind</span></li></ol>
+      </aside>
     </div>
     <div class="fb wide"></div>
     <div class="st-foot"><span></span><button class="btn ghost small lantern" id="hint">${icon('lantern')} Laterne: Hinweis</button></div>
@@ -196,14 +201,24 @@ function act3Dark() {
   wireHeader(el, 'text:farben');
   { const lb = lookupBar(['text:farben']); const sub = el.querySelector('.act-sub'); if (lb && sub) sub.insertAdjacentElement('afterend', lb); }
   const room = el.querySelector('.dark-room'), cv = room.querySelector('canvas'), ctx = cv.getContext('2d'), layer = room.querySelector('.dark-spots');
-  const hand = el.querySelector('.hand'), fb = el.querySelector('.fb');
-  let lx = .5, ly = .45, holding = null, W = 0, H = 0;
+  const card = room.querySelector('.dark-card'), fb = el.querySelector('.fb');
+  let lx = .5, ly = .45, W = 0, H = 0, busy = false;
   const all = [...DARK.spots, { ...DARK.box, id: 'box' }];
+  const thumb = sp => `<div class="thumb" style="background-position:${sp.x}% ${sp.y}%;background-size:${Math.round(100 / sp.w * 100 * .9)}% auto">${icon(sp.icon === 'cloth' ? 'scroll' : sp.icon)}</div>`;
   all.forEach((sp, i) => {
-    const b = h(`<button class="dark-spot" style="left:${sp.x - sp.w / 2}%;top:${sp.y - sp.h / 2}%;width:${sp.w}%;height:${sp.h}%" aria-label="${sp.name}"></button>`);
+    const b = h(`<button class="dark-spot" style="left:${sp.x - sp.w / 2}%;top:${sp.y - sp.h / 2}%;width:${sp.w}%;height:${sp.h}%" aria-label="${sp.name}"><em>Antippen</em></button>`);
     b.onclick = e => { e.stopPropagation(); pick(i); };
     layer.appendChild(b);
   });
+  function renderFinds() {
+    DARK.spots.forEach(sp => {
+      const li = el.querySelector(`.find-list li[data-id="${sp.id}"]`);
+      if (found.has(sp.id)) { li.classList.add('got'); li.innerHTML = `<span class="fi">${icon('check')}</span><span class="ft"><b>${sp.name}</b><small>${DARK.drawers[sp.answer]}</small></span>`; }
+    });
+    const kb = el.querySelector('.keybox');
+    kb.classList.toggle('ready', found.size === DARK.spots.length);
+    if (found.size === DARK.spots.length) kb.querySelector('.ft').innerHTML = '<b>Schlüsselkasten</b><small>Er leuchtet jetzt unten in der Mitte – tippe ihn an!</small>';
+  }
   function paint() {
     const r = room.getBoundingClientRect(); if (!r.width) return;
     const d = Math.min(2, devicePixelRatio || 1);
@@ -216,45 +231,74 @@ function act3Dark() {
     ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = 'rgba(255,200,110,.08)'; ctx.beginPath(); ctx.arc(x, y, R, 0, 7); ctx.fill();
     layer.querySelectorAll('.dark-spot').forEach((b, i) => {
       const sp = all[i], dist = Math.hypot((sp.x / 100 - lx) * W, (sp.y / 100 - ly) * H);
-      const isBox = sp.id === 'box';
-      b.hidden = isBox && found.size < DARK.spots.length;
-      b.classList.toggle('lit', dist < R * .8 || (isBox && found.size === DARK.spots.length));
-      b.classList.toggle('found', !isBox && found.has(sp.id));
+      const isBox = sp.id === 'box', ready = found.size === DARK.spots.length;
+      b.hidden = (isBox && !ready) || (!isBox && found.has(sp.id));
+      b.classList.toggle('lit', dist < R * .8 || (isBox && ready));
     });
   }
-  const move = e => { const r = room.getBoundingClientRect(); lx = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); ly = Math.max(0, Math.min(1, (e.clientY - r.top) / r.height)); paint(); };
+  const move = e => { if (busy) return; const r = room.getBoundingClientRect(); lx = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); ly = Math.max(0, Math.min(1, (e.clientY - r.top) / r.height)); paint(); };
   room.addEventListener('pointermove', move);
   room.addEventListener('pointerdown', move);
   const ro = new ResizeObserver(() => { if (!room.isConnected) return ro.disconnect(); paint(); }); ro.observe(room);
   function pick(i) {
+    if (busy) return;
     const sp = all[i]; fb.innerHTML = '';
     if (sp.id === 'box') { if (found.size === DARK.spots.length) { ro.disconnect(); nextAct3(); } return; }
-    if (found.has(sp.id)) { fb.appendChild(feedback('tip', '', `Das liegt schon im Kasten: ${sp.name}.`)); return; }
+    if (found.has(sp.id)) return;
     lx = sp.x / 100; ly = sp.y / 100; paint();
-    holding = sp;
-    hand.innerHTML = `<b>${sp.name}</b><br>Zu welcher Zeit im Kirchenjahr gehört das? Tippe den passenden Kasten an.`;
-    el.querySelectorAll('.drawer').forEach(d => d.disabled = false);
+    ask(sp);
   }
-  el.querySelectorAll('.drawer').forEach(d => d.onclick = () => {
-    if (!holding) return;
-    const k = +d.dataset.k; fb.innerHTML = '';
-    if (k === holding.answer) {
-      found.add(holding.id); S.act3.dark = [...found]; save();
-      d.classList.add('filled'); d.querySelector('small').textContent = [...found].map(id => DARK.spots.find(s => s.id === id)).filter(s => s.answer === k).map(s => s.name).join(', ');
-      fb.appendChild(feedback('ok', 'Passt!', ' ' + holding.why));
-      holding = null; el.querySelectorAll('.drawer').forEach(x => x.disabled = true);
-      hand.innerHTML = found.size === DARK.spots.length ? '<b>Alles einsortiert!</b> Da unten glänzt etwas: der Schlüsselkasten. Tippe ihn an.' : `${found.size} von ${DARK.spots.length} gefunden. Leuchte weiter herum.`;
-      paint();
-    } else { shake(d); fb.appendChild(feedback('no', 'Der Kasten klemmt.', ' ' + holding.hint)); }
-  });
-  // vorhandenen Fortschritt anzeigen
-  DARK.drawers.forEach((_, k) => { const names = DARK.spots.filter(s => s.answer === k && found.has(s.id)).map(s => s.name); if (names.length) { const d = el.querySelector(`.drawer[data-k="${k}"]`); d.classList.add('filled'); d.querySelector('small').textContent = names.join(', '); } });
+  function ask(sp) {
+    busy = true;
+    card.innerHTML = `<div class="dc-in paper">
+      <div class="dc-head">${thumb(sp)}<div><div class="kicker">Gefunden!</div><h2>${sp.name}</h2></div></div>
+      <p class="dc-q"><b>Zu welcher Zeit im Kirchenjahr gehört das?</b> Tippe die richtige Antwort an.</p>
+      <div class="options dc-opts">${shuffle(DARK.drawers.map((d, k) => k)).map(k => `<button class="opt" data-k="${k}">${DARK.drawers[k]}</button>`).join('')}</div>
+      <p class="lookup">Unsicher? Lies nach: ${linkify('{{text:farben}}')}</p>
+      <div class="dc-fb"></div><div class="step-actions"></div></div>`;
+    card.hidden = false;
+    const dfb = card.querySelector('.dc-fb');
+    card.querySelectorAll('.dc-opts .opt').forEach(b => b.onclick = () => {
+      dfb.innerHTML = '';
+      const k = +b.dataset.k;
+      if (k === sp.answer) {
+        b.classList.add('right'); card.querySelectorAll('.dc-opts .opt').forEach(x => x.disabled = true);
+        found.add(sp.id); S.act3.dark = [...found]; save();
+        dfb.appendChild(feedback('ok', 'Richtig!', ' ' + sp.why));
+        const left = DARK.spots.length - found.size;
+        const n = h(`<button class="btn ink">${left ? `${icon('lantern')} Weiter suchen (noch ${left})` : `${icon('key')} Zum Schlüsselkasten`}</button>`);
+        n.onclick = () => { card.hidden = true; busy = false; renderFinds(); paint(); };
+        card.querySelector('.step-actions').appendChild(n);
+      } else {
+        b.classList.add('wrong'); shake(b);
+        const opts = card.querySelectorAll('.dc-opts .opt'); opts.forEach(x => x.disabled = true);
+        dfb.appendChild(feedback('no', 'Das passt nicht.', ' ' + sp.hint));
+        setTimeout(() => { if (!card.isConnected) return; b.classList.remove('wrong'); const box = card.querySelector('.dc-opts'); shuffle([...box.children]).forEach(c => box.appendChild(c)); opts.forEach(x => x.disabled = false); }, 1800);
+      }
+    });
+  }
+  // Anleitung beim ersten Betreten
+  if (!found.size) {
+    busy = true;
+    card.innerHTML = `<div class="dc-in paper intro">
+      <div class="kicker">So funktioniert’s</div><h2>Mit der Taschenlampe suchen</h2>
+      <ol class="dc-steps">
+        <li>${icon('lantern')}<span><b>Leuchten:</b> Fahre mit dem Finger über die dunkle Kammer. Wo dein Finger ist, scheint die Taschenlampe.</span></li>
+        <li>${icon('star')}<span><b>Finden:</b> Wenn ein Gegenstand <span class="gold">golden umrandet</span> aufleuchtet, tippe ihn an.</span></li>
+        <li>${icon('cal')}<span><b>Zuordnen:</b> Dann erscheint hier eine Frage: Zu welcher Zeit im Kirchenjahr gehört der Gegenstand?</span></li>
+        <li>${icon('key')}<span><b>Schlüssel:</b> Hast du alle vier gefunden, leuchtet der Schlüsselkasten auf.</span></li>
+      </ol>
+      <div class="step-actions"><button class="btn">${icon('lantern')} Taschenlampe an!</button></div></div>`;
+    card.hidden = false;
+    card.querySelector('.step-actions button').onclick = () => { card.hidden = true; busy = false; paint(); };
+  }
   let hl = 0;
   el.querySelector('#hint').onclick = () => {
     fb.innerHTML = '';
-    const t = holding ? holding.hint : found.size === DARK.spots.length ? 'Der Schlüsselkasten leuchtet unten in der Mitte.' : ['Leuchte die Ecken ab: links unten, oben in der Mitte, rechts oben und rechts unten.', 'Vier Dinge sind versteckt. Welche Zeit im Kirchenjahr zu welchem Ding gehört, steht in {{text:farben}}'][hl++ % 2];
+    const t = found.size === DARK.spots.length ? 'Der Schlüsselkasten leuchtet unten in der Mitte. Tippe ihn an.' : ['Leuchte die Ecken ab: links unten, oben in der Mitte, rechts oben und rechts.', 'Vier Dinge sind versteckt: zwei Tücher, etwas auf einem Tisch und eine sehr große Kerze. Welche Zeit im Kirchenjahr dazu gehört, steht in {{text:farben}}'][hl++ % 2];
     fb.appendChild(feedback('tip', '', t)); S.hints++; save();
   };
+  renderFinds();
   mount(el); requestAnimationFrame(paint);
 }
 

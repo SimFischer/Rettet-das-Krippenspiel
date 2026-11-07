@@ -46,11 +46,19 @@ const BETHLEHEM_MAP = {
     [345, 478, 40, 40], [1240, 505, 45, 45], [955, 865, 45, 45],
   ],
   guards: [
-    { path: [[470, 120], [470, 880]], speed: 70 },
-    { path: [[740, 140], [740, 860]], speed: 80 },
-    { path: [[1010, 120], [1010, 840]], speed: 65 },
-    { path: [[1090, 590], [1450, 590]], speed: 75 },
-    { path: [[1320, 330], [1320, 700]], speed: 60 },
+    // Streifen, die durch die Gassen laufen
+    { path: [[470, 120], [470, 880]], speed: 75 },
+    { path: [[740, 140], [740, 860]], speed: 85 },
+    { path: [[1010, 120], [1010, 840]], speed: 70 },
+    { path: [[1090, 590], [1450, 590]], speed: 80 },
+    { path: [[1320, 330], [1320, 700]], speed: 65 },
+    { path: [[300, 360], [300, 610], [700, 560], [700, 520], [440, 520]], speed: 70 },
+    // Posten, die stehen bleiben und den Blick schwenken (Winkel: 0 = Osten, π/2 = Süden)
+    { pos: [600, 62], sweep: [0.15, Math.PI - 0.15], turn: 0.75 },
+    { pos: [1180, 62], sweep: [0.15, Math.PI - 0.15], turn: 0.65 },
+    { pos: [470, 932], sweep: [-Math.PI + 0.15, -0.15], turn: 0.7 },
+    { pos: [1180, 932], sweep: [-Math.PI + 0.15, -0.15], turn: 0.8 },
+    { pos: [1515, 450], sweep: [Math.PI / 2 - 0.2, Math.PI + 0.9], turn: 0.6 },
   ],
 };
 
@@ -160,7 +168,9 @@ const Walk = (() => {
     const P = { x: m.start.x, y: m.start.y, dir: 'down', dist: 0, moving: false };
     let route = null, goal = null, paused = false, raf = 0, last = 0, inside = null, alive = true;
     const keys = new Set();
-    const guards = (m.guards || []).map(g => ({ ...g, i: 0, t: 0, x: g.path[0][0], y: g.path[0][1], ang: 0 }));
+    const guards = (m.guards || []).map(g => g.sweep
+      ? { ...g, x: g.pos[0], y: g.pos[1], ang: g.sweep[0], dir: 1, hold: 0 }
+      : { ...g, i: 0, t: 0, x: g.path[0][0], y: g.path[0][1], ang: 0 });
 
     // Raster der begehbaren Zellen
     const cols = Math.ceil(m.w / CELL), rows = Math.ceil(m.h / CELL);
@@ -254,6 +264,13 @@ const Walk = (() => {
       else if (!near) inside = null;
       // Wachen
       guards.forEach(g => {
+        if (g.sweep) {
+          if (g.hold > 0) { g.hold -= dt; return; }
+          g.ang += g.dir * g.turn * dt;
+          if (g.ang > g.sweep[1]) { g.ang = g.sweep[1]; g.dir = -1; g.hold = 0.9; }
+          if (g.ang < g.sweep[0]) { g.ang = g.sweep[0]; g.dir = 1; g.hold = 0.9; }
+          return;
+        }
         const [a, b] = [g.path[g.i], g.path[(g.i + 1) % g.path.length]];
         const ex = b[0] - g.x, ey = b[1] - g.y, d = Math.hypot(ex, ey), st = g.speed * dt;
         if (d <= st) { g.x = b[0]; g.y = b[1]; g.i = (g.i + 1) % g.path.length; }
@@ -293,7 +310,7 @@ const Walk = (() => {
       (o.spots ? o.spots() : []).forEach(s => items.push({ y: s.y, draw: () => o.drawSpot(ctx, s) }));
       guards.forEach(g => items.push({ y: g.y, draw: () => {
         const dir = Math.abs(Math.cos(g.ang)) > Math.abs(Math.sin(g.ang)) ? (Math.cos(g.ang) > 0 ? 'right' : 'left') : (Math.sin(g.ang) > 0 ? 'down' : 'up');
-        const fr = Math.floor(performance.now() / 180) % 4; const frame = [0, 1, 0, 2][fr];
+        const fr = Math.floor(performance.now() / 180) % 4; const frame = g.sweep ? 0 : [0, 1, 0, 2][fr];
         if (!drawSprite(ctx, 'assets/bonus/soldier-sheet.webp', g.x, g.y, dir, frame, 108)) drawPerson(ctx, g.x, g.y, { dir, frame, body: '#8c2f2a', hair: '#3a3a40', cape: '#5a1712', scale: 1.15 });
       } }));
       items.push({ y: P.y, draw: () => {

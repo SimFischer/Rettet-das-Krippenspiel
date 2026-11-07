@@ -595,7 +595,7 @@ function showCertificate() {
 const TREASURE = [
   { g: 'sheep', icon: 'sheep', t: 'Die Hirten suchen ihre Schafe', d: 'Finde alle Schafe auf dem nächtlichen Feld – mit der Laterne.', best: v => `${v} Schafe`, open: () => S.seenInterlude.includes(2), lock: 'Wird frei, sobald du zwei Schlösser geknackt hast.' },
   { g: 'memory', icon: 'star', t: 'Sternen-Memory', d: 'Finde die Paare der Weihnachtszeichen.', best: v => `${v} Züge`, open: () => S.seenInterlude.includes(4), lock: 'Wird frei, sobald du vier Schlösser geknackt hast.' },
-  { g: 'heimweg', icon: 'star', t: 'Der andere Heimweg', d: 'Die Weisen schleichen an den Wachen von König Herodes vorbei (Matthäus 2,12).', best: v => `${v} × entdeckt`, open: () => false, lock: 'Wird frei, wenn du das Krippenspiel gerettet hast.' },
+  { g: 'heimweg', icon: 'star', t: 'Der andere Heimweg', d: 'Die Weisen schleichen an den Wachen von König Herodes vorbei (Matthäus 2,12).', best: v => `${v}. Versuch`, open: () => false, lock: 'Wird frei, wenn du das Krippenspiel gerettet hast.' },
   { g: 'candles', icon: 'wreath', t: 'Kerzenwächter', d: 'Der Wind pustet durch die Kirche. Halte die Adventskerzen am Brennen!', best: v => `${v} Kerzen`, open: () => false, lock: 'Wird frei, wenn du das Krippenspiel gerettet hast.' },
 ];
 const gameOpen = x => S.bonusOpen || S.finaleDone || x.open();
